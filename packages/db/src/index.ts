@@ -1,11 +1,11 @@
 import { PrismaClient } from "./generated/prisma/client";
 
-class PrismaSingleton{
+class PrismaSingleton {
     private static instance: PrismaClient;
 
-    private constructor() {}
-    
-    public static getInstance(){
+    private constructor() { }
+
+    public static getInstance() {
         if (!this.instance) {
             this.instance = new PrismaClient();
         }

@@ -29,7 +29,6 @@ export const playerSchema = z.object({
   name: z.string(),
   role: z.enum(["batsman", "bowler", "wk", "ar"]),
   dexture: z.enum(["right", "left"]),
-  playingStatus: z.enum(["playing", "notPlaying", "substitute"]),
   squadId: z.string(),
   countryStatus: z.enum(["indian", "foreign"])
 })
@@ -37,5 +36,33 @@ export const playerSchema = z.object({
 export const playerUpdateSchema = z.object({
   playingStatus: z.enum(["playing", "notPlaying", "substitute"]),
   playerId: z.string(),
+})
+
+export const playerScoreUpdateSchema = z.object({
+  playingStatus: z.enum(["playing", "notPlaying", "substitute"]),
+  fantasyPoints: z.number(),
+  run: z.number(),
+  sixes: z.number(),
+  fours: z.number(),
+  others: z.number(),
+  runConceded: z.number(),
+  wickets: z.number(),
+  ballsBowled: z.number(),
+  catches: z.number(),
+  runout: z.number(),
+  dotBall: z.number(),
+  matchId: z.string(),
+  playerId: z.string()
+})
+
+export const matchesSchema = z.object({
+  team1Id: z.string(),
+  team2Id: z.string(),
+  venue: z.string(),
+  date: z.date(),
+  winner: z.enum(["team1", "team2", "tobeDeclared"]),
+  toss: z.enum(["team1", "team2", "tobeDeclared"]),
+  elected: z.enum(["bat", "ball", "tobeDeclared"]),
+  status: z.enum(["upcoming", "started", "ended"])
 })
 

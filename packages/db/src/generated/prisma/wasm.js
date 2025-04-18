@@ -154,13 +154,13 @@ exports.Prisma.PlayersScalarFieldEnum = {
   name: 'name',
   role: 'role',
   dexture: 'dexture',
-  playingStatus: 'playingStatus',
   countryStatus: 'countryStatus',
   squadId: 'squadId'
 };
 
 exports.Prisma.PlayerScoreScalarFieldEnum = {
   id: 'id',
+  playingStatus: 'playingStatus',
   fantasyPoints: 'fantasyPoints',
   run: 'run',
   sixes: 'sixes',
@@ -172,14 +172,14 @@ exports.Prisma.PlayerScoreScalarFieldEnum = {
   catches: 'catches',
   runout: 'runout',
   dotBall: 'dotBall',
-  isPlaying: 'isPlaying',
-  playerId: 'playerId'
+  playerId: 'playerId',
+  matchId: 'matchId'
 };
 
 exports.Prisma.MatchesScalarFieldEnum = {
   id: 'id',
-  team1: 'team1',
-  team2: 'team2',
+  team1Id: 'team1Id',
+  team2Id: 'team2Id',
   venue: 'venue',
   date: 'date',
   winner: 'winner',
@@ -213,11 +213,11 @@ exports.Prisma.BallsScalarFieldEnum = {
 
 exports.Prisma.TournamentScalarFieldEnum = {
   id: 'id',
-  ownerId: 'ownerId',
   maxLimit: 'maxLimit',
   entryFee: 'entryFee',
   prizePool: 'prizePool',
   winner: 'winner',
+  ownerId: 'ownerId',
   teamsJoined: 'teamsJoined',
   status: 'status'
 };
@@ -259,25 +259,33 @@ exports.PlayerDexture = exports.$Enums.PlayerDexture = {
   left: 'left'
 };
 
+exports.PlayerCountryStatus = exports.$Enums.PlayerCountryStatus = {
+  indian: 'indian',
+  foreign: 'foreign'
+};
+
 exports.PlayerPlayingStatus = exports.$Enums.PlayerPlayingStatus = {
   playing: 'playing',
   substitute: 'substitute',
   notPlaying: 'notPlaying'
 };
 
-exports.PlayerCountryStatus = exports.$Enums.PlayerCountryStatus = {
-  indian: 'indian',
-  foreign: 'foreign'
-};
-
 exports.MatchesWinner = exports.$Enums.MatchesWinner = {
   team1: 'team1',
-  team2: 'team2'
+  team2: 'team2',
+  tobeDeclared: 'tobeDeclared'
 };
 
 exports.MatchTossElection = exports.$Enums.MatchTossElection = {
   ball: 'ball',
-  bat: 'bat'
+  bat: 'bat',
+  tobeDeclared: 'tobeDeclared'
+};
+
+exports.TournamentStatus = exports.$Enums.TournamentStatus = {
+  upcoming: 'upcoming',
+  started: 'started',
+  ended: 'ended'
 };
 
 exports.WhichInning = exports.$Enums.WhichInning = {
@@ -299,12 +307,6 @@ exports.WhatHappend = exports.$Enums.WhatHappend = {
   one: 'one',
   two: 'two',
   three: 'three'
-};
-
-exports.TournamentStatus = exports.$Enums.TournamentStatus = {
-  notStarted: 'notStarted',
-  started: 'started',
-  ended: 'ended'
 };
 
 exports.Prisma.ModelName = {

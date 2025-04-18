@@ -60,16 +60,16 @@ model Players {
   name            String
   role            PlayerRole
   dexture         PlayerDexture
-  playingStatus   PlayerPlayingStatus
   countryStatus   PlayerCountryStatus
   squadId         String
   squad           Squad               @relation(fields: [squadId], references: [id])
   userTeamPlayers UserTeamPlayers[]
-  score           PlayerScore?        @relation("PlayerToScore")
+  score           PlayerScore[]
 }
 
 model PlayerScore {
   id            String  @id @unique @default(cuid())
+  playingStatus PlayerPlayingStatus
   fantasyPoints Int
   run           Int
   sixes         Int
@@ -81,23 +81,25 @@ model PlayerScore {
   catches       Int
   runout        Int
   dotBall       Int
-  isPlaying     Boolean
   playerId      String  @unique
-  player        Players @relation("PlayerToScore", fields: [playerId], references: [id])
+  player        Players @relation(fields: [playerId], references: [id])
+  matchId       String
+  match         Matches @relation(fields: [matchId], references: [id])
+  @@unique([playerId, matchId])
 }
-
 
 model Matches{
   id              String @id @unique @default(cuid())
-  team1           String
-  team2           String
+  team1Id         String
+  team2Id         String
   venue           String
   date            DateTime
   winner          MatchesWinner
   toss            MatchesWinner
   elected         MatchTossElection
-  status          String
+  status          TournamentStatus
   innings         Inning[]
+  playerScore     PlayerScore[]
 }
 
 model Inning{
@@ -106,9 +108,9 @@ model Inning{
   score         Int
   wickets       Int
   extras        Int
-  batsman1      String
-  batsman2      String
-  bowler        String
+  batsman1      String?
+  batsman2      String?
+  bowler        String?
   matchId       String
   match         Matches @relation(fields: [matchId], references: [id])
   balls         Balls[]
@@ -127,20 +129,17 @@ model Balls{
 }
 
 model Tournament{
-  id            String @id @unique @default(cuid())
-  maxLimit      Int
-  entryFee      Int
-  prizePool     Int
-  winner        String
-  ownerId       String
+  id                    String @id @unique @default(cuid())
+  maxLimit              Int
+  entryFee              Int
+  prizePool             Int
+  winner                String
+  ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
   teamsJoined           Int
   status                TournamentStatus
   owner                 User                    @relation(fields: [ownerId], references: [id])
 }
-
-
-
 
 model TournamentJoinedTeams{
   id              String @id @unique @default(cuid())
@@ -172,7 +171,7 @@ enum WhichInning {
 }
 
 enum TournamentStatus {
-  notStarted
+  upcoming
   started
   ended
 }
@@ -180,11 +179,13 @@ enum TournamentStatus {
 enum MatchTossElection {
   ball
   bat
+  tobeDeclared
 }
 
 enum MatchesWinner {
   team1
   team2
+  tobeDeclared
 }
 
 enum PlayerRole {

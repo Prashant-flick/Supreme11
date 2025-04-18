@@ -80,7 +80,6 @@ playerRouter.post('/', async (req, res) => {
         name: parsedData.data?.name,
         dexture: parsedData.data?.dexture,
         squadId: parsedData.data?.squadId,
-        playingStatus: parsedData.data.playingStatus,
         countryStatus: parsedData.data.countryStatus,
         role: parsedData.data.role
       }
@@ -120,38 +119,6 @@ playerRouter.delete('/:playerId', async (req, res) => {
     res.status(400)
       .json({
         message: "player deletion failed"
-      })
-  }
-})
-
-playerRouter.patch('/update', async (req, res) => {
-  const parsedData = playerUpdateSchema.safeParse(req.body);
-  if (!parsedData.success) {
-    res.status(400)
-      .json({
-        message: "all feilds are required"
-      })
-    return
-  }
-
-  try {
-    const playerRes = await client.players.update({
-      where: {
-        id: parsedData.data.playerId
-      },
-      data: {
-        playingStatus: parsedData.data.playingStatus
-      }
-    })
-
-    res.status(200)
-      .json({
-        message: "palyer updation success"
-      })
-  } catch (error) {
-    res.status(400)
-      .json({
-        message: "player updation failed",
       })
   }
 })

@@ -101,7 +101,7 @@ export type WhichInning = (typeof WhichInning)[keyof typeof WhichInning]
 
 
 export const TournamentStatus: {
-  notStarted: 'notStarted',
+  upcoming: 'upcoming',
   started: 'started',
   ended: 'ended'
 };
@@ -111,7 +111,8 @@ export type TournamentStatus = (typeof TournamentStatus)[keyof typeof Tournament
 
 export const MatchTossElection: {
   ball: 'ball',
-  bat: 'bat'
+  bat: 'bat',
+  tobeDeclared: 'tobeDeclared'
 };
 
 export type MatchTossElection = (typeof MatchTossElection)[keyof typeof MatchTossElection]
@@ -119,7 +120,8 @@ export type MatchTossElection = (typeof MatchTossElection)[keyof typeof MatchTos
 
 export const MatchesWinner: {
   team1: 'team1',
-  team2: 'team2'
+  team2: 'team2',
+  tobeDeclared: 'tobeDeclared'
 };
 
 export type MatchesWinner = (typeof MatchesWinner)[keyof typeof MatchesWinner]
@@ -2031,10 +2033,12 @@ export namespace Prisma {
 
   export type PlayersCountOutputType = {
     userTeamPlayers: number
+    score: number
   }
 
   export type PlayersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     userTeamPlayers?: boolean | PlayersCountOutputTypeCountUserTeamPlayersArgs
+    score?: boolean | PlayersCountOutputTypeCountScoreArgs
   }
 
   // Custom InputTypes
@@ -2055,6 +2059,13 @@ export namespace Prisma {
     where?: UserTeamPlayersWhereInput
   }
 
+  /**
+   * PlayersCountOutputType without action
+   */
+  export type PlayersCountOutputTypeCountScoreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerScoreWhereInput
+  }
+
 
   /**
    * Count Type MatchesCountOutputType
@@ -2062,10 +2073,12 @@ export namespace Prisma {
 
   export type MatchesCountOutputType = {
     innings: number
+    playerScore: number
   }
 
   export type MatchesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     innings?: boolean | MatchesCountOutputTypeCountInningsArgs
+    playerScore?: boolean | MatchesCountOutputTypeCountPlayerScoreArgs
   }
 
   // Custom InputTypes
@@ -2084,6 +2097,13 @@ export namespace Prisma {
    */
   export type MatchesCountOutputTypeCountInningsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InningWhereInput
+  }
+
+  /**
+   * MatchesCountOutputType without action
+   */
+  export type MatchesCountOutputTypeCountPlayerScoreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlayerScoreWhereInput
   }
 
 
@@ -6552,7 +6572,6 @@ export namespace Prisma {
     name: string | null
     role: $Enums.PlayerRole | null
     dexture: $Enums.PlayerDexture | null
-    playingStatus: $Enums.PlayerPlayingStatus | null
     countryStatus: $Enums.PlayerCountryStatus | null
     squadId: string | null
   }
@@ -6562,7 +6581,6 @@ export namespace Prisma {
     name: string | null
     role: $Enums.PlayerRole | null
     dexture: $Enums.PlayerDexture | null
-    playingStatus: $Enums.PlayerPlayingStatus | null
     countryStatus: $Enums.PlayerCountryStatus | null
     squadId: string | null
   }
@@ -6572,7 +6590,6 @@ export namespace Prisma {
     name: number
     role: number
     dexture: number
-    playingStatus: number
     countryStatus: number
     squadId: number
     _all: number
@@ -6584,7 +6601,6 @@ export namespace Prisma {
     name?: true
     role?: true
     dexture?: true
-    playingStatus?: true
     countryStatus?: true
     squadId?: true
   }
@@ -6594,7 +6610,6 @@ export namespace Prisma {
     name?: true
     role?: true
     dexture?: true
-    playingStatus?: true
     countryStatus?: true
     squadId?: true
   }
@@ -6604,7 +6619,6 @@ export namespace Prisma {
     name?: true
     role?: true
     dexture?: true
-    playingStatus?: true
     countryStatus?: true
     squadId?: true
     _all?: true
@@ -6687,7 +6701,6 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
     _count: PlayersCountAggregateOutputType | null
@@ -6714,7 +6727,6 @@ export namespace Prisma {
     name?: boolean
     role?: boolean
     dexture?: boolean
-    playingStatus?: boolean
     countryStatus?: boolean
     squadId?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
@@ -6728,7 +6740,6 @@ export namespace Prisma {
     name?: boolean
     role?: boolean
     dexture?: boolean
-    playingStatus?: boolean
     countryStatus?: boolean
     squadId?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
@@ -6739,7 +6750,6 @@ export namespace Prisma {
     name?: boolean
     role?: boolean
     dexture?: boolean
-    playingStatus?: boolean
     countryStatus?: boolean
     squadId?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
@@ -6750,12 +6760,11 @@ export namespace Prisma {
     name?: boolean
     role?: boolean
     dexture?: boolean
-    playingStatus?: boolean
     countryStatus?: boolean
     squadId?: boolean
   }
 
-  export type PlayersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "role" | "dexture" | "playingStatus" | "countryStatus" | "squadId", ExtArgs["result"]["players"]>
+  export type PlayersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "role" | "dexture" | "countryStatus" | "squadId", ExtArgs["result"]["players"]>
   export type PlayersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     squad?: boolean | SquadDefaultArgs<ExtArgs>
     userTeamPlayers?: boolean | Players$userTeamPlayersArgs<ExtArgs>
@@ -6774,14 +6783,13 @@ export namespace Prisma {
     objects: {
       squad: Prisma.$SquadPayload<ExtArgs>
       userTeamPlayers: Prisma.$UserTeamPlayersPayload<ExtArgs>[]
-      score: Prisma.$PlayerScorePayload<ExtArgs> | null
+      score: Prisma.$PlayerScorePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       role: $Enums.PlayerRole
       dexture: $Enums.PlayerDexture
-      playingStatus: $Enums.PlayerPlayingStatus
       countryStatus: $Enums.PlayerCountryStatus
       squadId: string
     }, ExtArgs["result"]["players"]>
@@ -7180,7 +7188,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     squad<T extends SquadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SquadDefaultArgs<ExtArgs>>): Prisma__SquadClient<$Result.GetResult<Prisma.$SquadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     userTeamPlayers<T extends Players$userTeamPlayersArgs<ExtArgs> = {}>(args?: Subset<T, Players$userTeamPlayersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTeamPlayersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    score<T extends Players$scoreArgs<ExtArgs> = {}>(args?: Subset<T, Players$scoreArgs<ExtArgs>>): Prisma__PlayerScoreClient<$Result.GetResult<Prisma.$PlayerScorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    score<T extends Players$scoreArgs<ExtArgs> = {}>(args?: Subset<T, Players$scoreArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7214,7 +7222,6 @@ export namespace Prisma {
     readonly name: FieldRef<"Players", 'String'>
     readonly role: FieldRef<"Players", 'PlayerRole'>
     readonly dexture: FieldRef<"Players", 'PlayerDexture'>
-    readonly playingStatus: FieldRef<"Players", 'PlayerPlayingStatus'>
     readonly countryStatus: FieldRef<"Players", 'PlayerCountryStatus'>
     readonly squadId: FieldRef<"Players", 'String'>
   }
@@ -7653,6 +7660,11 @@ export namespace Prisma {
      */
     include?: PlayerScoreInclude<ExtArgs> | null
     where?: PlayerScoreWhereInput
+    orderBy?: PlayerScoreOrderByWithRelationInput | PlayerScoreOrderByWithRelationInput[]
+    cursor?: PlayerScoreWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlayerScoreScalarFieldEnum | PlayerScoreScalarFieldEnum[]
   }
 
   /**
@@ -7716,6 +7728,7 @@ export namespace Prisma {
 
   export type PlayerScoreMinAggregateOutputType = {
     id: string | null
+    playingStatus: $Enums.PlayerPlayingStatus | null
     fantasyPoints: number | null
     run: number | null
     sixes: number | null
@@ -7727,12 +7740,13 @@ export namespace Prisma {
     catches: number | null
     runout: number | null
     dotBall: number | null
-    isPlaying: boolean | null
     playerId: string | null
+    matchId: string | null
   }
 
   export type PlayerScoreMaxAggregateOutputType = {
     id: string | null
+    playingStatus: $Enums.PlayerPlayingStatus | null
     fantasyPoints: number | null
     run: number | null
     sixes: number | null
@@ -7744,12 +7758,13 @@ export namespace Prisma {
     catches: number | null
     runout: number | null
     dotBall: number | null
-    isPlaying: boolean | null
     playerId: string | null
+    matchId: string | null
   }
 
   export type PlayerScoreCountAggregateOutputType = {
     id: number
+    playingStatus: number
     fantasyPoints: number
     run: number
     sixes: number
@@ -7761,8 +7776,8 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: number
     playerId: number
+    matchId: number
     _all: number
   }
 
@@ -7797,6 +7812,7 @@ export namespace Prisma {
 
   export type PlayerScoreMinAggregateInputType = {
     id?: true
+    playingStatus?: true
     fantasyPoints?: true
     run?: true
     sixes?: true
@@ -7808,12 +7824,13 @@ export namespace Prisma {
     catches?: true
     runout?: true
     dotBall?: true
-    isPlaying?: true
     playerId?: true
+    matchId?: true
   }
 
   export type PlayerScoreMaxAggregateInputType = {
     id?: true
+    playingStatus?: true
     fantasyPoints?: true
     run?: true
     sixes?: true
@@ -7825,12 +7842,13 @@ export namespace Prisma {
     catches?: true
     runout?: true
     dotBall?: true
-    isPlaying?: true
     playerId?: true
+    matchId?: true
   }
 
   export type PlayerScoreCountAggregateInputType = {
     id?: true
+    playingStatus?: true
     fantasyPoints?: true
     run?: true
     sixes?: true
@@ -7842,8 +7860,8 @@ export namespace Prisma {
     catches?: true
     runout?: true
     dotBall?: true
-    isPlaying?: true
     playerId?: true
+    matchId?: true
     _all?: true
   }
 
@@ -7935,6 +7953,7 @@ export namespace Prisma {
 
   export type PlayerScoreGroupByOutputType = {
     id: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -7946,8 +7965,8 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
     playerId: string
+    matchId: string
     _count: PlayerScoreCountAggregateOutputType | null
     _avg: PlayerScoreAvgAggregateOutputType | null
     _sum: PlayerScoreSumAggregateOutputType | null
@@ -7971,6 +7990,7 @@ export namespace Prisma {
 
   export type PlayerScoreSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    playingStatus?: boolean
     fantasyPoints?: boolean
     run?: boolean
     sixes?: boolean
@@ -7982,13 +8002,15 @@ export namespace Prisma {
     catches?: boolean
     runout?: boolean
     dotBall?: boolean
-    isPlaying?: boolean
     playerId?: boolean
+    matchId?: boolean
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["playerScore"]>
 
   export type PlayerScoreSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    playingStatus?: boolean
     fantasyPoints?: boolean
     run?: boolean
     sixes?: boolean
@@ -8000,13 +8022,15 @@ export namespace Prisma {
     catches?: boolean
     runout?: boolean
     dotBall?: boolean
-    isPlaying?: boolean
     playerId?: boolean
+    matchId?: boolean
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["playerScore"]>
 
   export type PlayerScoreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    playingStatus?: boolean
     fantasyPoints?: boolean
     run?: boolean
     sixes?: boolean
@@ -8018,13 +8042,15 @@ export namespace Prisma {
     catches?: boolean
     runout?: boolean
     dotBall?: boolean
-    isPlaying?: boolean
     playerId?: boolean
+    matchId?: boolean
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["playerScore"]>
 
   export type PlayerScoreSelectScalar = {
     id?: boolean
+    playingStatus?: boolean
     fantasyPoints?: boolean
     run?: boolean
     sixes?: boolean
@@ -8036,28 +8062,33 @@ export namespace Prisma {
     catches?: boolean
     runout?: boolean
     dotBall?: boolean
-    isPlaying?: boolean
     playerId?: boolean
+    matchId?: boolean
   }
 
-  export type PlayerScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fantasyPoints" | "run" | "sixes" | "fours" | "others" | "runsConceded" | "wickets" | "ballsBowled" | "catches" | "runout" | "dotBall" | "isPlaying" | "playerId", ExtArgs["result"]["playerScore"]>
+  export type PlayerScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "playingStatus" | "fantasyPoints" | "run" | "sixes" | "fours" | "others" | "runsConceded" | "wickets" | "ballsBowled" | "catches" | "runout" | "dotBall" | "playerId" | "matchId", ExtArgs["result"]["playerScore"]>
   export type PlayerScoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }
   export type PlayerScoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }
   export type PlayerScoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     player?: boolean | PlayersDefaultArgs<ExtArgs>
+    match?: boolean | MatchesDefaultArgs<ExtArgs>
   }
 
   export type $PlayerScorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PlayerScore"
     objects: {
       player: Prisma.$PlayersPayload<ExtArgs>
+      match: Prisma.$MatchesPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      playingStatus: $Enums.PlayerPlayingStatus
       fantasyPoints: number
       run: number
       sixes: number
@@ -8069,8 +8100,8 @@ export namespace Prisma {
       catches: number
       runout: number
       dotBall: number
-      isPlaying: boolean
       playerId: string
+      matchId: string
     }, ExtArgs["result"]["playerScore"]>
     composites: {}
   }
@@ -8466,6 +8497,7 @@ export namespace Prisma {
   export interface Prisma__PlayerScoreClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     player<T extends PlayersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PlayersDefaultArgs<ExtArgs>>): Prisma__PlayersClient<$Result.GetResult<Prisma.$PlayersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    match<T extends MatchesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MatchesDefaultArgs<ExtArgs>>): Prisma__MatchesClient<$Result.GetResult<Prisma.$MatchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8496,6 +8528,7 @@ export namespace Prisma {
    */
   interface PlayerScoreFieldRefs {
     readonly id: FieldRef<"PlayerScore", 'String'>
+    readonly playingStatus: FieldRef<"PlayerScore", 'PlayerPlayingStatus'>
     readonly fantasyPoints: FieldRef<"PlayerScore", 'Int'>
     readonly run: FieldRef<"PlayerScore", 'Int'>
     readonly sixes: FieldRef<"PlayerScore", 'Int'>
@@ -8507,8 +8540,8 @@ export namespace Prisma {
     readonly catches: FieldRef<"PlayerScore", 'Int'>
     readonly runout: FieldRef<"PlayerScore", 'Int'>
     readonly dotBall: FieldRef<"PlayerScore", 'Int'>
-    readonly isPlaying: FieldRef<"PlayerScore", 'Boolean'>
     readonly playerId: FieldRef<"PlayerScore", 'String'>
+    readonly matchId: FieldRef<"PlayerScore", 'String'>
   }
     
 
@@ -8935,32 +8968,32 @@ export namespace Prisma {
 
   export type MatchesMinAggregateOutputType = {
     id: string | null
-    team1: string | null
-    team2: string | null
+    team1Id: string | null
+    team2Id: string | null
     venue: string | null
     date: Date | null
     winner: $Enums.MatchesWinner | null
     toss: $Enums.MatchesWinner | null
     elected: $Enums.MatchTossElection | null
-    status: string | null
+    status: $Enums.TournamentStatus | null
   }
 
   export type MatchesMaxAggregateOutputType = {
     id: string | null
-    team1: string | null
-    team2: string | null
+    team1Id: string | null
+    team2Id: string | null
     venue: string | null
     date: Date | null
     winner: $Enums.MatchesWinner | null
     toss: $Enums.MatchesWinner | null
     elected: $Enums.MatchTossElection | null
-    status: string | null
+    status: $Enums.TournamentStatus | null
   }
 
   export type MatchesCountAggregateOutputType = {
     id: number
-    team1: number
-    team2: number
+    team1Id: number
+    team2Id: number
     venue: number
     date: number
     winner: number
@@ -8973,8 +9006,8 @@ export namespace Prisma {
 
   export type MatchesMinAggregateInputType = {
     id?: true
-    team1?: true
-    team2?: true
+    team1Id?: true
+    team2Id?: true
     venue?: true
     date?: true
     winner?: true
@@ -8985,8 +9018,8 @@ export namespace Prisma {
 
   export type MatchesMaxAggregateInputType = {
     id?: true
-    team1?: true
-    team2?: true
+    team1Id?: true
+    team2Id?: true
     venue?: true
     date?: true
     winner?: true
@@ -8997,8 +9030,8 @@ export namespace Prisma {
 
   export type MatchesCountAggregateInputType = {
     id?: true
-    team1?: true
-    team2?: true
+    team1Id?: true
+    team2Id?: true
     venue?: true
     date?: true
     winner?: true
@@ -9082,14 +9115,14 @@ export namespace Prisma {
 
   export type MatchesGroupByOutputType = {
     id: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
     _count: MatchesCountAggregateOutputType | null
     _min: MatchesMinAggregateOutputType | null
     _max: MatchesMaxAggregateOutputType | null
@@ -9111,8 +9144,8 @@ export namespace Prisma {
 
   export type MatchesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    team1?: boolean
-    team2?: boolean
+    team1Id?: boolean
+    team2Id?: boolean
     venue?: boolean
     date?: boolean
     winner?: boolean
@@ -9120,13 +9153,14 @@ export namespace Prisma {
     elected?: boolean
     status?: boolean
     innings?: boolean | Matches$inningsArgs<ExtArgs>
+    playerScore?: boolean | Matches$playerScoreArgs<ExtArgs>
     _count?: boolean | MatchesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["matches"]>
 
   export type MatchesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    team1?: boolean
-    team2?: boolean
+    team1Id?: boolean
+    team2Id?: boolean
     venue?: boolean
     date?: boolean
     winner?: boolean
@@ -9137,8 +9171,8 @@ export namespace Prisma {
 
   export type MatchesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    team1?: boolean
-    team2?: boolean
+    team1Id?: boolean
+    team2Id?: boolean
     venue?: boolean
     date?: boolean
     winner?: boolean
@@ -9149,8 +9183,8 @@ export namespace Prisma {
 
   export type MatchesSelectScalar = {
     id?: boolean
-    team1?: boolean
-    team2?: boolean
+    team1Id?: boolean
+    team2Id?: boolean
     venue?: boolean
     date?: boolean
     winner?: boolean
@@ -9159,9 +9193,10 @@ export namespace Prisma {
     status?: boolean
   }
 
-  export type MatchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team1" | "team2" | "venue" | "date" | "winner" | "toss" | "elected" | "status", ExtArgs["result"]["matches"]>
+  export type MatchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "team1Id" | "team2Id" | "venue" | "date" | "winner" | "toss" | "elected" | "status", ExtArgs["result"]["matches"]>
   export type MatchesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     innings?: boolean | Matches$inningsArgs<ExtArgs>
+    playerScore?: boolean | Matches$playerScoreArgs<ExtArgs>
     _count?: boolean | MatchesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MatchesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9171,17 +9206,18 @@ export namespace Prisma {
     name: "Matches"
     objects: {
       innings: Prisma.$InningPayload<ExtArgs>[]
+      playerScore: Prisma.$PlayerScorePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      team1: string
-      team2: string
+      team1Id: string
+      team2Id: string
       venue: string
       date: Date
       winner: $Enums.MatchesWinner
       toss: $Enums.MatchesWinner
       elected: $Enums.MatchTossElection
-      status: string
+      status: $Enums.TournamentStatus
     }, ExtArgs["result"]["matches"]>
     composites: {}
   }
@@ -9577,6 +9613,7 @@ export namespace Prisma {
   export interface Prisma__MatchesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     innings<T extends Matches$inningsArgs<ExtArgs> = {}>(args?: Subset<T, Matches$inningsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InningPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    playerScore<T extends Matches$playerScoreArgs<ExtArgs> = {}>(args?: Subset<T, Matches$playerScoreArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlayerScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9607,14 +9644,14 @@ export namespace Prisma {
    */
   interface MatchesFieldRefs {
     readonly id: FieldRef<"Matches", 'String'>
-    readonly team1: FieldRef<"Matches", 'String'>
-    readonly team2: FieldRef<"Matches", 'String'>
+    readonly team1Id: FieldRef<"Matches", 'String'>
+    readonly team2Id: FieldRef<"Matches", 'String'>
     readonly venue: FieldRef<"Matches", 'String'>
     readonly date: FieldRef<"Matches", 'DateTime'>
     readonly winner: FieldRef<"Matches", 'MatchesWinner'>
     readonly toss: FieldRef<"Matches", 'MatchesWinner'>
     readonly elected: FieldRef<"Matches", 'MatchTossElection'>
-    readonly status: FieldRef<"Matches", 'String'>
+    readonly status: FieldRef<"Matches", 'TournamentStatus'>
   }
     
 
@@ -10027,6 +10064,30 @@ export namespace Prisma {
   }
 
   /**
+   * Matches.playerScore
+   */
+  export type Matches$playerScoreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlayerScore
+     */
+    select?: PlayerScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlayerScore
+     */
+    omit?: PlayerScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlayerScoreInclude<ExtArgs> | null
+    where?: PlayerScoreWhereInput
+    orderBy?: PlayerScoreOrderByWithRelationInput | PlayerScoreOrderByWithRelationInput[]
+    cursor?: PlayerScoreWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlayerScoreScalarFieldEnum | PlayerScoreScalarFieldEnum[]
+  }
+
+  /**
    * Matches without action
    */
   export type MatchesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10248,9 +10309,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1: string | null
+    batsman2: string | null
+    bowler: string | null
     matchId: string
     _count: InningCountAggregateOutputType | null
     _avg: InningAvgAggregateOutputType | null
@@ -10351,9 +10412,9 @@ export namespace Prisma {
       score: number
       wickets: number
       extras: number
-      batsman1: string
-      batsman2: string
-      bowler: string
+      batsman1: string | null
+      batsman2: string | null
+      bowler: string | null
       matchId: string
     }, ExtArgs["result"]["inning"]>
     composites: {}
@@ -12386,33 +12447,33 @@ export namespace Prisma {
 
   export type TournamentMinAggregateOutputType = {
     id: string | null
-    ownerId: string | null
     maxLimit: number | null
     entryFee: number | null
     prizePool: number | null
     winner: string | null
+    ownerId: string | null
     teamsJoined: number | null
     status: $Enums.TournamentStatus | null
   }
 
   export type TournamentMaxAggregateOutputType = {
     id: string | null
-    ownerId: string | null
     maxLimit: number | null
     entryFee: number | null
     prizePool: number | null
     winner: string | null
+    ownerId: string | null
     teamsJoined: number | null
     status: $Enums.TournamentStatus | null
   }
 
   export type TournamentCountAggregateOutputType = {
     id: number
-    ownerId: number
     maxLimit: number
     entryFee: number
     prizePool: number
     winner: number
+    ownerId: number
     teamsJoined: number
     status: number
     _all: number
@@ -12435,33 +12496,33 @@ export namespace Prisma {
 
   export type TournamentMinAggregateInputType = {
     id?: true
-    ownerId?: true
     maxLimit?: true
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
     teamsJoined?: true
     status?: true
   }
 
   export type TournamentMaxAggregateInputType = {
     id?: true
-    ownerId?: true
     maxLimit?: true
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
     teamsJoined?: true
     status?: true
   }
 
   export type TournamentCountAggregateInputType = {
     id?: true
-    ownerId?: true
     maxLimit?: true
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
     teamsJoined?: true
     status?: true
     _all?: true
@@ -12555,11 +12616,11 @@ export namespace Prisma {
 
   export type TournamentGroupByOutputType = {
     id: string
-    ownerId: string
     maxLimit: number
     entryFee: number
-    prizePool: number | null
-    winner: string | null
+    prizePool: number
+    winner: string
+    ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     _count: TournamentCountAggregateOutputType | null
@@ -12585,11 +12646,11 @@ export namespace Prisma {
 
   export type TournamentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ownerId?: boolean
     maxLimit?: boolean
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
     teamsJoined?: boolean
     status?: boolean
     tournamentJoinedTeams?: boolean | Tournament$tournamentJoinedTeamsArgs<ExtArgs>
@@ -12599,11 +12660,11 @@ export namespace Prisma {
 
   export type TournamentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ownerId?: boolean
     maxLimit?: boolean
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
     teamsJoined?: boolean
     status?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
@@ -12611,11 +12672,11 @@ export namespace Prisma {
 
   export type TournamentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ownerId?: boolean
     maxLimit?: boolean
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
     teamsJoined?: boolean
     status?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
@@ -12623,16 +12684,16 @@ export namespace Prisma {
 
   export type TournamentSelectScalar = {
     id?: boolean
-    ownerId?: boolean
     maxLimit?: boolean
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
     teamsJoined?: boolean
     status?: boolean
   }
 
-  export type TournamentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ownerId" | "maxLimit" | "entryFee" | "prizePool" | "winner" | "teamsJoined" | "status", ExtArgs["result"]["tournament"]>
+  export type TournamentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maxLimit" | "entryFee" | "prizePool" | "winner" | "ownerId" | "teamsJoined" | "status", ExtArgs["result"]["tournament"]>
   export type TournamentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tournamentJoinedTeams?: boolean | Tournament$tournamentJoinedTeamsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
@@ -12653,11 +12714,11 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      ownerId: string
       maxLimit: number
       entryFee: number
-      prizePool: number | null
-      winner: string | null
+      prizePool: number
+      winner: string
+      ownerId: string
       teamsJoined: number
       status: $Enums.TournamentStatus
     }, ExtArgs["result"]["tournament"]>
@@ -13086,11 +13147,11 @@ export namespace Prisma {
    */
   interface TournamentFieldRefs {
     readonly id: FieldRef<"Tournament", 'String'>
-    readonly ownerId: FieldRef<"Tournament", 'String'>
     readonly maxLimit: FieldRef<"Tournament", 'Int'>
     readonly entryFee: FieldRef<"Tournament", 'Int'>
     readonly prizePool: FieldRef<"Tournament", 'Int'>
     readonly winner: FieldRef<"Tournament", 'String'>
+    readonly ownerId: FieldRef<"Tournament", 'String'>
     readonly teamsJoined: FieldRef<"Tournament", 'Int'>
     readonly status: FieldRef<"Tournament", 'TournamentStatus'>
   }
@@ -14634,7 +14695,6 @@ export namespace Prisma {
     name: 'name',
     role: 'role',
     dexture: 'dexture',
-    playingStatus: 'playingStatus',
     countryStatus: 'countryStatus',
     squadId: 'squadId'
   };
@@ -14644,6 +14704,7 @@ export namespace Prisma {
 
   export const PlayerScoreScalarFieldEnum: {
     id: 'id',
+    playingStatus: 'playingStatus',
     fantasyPoints: 'fantasyPoints',
     run: 'run',
     sixes: 'sixes',
@@ -14655,8 +14716,8 @@ export namespace Prisma {
     catches: 'catches',
     runout: 'runout',
     dotBall: 'dotBall',
-    isPlaying: 'isPlaying',
-    playerId: 'playerId'
+    playerId: 'playerId',
+    matchId: 'matchId'
   };
 
   export type PlayerScoreScalarFieldEnum = (typeof PlayerScoreScalarFieldEnum)[keyof typeof PlayerScoreScalarFieldEnum]
@@ -14664,8 +14725,8 @@ export namespace Prisma {
 
   export const MatchesScalarFieldEnum: {
     id: 'id',
-    team1: 'team1',
-    team2: 'team2',
+    team1Id: 'team1Id',
+    team2Id: 'team2Id',
     venue: 'venue',
     date: 'date',
     winner: 'winner',
@@ -14708,11 +14769,11 @@ export namespace Prisma {
 
   export const TournamentScalarFieldEnum: {
     id: 'id',
-    ownerId: 'ownerId',
     maxLimit: 'maxLimit',
     entryFee: 'entryFee',
     prizePool: 'prizePool',
     winner: 'winner',
+    ownerId: 'ownerId',
     teamsJoined: 'teamsJoined',
     status: 'status'
   };
@@ -14836,20 +14897,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'PlayerPlayingStatus'
-   */
-  export type EnumPlayerPlayingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerPlayingStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'PlayerPlayingStatus[]'
-   */
-  export type ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerPlayingStatus[]'>
-    
-
-
-  /**
    * Reference to a field of type 'PlayerCountryStatus'
    */
   export type EnumPlayerCountryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerCountryStatus'>
@@ -14860,6 +14907,20 @@ export namespace Prisma {
    * Reference to a field of type 'PlayerCountryStatus[]'
    */
   export type ListEnumPlayerCountryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerCountryStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlayerPlayingStatus'
+   */
+  export type EnumPlayerPlayingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerPlayingStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlayerPlayingStatus[]'
+   */
+  export type ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlayerPlayingStatus[]'>
     
 
 
@@ -14906,6 +14967,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TournamentStatus'
+   */
+  export type EnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TournamentStatus[]'
+   */
+  export type ListEnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'WhichInning'
    */
   export type EnumWhichInningFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhichInning'>
@@ -14930,20 +15005,6 @@ export namespace Prisma {
    * Reference to a field of type 'WhatHappend[]'
    */
   export type ListEnumWhatHappendFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatHappend[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'TournamentStatus'
-   */
-  export type EnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'TournamentStatus[]'
-   */
-  export type ListEnumTournamentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TournamentStatus[]'>
     
 
 
@@ -15206,12 +15267,11 @@ export namespace Prisma {
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFilter<"Players"> | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
     squad?: XOR<SquadScalarRelationFilter, SquadWhereInput>
     userTeamPlayers?: UserTeamPlayersListRelationFilter
-    score?: XOR<PlayerScoreNullableScalarRelationFilter, PlayerScoreWhereInput> | null
+    score?: PlayerScoreListRelationFilter
   }
 
   export type PlayersOrderByWithRelationInput = {
@@ -15219,12 +15279,11 @@ export namespace Prisma {
     name?: SortOrder
     role?: SortOrder
     dexture?: SortOrder
-    playingStatus?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
     squad?: SquadOrderByWithRelationInput
     userTeamPlayers?: UserTeamPlayersOrderByRelationAggregateInput
-    score?: PlayerScoreOrderByWithRelationInput
+    score?: PlayerScoreOrderByRelationAggregateInput
   }
 
   export type PlayersWhereUniqueInput = Prisma.AtLeast<{
@@ -15235,12 +15294,11 @@ export namespace Prisma {
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFilter<"Players"> | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
     squad?: XOR<SquadScalarRelationFilter, SquadWhereInput>
     userTeamPlayers?: UserTeamPlayersListRelationFilter
-    score?: XOR<PlayerScoreNullableScalarRelationFilter, PlayerScoreWhereInput> | null
+    score?: PlayerScoreListRelationFilter
   }, "id" | "id">
 
   export type PlayersOrderByWithAggregationInput = {
@@ -15248,7 +15306,6 @@ export namespace Prisma {
     name?: SortOrder
     role?: SortOrder
     dexture?: SortOrder
-    playingStatus?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
     _count?: PlayersCountOrderByAggregateInput
@@ -15264,7 +15321,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Players"> | string
     role?: EnumPlayerRoleWithAggregatesFilter<"Players"> | $Enums.PlayerRole
     dexture?: EnumPlayerDextureWithAggregatesFilter<"Players"> | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusWithAggregatesFilter<"Players"> | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusWithAggregatesFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringWithAggregatesFilter<"Players"> | string
   }
@@ -15274,6 +15330,7 @@ export namespace Prisma {
     OR?: PlayerScoreWhereInput[]
     NOT?: PlayerScoreWhereInput | PlayerScoreWhereInput[]
     id?: StringFilter<"PlayerScore"> | string
+    playingStatus?: EnumPlayerPlayingStatusFilter<"PlayerScore"> | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFilter<"PlayerScore"> | number
     run?: IntFilter<"PlayerScore"> | number
     sixes?: IntFilter<"PlayerScore"> | number
@@ -15285,13 +15342,15 @@ export namespace Prisma {
     catches?: IntFilter<"PlayerScore"> | number
     runout?: IntFilter<"PlayerScore"> | number
     dotBall?: IntFilter<"PlayerScore"> | number
-    isPlaying?: BoolFilter<"PlayerScore"> | boolean
     playerId?: StringFilter<"PlayerScore"> | string
+    matchId?: StringFilter<"PlayerScore"> | string
     player?: XOR<PlayersScalarRelationFilter, PlayersWhereInput>
+    match?: XOR<MatchesScalarRelationFilter, MatchesWhereInput>
   }
 
   export type PlayerScoreOrderByWithRelationInput = {
     id?: SortOrder
+    playingStatus?: SortOrder
     fantasyPoints?: SortOrder
     run?: SortOrder
     sixes?: SortOrder
@@ -15303,17 +15362,20 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
-    isPlaying?: SortOrder
     playerId?: SortOrder
+    matchId?: SortOrder
     player?: PlayersOrderByWithRelationInput
+    match?: MatchesOrderByWithRelationInput
   }
 
   export type PlayerScoreWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     playerId?: string
+    playerId_matchId?: PlayerScorePlayerIdMatchIdCompoundUniqueInput
     AND?: PlayerScoreWhereInput | PlayerScoreWhereInput[]
     OR?: PlayerScoreWhereInput[]
     NOT?: PlayerScoreWhereInput | PlayerScoreWhereInput[]
+    playingStatus?: EnumPlayerPlayingStatusFilter<"PlayerScore"> | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFilter<"PlayerScore"> | number
     run?: IntFilter<"PlayerScore"> | number
     sixes?: IntFilter<"PlayerScore"> | number
@@ -15325,12 +15387,14 @@ export namespace Prisma {
     catches?: IntFilter<"PlayerScore"> | number
     runout?: IntFilter<"PlayerScore"> | number
     dotBall?: IntFilter<"PlayerScore"> | number
-    isPlaying?: BoolFilter<"PlayerScore"> | boolean
+    matchId?: StringFilter<"PlayerScore"> | string
     player?: XOR<PlayersScalarRelationFilter, PlayersWhereInput>
-  }, "id" | "id" | "playerId">
+    match?: XOR<MatchesScalarRelationFilter, MatchesWhereInput>
+  }, "id" | "id" | "playerId" | "playerId_matchId">
 
   export type PlayerScoreOrderByWithAggregationInput = {
     id?: SortOrder
+    playingStatus?: SortOrder
     fantasyPoints?: SortOrder
     run?: SortOrder
     sixes?: SortOrder
@@ -15342,8 +15406,8 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
-    isPlaying?: SortOrder
     playerId?: SortOrder
+    matchId?: SortOrder
     _count?: PlayerScoreCountOrderByAggregateInput
     _avg?: PlayerScoreAvgOrderByAggregateInput
     _max?: PlayerScoreMaxOrderByAggregateInput
@@ -15356,6 +15420,7 @@ export namespace Prisma {
     OR?: PlayerScoreScalarWhereWithAggregatesInput[]
     NOT?: PlayerScoreScalarWhereWithAggregatesInput | PlayerScoreScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"PlayerScore"> | string
+    playingStatus?: EnumPlayerPlayingStatusWithAggregatesFilter<"PlayerScore"> | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntWithAggregatesFilter<"PlayerScore"> | number
     run?: IntWithAggregatesFilter<"PlayerScore"> | number
     sixes?: IntWithAggregatesFilter<"PlayerScore"> | number
@@ -15367,8 +15432,8 @@ export namespace Prisma {
     catches?: IntWithAggregatesFilter<"PlayerScore"> | number
     runout?: IntWithAggregatesFilter<"PlayerScore"> | number
     dotBall?: IntWithAggregatesFilter<"PlayerScore"> | number
-    isPlaying?: BoolWithAggregatesFilter<"PlayerScore"> | boolean
     playerId?: StringWithAggregatesFilter<"PlayerScore"> | string
+    matchId?: StringWithAggregatesFilter<"PlayerScore"> | string
   }
 
   export type MatchesWhereInput = {
@@ -15376,21 +15441,22 @@ export namespace Prisma {
     OR?: MatchesWhereInput[]
     NOT?: MatchesWhereInput | MatchesWhereInput[]
     id?: StringFilter<"Matches"> | string
-    team1?: StringFilter<"Matches"> | string
-    team2?: StringFilter<"Matches"> | string
+    team1Id?: StringFilter<"Matches"> | string
+    team2Id?: StringFilter<"Matches"> | string
     venue?: StringFilter<"Matches"> | string
     date?: DateTimeFilter<"Matches"> | Date | string
     winner?: EnumMatchesWinnerFilter<"Matches"> | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFilter<"Matches"> | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFilter<"Matches"> | $Enums.MatchTossElection
-    status?: StringFilter<"Matches"> | string
+    status?: EnumTournamentStatusFilter<"Matches"> | $Enums.TournamentStatus
     innings?: InningListRelationFilter
+    playerScore?: PlayerScoreListRelationFilter
   }
 
   export type MatchesOrderByWithRelationInput = {
     id?: SortOrder
-    team1?: SortOrder
-    team2?: SortOrder
+    team1Id?: SortOrder
+    team2Id?: SortOrder
     venue?: SortOrder
     date?: SortOrder
     winner?: SortOrder
@@ -15398,6 +15464,7 @@ export namespace Prisma {
     elected?: SortOrder
     status?: SortOrder
     innings?: InningOrderByRelationAggregateInput
+    playerScore?: PlayerScoreOrderByRelationAggregateInput
   }
 
   export type MatchesWhereUniqueInput = Prisma.AtLeast<{
@@ -15405,21 +15472,22 @@ export namespace Prisma {
     AND?: MatchesWhereInput | MatchesWhereInput[]
     OR?: MatchesWhereInput[]
     NOT?: MatchesWhereInput | MatchesWhereInput[]
-    team1?: StringFilter<"Matches"> | string
-    team2?: StringFilter<"Matches"> | string
+    team1Id?: StringFilter<"Matches"> | string
+    team2Id?: StringFilter<"Matches"> | string
     venue?: StringFilter<"Matches"> | string
     date?: DateTimeFilter<"Matches"> | Date | string
     winner?: EnumMatchesWinnerFilter<"Matches"> | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFilter<"Matches"> | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFilter<"Matches"> | $Enums.MatchTossElection
-    status?: StringFilter<"Matches"> | string
+    status?: EnumTournamentStatusFilter<"Matches"> | $Enums.TournamentStatus
     innings?: InningListRelationFilter
+    playerScore?: PlayerScoreListRelationFilter
   }, "id" | "id">
 
   export type MatchesOrderByWithAggregationInput = {
     id?: SortOrder
-    team1?: SortOrder
-    team2?: SortOrder
+    team1Id?: SortOrder
+    team2Id?: SortOrder
     venue?: SortOrder
     date?: SortOrder
     winner?: SortOrder
@@ -15436,14 +15504,14 @@ export namespace Prisma {
     OR?: MatchesScalarWhereWithAggregatesInput[]
     NOT?: MatchesScalarWhereWithAggregatesInput | MatchesScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Matches"> | string
-    team1?: StringWithAggregatesFilter<"Matches"> | string
-    team2?: StringWithAggregatesFilter<"Matches"> | string
+    team1Id?: StringWithAggregatesFilter<"Matches"> | string
+    team2Id?: StringWithAggregatesFilter<"Matches"> | string
     venue?: StringWithAggregatesFilter<"Matches"> | string
     date?: DateTimeWithAggregatesFilter<"Matches"> | Date | string
     winner?: EnumMatchesWinnerWithAggregatesFilter<"Matches"> | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerWithAggregatesFilter<"Matches"> | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionWithAggregatesFilter<"Matches"> | $Enums.MatchTossElection
-    status?: StringWithAggregatesFilter<"Matches"> | string
+    status?: EnumTournamentStatusWithAggregatesFilter<"Matches"> | $Enums.TournamentStatus
   }
 
   export type InningWhereInput = {
@@ -15455,9 +15523,9 @@ export namespace Prisma {
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
-    batsman1?: StringFilter<"Inning"> | string
-    batsman2?: StringFilter<"Inning"> | string
-    bowler?: StringFilter<"Inning"> | string
+    batsman1?: StringNullableFilter<"Inning"> | string | null
+    batsman2?: StringNullableFilter<"Inning"> | string | null
+    bowler?: StringNullableFilter<"Inning"> | string | null
     matchId?: StringFilter<"Inning"> | string
     match?: XOR<MatchesScalarRelationFilter, MatchesWhereInput>
     balls?: BallsListRelationFilter
@@ -15469,9 +15537,9 @@ export namespace Prisma {
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
-    batsman1?: SortOrder
-    batsman2?: SortOrder
-    bowler?: SortOrder
+    batsman1?: SortOrderInput | SortOrder
+    batsman2?: SortOrderInput | SortOrder
+    bowler?: SortOrderInput | SortOrder
     matchId?: SortOrder
     match?: MatchesOrderByWithRelationInput
     balls?: BallsOrderByRelationAggregateInput
@@ -15486,9 +15554,9 @@ export namespace Prisma {
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
-    batsman1?: StringFilter<"Inning"> | string
-    batsman2?: StringFilter<"Inning"> | string
-    bowler?: StringFilter<"Inning"> | string
+    batsman1?: StringNullableFilter<"Inning"> | string | null
+    batsman2?: StringNullableFilter<"Inning"> | string | null
+    bowler?: StringNullableFilter<"Inning"> | string | null
     matchId?: StringFilter<"Inning"> | string
     match?: XOR<MatchesScalarRelationFilter, MatchesWhereInput>
     balls?: BallsListRelationFilter
@@ -15500,9 +15568,9 @@ export namespace Prisma {
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
-    batsman1?: SortOrder
-    batsman2?: SortOrder
-    bowler?: SortOrder
+    batsman1?: SortOrderInput | SortOrder
+    batsman2?: SortOrderInput | SortOrder
+    bowler?: SortOrderInput | SortOrder
     matchId?: SortOrder
     _count?: InningCountOrderByAggregateInput
     _avg?: InningAvgOrderByAggregateInput
@@ -15520,9 +15588,9 @@ export namespace Prisma {
     score?: IntWithAggregatesFilter<"Inning"> | number
     wickets?: IntWithAggregatesFilter<"Inning"> | number
     extras?: IntWithAggregatesFilter<"Inning"> | number
-    batsman1?: StringWithAggregatesFilter<"Inning"> | string
-    batsman2?: StringWithAggregatesFilter<"Inning"> | string
-    bowler?: StringWithAggregatesFilter<"Inning"> | string
+    batsman1?: StringNullableWithAggregatesFilter<"Inning"> | string | null
+    batsman2?: StringNullableWithAggregatesFilter<"Inning"> | string | null
+    bowler?: StringNullableWithAggregatesFilter<"Inning"> | string | null
     matchId?: StringWithAggregatesFilter<"Inning"> | string
   }
 
@@ -15603,11 +15671,11 @@ export namespace Prisma {
     OR?: TournamentWhereInput[]
     NOT?: TournamentWhereInput | TournamentWhereInput[]
     id?: StringFilter<"Tournament"> | string
-    ownerId?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntNullableFilter<"Tournament"> | number | null
-    winner?: StringNullableFilter<"Tournament"> | string | null
+    prizePool?: IntFilter<"Tournament"> | number
+    winner?: StringFilter<"Tournament"> | string
+    ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsListRelationFilter
@@ -15616,11 +15684,11 @@ export namespace Prisma {
 
   export type TournamentOrderByWithRelationInput = {
     id?: SortOrder
-    ownerId?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrderInput | SortOrder
-    winner?: SortOrderInput | SortOrder
+    prizePool?: SortOrder
+    winner?: SortOrder
+    ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
     tournamentJoinedTeams?: TournamentJoinedTeamsOrderByRelationAggregateInput
@@ -15632,11 +15700,11 @@ export namespace Prisma {
     AND?: TournamentWhereInput | TournamentWhereInput[]
     OR?: TournamentWhereInput[]
     NOT?: TournamentWhereInput | TournamentWhereInput[]
-    ownerId?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntNullableFilter<"Tournament"> | number | null
-    winner?: StringNullableFilter<"Tournament"> | string | null
+    prizePool?: IntFilter<"Tournament"> | number
+    winner?: StringFilter<"Tournament"> | string
+    ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsListRelationFilter
@@ -15645,11 +15713,11 @@ export namespace Prisma {
 
   export type TournamentOrderByWithAggregationInput = {
     id?: SortOrder
-    ownerId?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrderInput | SortOrder
-    winner?: SortOrderInput | SortOrder
+    prizePool?: SortOrder
+    winner?: SortOrder
+    ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
     _count?: TournamentCountOrderByAggregateInput
@@ -15664,11 +15732,11 @@ export namespace Prisma {
     OR?: TournamentScalarWhereWithAggregatesInput[]
     NOT?: TournamentScalarWhereWithAggregatesInput | TournamentScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Tournament"> | string
-    ownerId?: StringWithAggregatesFilter<"Tournament"> | string
     maxLimit?: IntWithAggregatesFilter<"Tournament"> | number
     entryFee?: IntWithAggregatesFilter<"Tournament"> | number
-    prizePool?: IntNullableWithAggregatesFilter<"Tournament"> | number | null
-    winner?: StringNullableWithAggregatesFilter<"Tournament"> | string | null
+    prizePool?: IntWithAggregatesFilter<"Tournament"> | number
+    winner?: StringWithAggregatesFilter<"Tournament"> | string
+    ownerId?: StringWithAggregatesFilter<"Tournament"> | string
     teamsJoined?: IntWithAggregatesFilter<"Tournament"> | number
     status?: EnumTournamentStatusWithAggregatesFilter<"Tournament"> | $Enums.TournamentStatus
   }
@@ -15967,11 +16035,10 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squad: SquadCreateNestedOneWithoutPlayersInput
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
-    score?: PlayerScoreCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersUncheckedCreateInput = {
@@ -15979,11 +16046,10 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
-    score?: PlayerScoreUncheckedCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersUpdateInput = {
@@ -15991,11 +16057,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
-    score?: PlayerScoreUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersUncheckedUpdateInput = {
@@ -16003,11 +16068,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
-    score?: PlayerScoreUncheckedUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersCreateManyInput = {
@@ -16015,7 +16079,6 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
   }
@@ -16025,7 +16088,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
   }
 
@@ -16034,13 +16096,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PlayerScoreCreateInput = {
     id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -16052,12 +16114,13 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
     player: PlayersCreateNestedOneWithoutScoreInput
+    match: MatchesCreateNestedOneWithoutPlayerScoreInput
   }
 
   export type PlayerScoreUncheckedCreateInput = {
     id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -16069,12 +16132,13 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
     playerId: string
+    matchId: string
   }
 
   export type PlayerScoreUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     run?: IntFieldUpdateOperationsInput | number
     sixes?: IntFieldUpdateOperationsInput | number
@@ -16086,12 +16150,13 @@ export namespace Prisma {
     catches?: IntFieldUpdateOperationsInput | number
     runout?: IntFieldUpdateOperationsInput | number
     dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
     player?: PlayersUpdateOneRequiredWithoutScoreNestedInput
+    match?: MatchesUpdateOneRequiredWithoutPlayerScoreNestedInput
   }
 
   export type PlayerScoreUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     run?: IntFieldUpdateOperationsInput | number
     sixes?: IntFieldUpdateOperationsInput | number
@@ -16103,12 +16168,13 @@ export namespace Prisma {
     catches?: IntFieldUpdateOperationsInput | number
     runout?: IntFieldUpdateOperationsInput | number
     dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
     playerId?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PlayerScoreCreateManyInput = {
     id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -16120,12 +16186,13 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
     playerId: string
+    matchId: string
   }
 
   export type PlayerScoreUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     run?: IntFieldUpdateOperationsInput | number
     sixes?: IntFieldUpdateOperationsInput | number
@@ -16137,11 +16204,11 @@ export namespace Prisma {
     catches?: IntFieldUpdateOperationsInput | number
     runout?: IntFieldUpdateOperationsInput | number
     dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PlayerScoreUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     run?: IntFieldUpdateOperationsInput | number
     sixes?: IntFieldUpdateOperationsInput | number
@@ -16153,96 +16220,100 @@ export namespace Prisma {
     catches?: IntFieldUpdateOperationsInput | number
     runout?: IntFieldUpdateOperationsInput | number
     dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
     playerId?: StringFieldUpdateOperationsInput | string
+    matchId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MatchesCreateInput = {
     id?: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date | string
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
     innings?: InningCreateNestedManyWithoutMatchInput
+    playerScore?: PlayerScoreCreateNestedManyWithoutMatchInput
   }
 
   export type MatchesUncheckedCreateInput = {
     id?: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date | string
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
     innings?: InningUncheckedCreateNestedManyWithoutMatchInput
+    playerScore?: PlayerScoreUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchesUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     innings?: InningUpdateManyWithoutMatchNestedInput
+    playerScore?: PlayerScoreUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     innings?: InningUncheckedUpdateManyWithoutMatchNestedInput
+    playerScore?: PlayerScoreUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchesCreateManyInput = {
     id?: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date | string
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
   }
 
   export type MatchesUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
 
   export type MatchesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
 
   export type InningCreateInput = {
@@ -16251,9 +16322,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     match: MatchesCreateNestedOneWithoutInningsInput
     balls?: BallsCreateNestedManyWithoutInningInput
   }
@@ -16264,9 +16335,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     matchId: string
     balls?: BallsUncheckedCreateNestedManyWithoutInningInput
   }
@@ -16277,9 +16348,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     match?: MatchesUpdateOneRequiredWithoutInningsNestedInput
     balls?: BallsUpdateManyWithoutInningNestedInput
   }
@@ -16290,9 +16361,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     matchId?: StringFieldUpdateOperationsInput | string
     balls?: BallsUncheckedUpdateManyWithoutInningNestedInput
   }
@@ -16303,9 +16374,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     matchId: string
   }
 
@@ -16315,9 +16386,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InningUncheckedUpdateManyInput = {
@@ -16326,9 +16397,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     matchId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -16412,8 +16483,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsCreateNestedManyWithoutTournamentInput
@@ -16422,11 +16493,11 @@ export namespace Prisma {
 
   export type TournamentUncheckedCreateInput = {
     id?: string
-    ownerId: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
+    ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutTournamentInput
@@ -16436,8 +16507,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput
@@ -16446,11 +16517,11 @@ export namespace Prisma {
 
   export type TournamentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ownerId?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedUpdateManyWithoutTournamentNestedInput
@@ -16458,11 +16529,11 @@ export namespace Prisma {
 
   export type TournamentCreateManyInput = {
     id?: string
-    ownerId: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
+    ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
   }
@@ -16471,19 +16542,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
 
   export type TournamentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ownerId?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
@@ -16839,13 +16910,6 @@ export namespace Prisma {
     not?: NestedEnumPlayerDextureFilter<$PrismaModel> | $Enums.PlayerDexture
   }
 
-  export type EnumPlayerPlayingStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
-  }
-
   export type EnumPlayerCountryStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.PlayerCountryStatus | EnumPlayerCountryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.PlayerCountryStatus[] | ListEnumPlayerCountryStatusFieldRefInput<$PrismaModel>
@@ -16858,9 +16922,14 @@ export namespace Prisma {
     isNot?: SquadWhereInput
   }
 
-  export type PlayerScoreNullableScalarRelationFilter = {
-    is?: PlayerScoreWhereInput | null
-    isNot?: PlayerScoreWhereInput | null
+  export type PlayerScoreListRelationFilter = {
+    every?: PlayerScoreWhereInput
+    some?: PlayerScoreWhereInput
+    none?: PlayerScoreWhereInput
+  }
+
+  export type PlayerScoreOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type PlayersCountOrderByAggregateInput = {
@@ -16868,7 +16937,6 @@ export namespace Prisma {
     name?: SortOrder
     role?: SortOrder
     dexture?: SortOrder
-    playingStatus?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
   }
@@ -16878,7 +16946,6 @@ export namespace Prisma {
     name?: SortOrder
     role?: SortOrder
     dexture?: SortOrder
-    playingStatus?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
   }
@@ -16888,7 +16955,6 @@ export namespace Prisma {
     name?: SortOrder
     role?: SortOrder
     dexture?: SortOrder
-    playingStatus?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
   }
@@ -16913,16 +16979,6 @@ export namespace Prisma {
     _max?: NestedEnumPlayerDextureFilter<$PrismaModel>
   }
 
-  export type EnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
-    _max?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
-  }
-
   export type EnumPlayerCountryStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PlayerCountryStatus | EnumPlayerCountryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.PlayerCountryStatus[] | ListEnumPlayerCountryStatusFieldRefInput<$PrismaModel>
@@ -16933,8 +16989,26 @@ export namespace Prisma {
     _max?: NestedEnumPlayerCountryStatusFilter<$PrismaModel>
   }
 
+  export type EnumPlayerPlayingStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
+  }
+
+  export type MatchesScalarRelationFilter = {
+    is?: MatchesWhereInput
+    isNot?: MatchesWhereInput
+  }
+
+  export type PlayerScorePlayerIdMatchIdCompoundUniqueInput = {
+    playerId: string
+    matchId: string
+  }
+
   export type PlayerScoreCountOrderByAggregateInput = {
     id?: SortOrder
+    playingStatus?: SortOrder
     fantasyPoints?: SortOrder
     run?: SortOrder
     sixes?: SortOrder
@@ -16946,8 +17020,8 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
-    isPlaying?: SortOrder
     playerId?: SortOrder
+    matchId?: SortOrder
   }
 
   export type PlayerScoreAvgOrderByAggregateInput = {
@@ -16966,6 +17040,7 @@ export namespace Prisma {
 
   export type PlayerScoreMaxOrderByAggregateInput = {
     id?: SortOrder
+    playingStatus?: SortOrder
     fantasyPoints?: SortOrder
     run?: SortOrder
     sixes?: SortOrder
@@ -16977,12 +17052,13 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
-    isPlaying?: SortOrder
     playerId?: SortOrder
+    matchId?: SortOrder
   }
 
   export type PlayerScoreMinOrderByAggregateInput = {
     id?: SortOrder
+    playingStatus?: SortOrder
     fantasyPoints?: SortOrder
     run?: SortOrder
     sixes?: SortOrder
@@ -16994,8 +17070,8 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
-    isPlaying?: SortOrder
     playerId?: SortOrder
+    matchId?: SortOrder
   }
 
   export type PlayerScoreSumOrderByAggregateInput = {
@@ -17010,6 +17086,16 @@ export namespace Prisma {
     catches?: SortOrder
     runout?: SortOrder
     dotBall?: SortOrder
+  }
+
+  export type EnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
+    _max?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -17037,6 +17123,13 @@ export namespace Prisma {
     not?: NestedEnumMatchTossElectionFilter<$PrismaModel> | $Enums.MatchTossElection
   }
 
+  export type EnumTournamentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTournamentStatusFilter<$PrismaModel> | $Enums.TournamentStatus
+  }
+
   export type InningListRelationFilter = {
     every?: InningWhereInput
     some?: InningWhereInput
@@ -17049,8 +17142,8 @@ export namespace Prisma {
 
   export type MatchesCountOrderByAggregateInput = {
     id?: SortOrder
-    team1?: SortOrder
-    team2?: SortOrder
+    team1Id?: SortOrder
+    team2Id?: SortOrder
     venue?: SortOrder
     date?: SortOrder
     winner?: SortOrder
@@ -17061,8 +17154,8 @@ export namespace Prisma {
 
   export type MatchesMaxOrderByAggregateInput = {
     id?: SortOrder
-    team1?: SortOrder
-    team2?: SortOrder
+    team1Id?: SortOrder
+    team2Id?: SortOrder
     venue?: SortOrder
     date?: SortOrder
     winner?: SortOrder
@@ -17073,8 +17166,8 @@ export namespace Prisma {
 
   export type MatchesMinOrderByAggregateInput = {
     id?: SortOrder
-    team1?: SortOrder
-    team2?: SortOrder
+    team1Id?: SortOrder
+    team2Id?: SortOrder
     venue?: SortOrder
     date?: SortOrder
     winner?: SortOrder
@@ -17117,16 +17210,21 @@ export namespace Prisma {
     _max?: NestedEnumMatchTossElectionFilter<$PrismaModel>
   }
 
+  export type EnumTournamentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TournamentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTournamentStatusFilter<$PrismaModel>
+    _max?: NestedEnumTournamentStatusFilter<$PrismaModel>
+  }
+
   export type EnumWhichInningFilter<$PrismaModel = never> = {
     equals?: $Enums.WhichInning | EnumWhichInningFieldRefInput<$PrismaModel>
     in?: $Enums.WhichInning[] | ListEnumWhichInningFieldRefInput<$PrismaModel>
     notIn?: $Enums.WhichInning[] | ListEnumWhichInningFieldRefInput<$PrismaModel>
     not?: NestedEnumWhichInningFilter<$PrismaModel> | $Enums.WhichInning
-  }
-
-  export type MatchesScalarRelationFilter = {
-    is?: MatchesWhereInput
-    isNot?: MatchesWhereInput
   }
 
   export type BallsListRelationFilter = {
@@ -17260,31 +17358,13 @@ export namespace Prisma {
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EnumTournamentStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTournamentStatusFilter<$PrismaModel> | $Enums.TournamentStatus
-  }
-
   export type TournamentCountOrderByAggregateInput = {
     id?: SortOrder
-    ownerId?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
   }
@@ -17298,22 +17378,22 @@ export namespace Prisma {
 
   export type TournamentMaxOrderByAggregateInput = {
     id?: SortOrder
-    ownerId?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
   }
 
   export type TournamentMinOrderByAggregateInput = {
     id?: SortOrder
-    ownerId?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
   }
@@ -17323,32 +17403,6 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     teamsJoined?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type EnumTournamentStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TournamentStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTournamentStatusFilter<$PrismaModel>
-    _max?: NestedEnumTournamentStatusFilter<$PrismaModel>
   }
 
   export type TournamentScalarRelationFilter = {
@@ -17663,10 +17717,11 @@ export namespace Prisma {
     connect?: UserTeamPlayersWhereUniqueInput | UserTeamPlayersWhereUniqueInput[]
   }
 
-  export type PlayerScoreCreateNestedOneWithoutPlayerInput = {
-    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
-    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput
-    connect?: PlayerScoreWhereUniqueInput
+  export type PlayerScoreCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput> | PlayerScoreCreateWithoutPlayerInput[] | PlayerScoreUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput | PlayerScoreCreateOrConnectWithoutPlayerInput[]
+    createMany?: PlayerScoreCreateManyPlayerInputEnvelope
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
   }
 
   export type UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput = {
@@ -17676,10 +17731,11 @@ export namespace Prisma {
     connect?: UserTeamPlayersWhereUniqueInput | UserTeamPlayersWhereUniqueInput[]
   }
 
-  export type PlayerScoreUncheckedCreateNestedOneWithoutPlayerInput = {
-    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
-    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput
-    connect?: PlayerScoreWhereUniqueInput
+  export type PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput> | PlayerScoreCreateWithoutPlayerInput[] | PlayerScoreUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput | PlayerScoreCreateOrConnectWithoutPlayerInput[]
+    createMany?: PlayerScoreCreateManyPlayerInputEnvelope
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
   }
 
   export type EnumPlayerRoleFieldUpdateOperationsInput = {
@@ -17688,10 +17744,6 @@ export namespace Prisma {
 
   export type EnumPlayerDextureFieldUpdateOperationsInput = {
     set?: $Enums.PlayerDexture
-  }
-
-  export type EnumPlayerPlayingStatusFieldUpdateOperationsInput = {
-    set?: $Enums.PlayerPlayingStatus
   }
 
   export type EnumPlayerCountryStatusFieldUpdateOperationsInput = {
@@ -17720,14 +17772,18 @@ export namespace Prisma {
     deleteMany?: UserTeamPlayersScalarWhereInput | UserTeamPlayersScalarWhereInput[]
   }
 
-  export type PlayerScoreUpdateOneWithoutPlayerNestedInput = {
-    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
-    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput
-    upsert?: PlayerScoreUpsertWithoutPlayerInput
-    disconnect?: PlayerScoreWhereInput | boolean
-    delete?: PlayerScoreWhereInput | boolean
-    connect?: PlayerScoreWhereUniqueInput
-    update?: XOR<XOR<PlayerScoreUpdateToOneWithWhereWithoutPlayerInput, PlayerScoreUpdateWithoutPlayerInput>, PlayerScoreUncheckedUpdateWithoutPlayerInput>
+  export type PlayerScoreUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput> | PlayerScoreCreateWithoutPlayerInput[] | PlayerScoreUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput | PlayerScoreCreateOrConnectWithoutPlayerInput[]
+    upsert?: PlayerScoreUpsertWithWhereUniqueWithoutPlayerInput | PlayerScoreUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: PlayerScoreCreateManyPlayerInputEnvelope
+    set?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    disconnect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    delete?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    update?: PlayerScoreUpdateWithWhereUniqueWithoutPlayerInput | PlayerScoreUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: PlayerScoreUpdateManyWithWhereWithoutPlayerInput | PlayerScoreUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
   }
 
   export type UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput = {
@@ -17744,20 +17800,34 @@ export namespace Prisma {
     deleteMany?: UserTeamPlayersScalarWhereInput | UserTeamPlayersScalarWhereInput[]
   }
 
-  export type PlayerScoreUncheckedUpdateOneWithoutPlayerNestedInput = {
-    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
-    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput
-    upsert?: PlayerScoreUpsertWithoutPlayerInput
-    disconnect?: PlayerScoreWhereInput | boolean
-    delete?: PlayerScoreWhereInput | boolean
-    connect?: PlayerScoreWhereUniqueInput
-    update?: XOR<XOR<PlayerScoreUpdateToOneWithWhereWithoutPlayerInput, PlayerScoreUpdateWithoutPlayerInput>, PlayerScoreUncheckedUpdateWithoutPlayerInput>
+  export type PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput> | PlayerScoreCreateWithoutPlayerInput[] | PlayerScoreUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutPlayerInput | PlayerScoreCreateOrConnectWithoutPlayerInput[]
+    upsert?: PlayerScoreUpsertWithWhereUniqueWithoutPlayerInput | PlayerScoreUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: PlayerScoreCreateManyPlayerInputEnvelope
+    set?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    disconnect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    delete?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    update?: PlayerScoreUpdateWithWhereUniqueWithoutPlayerInput | PlayerScoreUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: PlayerScoreUpdateManyWithWhereWithoutPlayerInput | PlayerScoreUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
   }
 
   export type PlayersCreateNestedOneWithoutScoreInput = {
     create?: XOR<PlayersCreateWithoutScoreInput, PlayersUncheckedCreateWithoutScoreInput>
     connectOrCreate?: PlayersCreateOrConnectWithoutScoreInput
     connect?: PlayersWhereUniqueInput
+  }
+
+  export type MatchesCreateNestedOneWithoutPlayerScoreInput = {
+    create?: XOR<MatchesCreateWithoutPlayerScoreInput, MatchesUncheckedCreateWithoutPlayerScoreInput>
+    connectOrCreate?: MatchesCreateOrConnectWithoutPlayerScoreInput
+    connect?: MatchesWhereUniqueInput
+  }
+
+  export type EnumPlayerPlayingStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PlayerPlayingStatus
   }
 
   export type PlayersUpdateOneRequiredWithoutScoreNestedInput = {
@@ -17768,6 +17838,14 @@ export namespace Prisma {
     update?: XOR<XOR<PlayersUpdateToOneWithWhereWithoutScoreInput, PlayersUpdateWithoutScoreInput>, PlayersUncheckedUpdateWithoutScoreInput>
   }
 
+  export type MatchesUpdateOneRequiredWithoutPlayerScoreNestedInput = {
+    create?: XOR<MatchesCreateWithoutPlayerScoreInput, MatchesUncheckedCreateWithoutPlayerScoreInput>
+    connectOrCreate?: MatchesCreateOrConnectWithoutPlayerScoreInput
+    upsert?: MatchesUpsertWithoutPlayerScoreInput
+    connect?: MatchesWhereUniqueInput
+    update?: XOR<XOR<MatchesUpdateToOneWithWhereWithoutPlayerScoreInput, MatchesUpdateWithoutPlayerScoreInput>, MatchesUncheckedUpdateWithoutPlayerScoreInput>
+  }
+
   export type InningCreateNestedManyWithoutMatchInput = {
     create?: XOR<InningCreateWithoutMatchInput, InningUncheckedCreateWithoutMatchInput> | InningCreateWithoutMatchInput[] | InningUncheckedCreateWithoutMatchInput[]
     connectOrCreate?: InningCreateOrConnectWithoutMatchInput | InningCreateOrConnectWithoutMatchInput[]
@@ -17775,11 +17853,25 @@ export namespace Prisma {
     connect?: InningWhereUniqueInput | InningWhereUniqueInput[]
   }
 
+  export type PlayerScoreCreateNestedManyWithoutMatchInput = {
+    create?: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput> | PlayerScoreCreateWithoutMatchInput[] | PlayerScoreUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutMatchInput | PlayerScoreCreateOrConnectWithoutMatchInput[]
+    createMany?: PlayerScoreCreateManyMatchInputEnvelope
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+  }
+
   export type InningUncheckedCreateNestedManyWithoutMatchInput = {
     create?: XOR<InningCreateWithoutMatchInput, InningUncheckedCreateWithoutMatchInput> | InningCreateWithoutMatchInput[] | InningUncheckedCreateWithoutMatchInput[]
     connectOrCreate?: InningCreateOrConnectWithoutMatchInput | InningCreateOrConnectWithoutMatchInput[]
     createMany?: InningCreateManyMatchInputEnvelope
     connect?: InningWhereUniqueInput | InningWhereUniqueInput[]
+  }
+
+  export type PlayerScoreUncheckedCreateNestedManyWithoutMatchInput = {
+    create?: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput> | PlayerScoreCreateWithoutMatchInput[] | PlayerScoreUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutMatchInput | PlayerScoreCreateOrConnectWithoutMatchInput[]
+    createMany?: PlayerScoreCreateManyMatchInputEnvelope
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -17792,6 +17884,10 @@ export namespace Prisma {
 
   export type EnumMatchTossElectionFieldUpdateOperationsInput = {
     set?: $Enums.MatchTossElection
+  }
+
+  export type EnumTournamentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TournamentStatus
   }
 
   export type InningUpdateManyWithoutMatchNestedInput = {
@@ -17808,6 +17904,20 @@ export namespace Prisma {
     deleteMany?: InningScalarWhereInput | InningScalarWhereInput[]
   }
 
+  export type PlayerScoreUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput> | PlayerScoreCreateWithoutMatchInput[] | PlayerScoreUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutMatchInput | PlayerScoreCreateOrConnectWithoutMatchInput[]
+    upsert?: PlayerScoreUpsertWithWhereUniqueWithoutMatchInput | PlayerScoreUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: PlayerScoreCreateManyMatchInputEnvelope
+    set?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    disconnect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    delete?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    update?: PlayerScoreUpdateWithWhereUniqueWithoutMatchInput | PlayerScoreUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: PlayerScoreUpdateManyWithWhereWithoutMatchInput | PlayerScoreUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
+  }
+
   export type InningUncheckedUpdateManyWithoutMatchNestedInput = {
     create?: XOR<InningCreateWithoutMatchInput, InningUncheckedCreateWithoutMatchInput> | InningCreateWithoutMatchInput[] | InningUncheckedCreateWithoutMatchInput[]
     connectOrCreate?: InningCreateOrConnectWithoutMatchInput | InningCreateOrConnectWithoutMatchInput[]
@@ -17820,6 +17930,20 @@ export namespace Prisma {
     update?: InningUpdateWithWhereUniqueWithoutMatchInput | InningUpdateWithWhereUniqueWithoutMatchInput[]
     updateMany?: InningUpdateManyWithWhereWithoutMatchInput | InningUpdateManyWithWhereWithoutMatchInput[]
     deleteMany?: InningScalarWhereInput | InningScalarWhereInput[]
+  }
+
+  export type PlayerScoreUncheckedUpdateManyWithoutMatchNestedInput = {
+    create?: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput> | PlayerScoreCreateWithoutMatchInput[] | PlayerScoreUncheckedCreateWithoutMatchInput[]
+    connectOrCreate?: PlayerScoreCreateOrConnectWithoutMatchInput | PlayerScoreCreateOrConnectWithoutMatchInput[]
+    upsert?: PlayerScoreUpsertWithWhereUniqueWithoutMatchInput | PlayerScoreUpsertWithWhereUniqueWithoutMatchInput[]
+    createMany?: PlayerScoreCreateManyMatchInputEnvelope
+    set?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    disconnect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    delete?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    connect?: PlayerScoreWhereUniqueInput | PlayerScoreWhereUniqueInput[]
+    update?: PlayerScoreUpdateWithWhereUniqueWithoutMatchInput | PlayerScoreUpdateWithWhereUniqueWithoutMatchInput[]
+    updateMany?: PlayerScoreUpdateManyWithWhereWithoutMatchInput | PlayerScoreUpdateManyWithWhereWithoutMatchInput[]
+    deleteMany?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
   }
 
   export type MatchesCreateNestedOneWithoutInningsInput = {
@@ -17918,18 +18042,6 @@ export namespace Prisma {
     connectOrCreate?: TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput | TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput[]
     createMany?: TournamentJoinedTeamsCreateManyTournamentInputEnvelope
     connect?: TournamentJoinedTeamsWhereUniqueInput | TournamentJoinedTeamsWhereUniqueInput[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type EnumTournamentStatusFieldUpdateOperationsInput = {
-    set?: $Enums.TournamentStatus
   }
 
   export type TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput = {
@@ -18151,13 +18263,6 @@ export namespace Prisma {
     not?: NestedEnumPlayerDextureFilter<$PrismaModel> | $Enums.PlayerDexture
   }
 
-  export type NestedEnumPlayerPlayingStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
-  }
-
   export type NestedEnumPlayerCountryStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.PlayerCountryStatus | EnumPlayerCountryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.PlayerCountryStatus[] | ListEnumPlayerCountryStatusFieldRefInput<$PrismaModel>
@@ -18185,16 +18290,6 @@ export namespace Prisma {
     _max?: NestedEnumPlayerDextureFilter<$PrismaModel>
   }
 
-  export type NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
-    _max?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
-  }
-
   export type NestedEnumPlayerCountryStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PlayerCountryStatus | EnumPlayerCountryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.PlayerCountryStatus[] | ListEnumPlayerCountryStatusFieldRefInput<$PrismaModel>
@@ -18203,6 +18298,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlayerCountryStatusFilter<$PrismaModel>
     _max?: NestedEnumPlayerCountryStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPlayerPlayingStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
+  }
+
+  export type NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlayerPlayingStatus | EnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlayerPlayingStatus[] | ListEnumPlayerPlayingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlayerPlayingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlayerPlayingStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
+    _max?: NestedEnumPlayerPlayingStatusFilter<$PrismaModel>
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -18228,6 +18340,13 @@ export namespace Prisma {
     in?: $Enums.MatchTossElection[] | ListEnumMatchTossElectionFieldRefInput<$PrismaModel>
     notIn?: $Enums.MatchTossElection[] | ListEnumMatchTossElectionFieldRefInput<$PrismaModel>
     not?: NestedEnumMatchTossElectionFilter<$PrismaModel> | $Enums.MatchTossElection
+  }
+
+  export type NestedEnumTournamentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTournamentStatusFilter<$PrismaModel> | $Enums.TournamentStatus
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -18264,6 +18383,16 @@ export namespace Prisma {
     _max?: NestedEnumMatchTossElectionFilter<$PrismaModel>
   }
 
+  export type NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TournamentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTournamentStatusFilter<$PrismaModel>
+    _max?: NestedEnumTournamentStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumWhichInningFilter<$PrismaModel = never> = {
     equals?: $Enums.WhichInning | EnumWhichInningFieldRefInput<$PrismaModel>
     in?: $Enums.WhichInning[] | ListEnumWhichInningFieldRefInput<$PrismaModel>
@@ -18296,50 +18425,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWhatHappendFilter<$PrismaModel>
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
-  }
-
-  export type NestedEnumTournamentStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTournamentStatusFilter<$PrismaModel> | $Enums.TournamentStatus
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TournamentStatus | EnumTournamentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TournamentStatus[] | ListEnumTournamentStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTournamentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TournamentStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTournamentStatusFilter<$PrismaModel>
-    _max?: NestedEnumTournamentStatusFilter<$PrismaModel>
   }
 
   export type UserTeamsCreateWithoutUserInput = {
@@ -18376,8 +18461,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsCreateNestedManyWithoutTournamentInput
@@ -18387,8 +18472,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutTournamentInput
@@ -18453,11 +18538,11 @@ export namespace Prisma {
     OR?: TournamentScalarWhereInput[]
     NOT?: TournamentScalarWhereInput | TournamentScalarWhereInput[]
     id?: StringFilter<"Tournament"> | string
-    ownerId?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntNullableFilter<"Tournament"> | number | null
-    winner?: StringNullableFilter<"Tournament"> | string | null
+    prizePool?: IntFilter<"Tournament"> | number
+    winner?: StringFilter<"Tournament"> | string
+    ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
   }
@@ -18638,10 +18723,9 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squad: SquadCreateNestedOneWithoutPlayersInput
-    score?: PlayerScoreCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersUncheckedCreateWithoutUserTeamPlayersInput = {
@@ -18649,10 +18733,9 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
-    score?: PlayerScoreUncheckedCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersCreateOrConnectWithoutUserTeamPlayersInput = {
@@ -18707,10 +18790,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
-    score?: PlayerScoreUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersUncheckedUpdateWithoutUserTeamPlayersInput = {
@@ -18718,10 +18800,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
-    score?: PlayerScoreUncheckedUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersCreateWithoutSquadInput = {
@@ -18729,10 +18810,9 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
-    score?: PlayerScoreCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersUncheckedCreateWithoutSquadInput = {
@@ -18740,10 +18820,9 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
-    score?: PlayerScoreUncheckedCreateNestedOneWithoutPlayerInput
+    score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
 
   export type PlayersCreateOrConnectWithoutSquadInput = {
@@ -18780,7 +18859,6 @@ export namespace Prisma {
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFilter<"Players"> | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
   }
@@ -18828,6 +18906,7 @@ export namespace Prisma {
 
   export type PlayerScoreCreateWithoutPlayerInput = {
     id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -18839,11 +18918,12 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
+    match: MatchesCreateNestedOneWithoutPlayerScoreInput
   }
 
   export type PlayerScoreUncheckedCreateWithoutPlayerInput = {
     id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
     fantasyPoints: number
     run: number
     sixes: number
@@ -18855,12 +18935,17 @@ export namespace Prisma {
     catches: number
     runout: number
     dotBall: number
-    isPlaying: boolean
+    matchId: string
   }
 
   export type PlayerScoreCreateOrConnectWithoutPlayerInput = {
     where: PlayerScoreWhereUniqueInput
     create: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type PlayerScoreCreateManyPlayerInputEnvelope = {
+    data: PlayerScoreCreateManyPlayerInput | PlayerScoreCreateManyPlayerInput[]
+    skipDuplicates?: boolean
   }
 
   export type SquadUpsertWithoutPlayersInput = {
@@ -18906,47 +18991,41 @@ export namespace Prisma {
     data: XOR<UserTeamPlayersUpdateManyMutationInput, UserTeamPlayersUncheckedUpdateManyWithoutPlayersInput>
   }
 
-  export type PlayerScoreUpsertWithoutPlayerInput = {
+  export type PlayerScoreUpsertWithWhereUniqueWithoutPlayerInput = {
+    where: PlayerScoreWhereUniqueInput
     update: XOR<PlayerScoreUpdateWithoutPlayerInput, PlayerScoreUncheckedUpdateWithoutPlayerInput>
     create: XOR<PlayerScoreCreateWithoutPlayerInput, PlayerScoreUncheckedCreateWithoutPlayerInput>
-    where?: PlayerScoreWhereInput
   }
 
-  export type PlayerScoreUpdateToOneWithWhereWithoutPlayerInput = {
-    where?: PlayerScoreWhereInput
+  export type PlayerScoreUpdateWithWhereUniqueWithoutPlayerInput = {
+    where: PlayerScoreWhereUniqueInput
     data: XOR<PlayerScoreUpdateWithoutPlayerInput, PlayerScoreUncheckedUpdateWithoutPlayerInput>
   }
 
-  export type PlayerScoreUpdateWithoutPlayerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    fantasyPoints?: IntFieldUpdateOperationsInput | number
-    run?: IntFieldUpdateOperationsInput | number
-    sixes?: IntFieldUpdateOperationsInput | number
-    fours?: IntFieldUpdateOperationsInput | number
-    others?: IntFieldUpdateOperationsInput | number
-    runsConceded?: IntFieldUpdateOperationsInput | number
-    wickets?: IntFieldUpdateOperationsInput | number
-    ballsBowled?: IntFieldUpdateOperationsInput | number
-    catches?: IntFieldUpdateOperationsInput | number
-    runout?: IntFieldUpdateOperationsInput | number
-    dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
+  export type PlayerScoreUpdateManyWithWhereWithoutPlayerInput = {
+    where: PlayerScoreScalarWhereInput
+    data: XOR<PlayerScoreUpdateManyMutationInput, PlayerScoreUncheckedUpdateManyWithoutPlayerInput>
   }
 
-  export type PlayerScoreUncheckedUpdateWithoutPlayerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    fantasyPoints?: IntFieldUpdateOperationsInput | number
-    run?: IntFieldUpdateOperationsInput | number
-    sixes?: IntFieldUpdateOperationsInput | number
-    fours?: IntFieldUpdateOperationsInput | number
-    others?: IntFieldUpdateOperationsInput | number
-    runsConceded?: IntFieldUpdateOperationsInput | number
-    wickets?: IntFieldUpdateOperationsInput | number
-    ballsBowled?: IntFieldUpdateOperationsInput | number
-    catches?: IntFieldUpdateOperationsInput | number
-    runout?: IntFieldUpdateOperationsInput | number
-    dotBall?: IntFieldUpdateOperationsInput | number
-    isPlaying?: BoolFieldUpdateOperationsInput | boolean
+  export type PlayerScoreScalarWhereInput = {
+    AND?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
+    OR?: PlayerScoreScalarWhereInput[]
+    NOT?: PlayerScoreScalarWhereInput | PlayerScoreScalarWhereInput[]
+    id?: StringFilter<"PlayerScore"> | string
+    playingStatus?: EnumPlayerPlayingStatusFilter<"PlayerScore"> | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFilter<"PlayerScore"> | number
+    run?: IntFilter<"PlayerScore"> | number
+    sixes?: IntFilter<"PlayerScore"> | number
+    fours?: IntFilter<"PlayerScore"> | number
+    others?: IntFilter<"PlayerScore"> | number
+    runsConceded?: IntFilter<"PlayerScore"> | number
+    wickets?: IntFilter<"PlayerScore"> | number
+    ballsBowled?: IntFilter<"PlayerScore"> | number
+    catches?: IntFilter<"PlayerScore"> | number
+    runout?: IntFilter<"PlayerScore"> | number
+    dotBall?: IntFilter<"PlayerScore"> | number
+    playerId?: StringFilter<"PlayerScore"> | string
+    matchId?: StringFilter<"PlayerScore"> | string
   }
 
   export type PlayersCreateWithoutScoreInput = {
@@ -18954,7 +19033,6 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squad: SquadCreateNestedOneWithoutPlayersInput
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
@@ -18965,7 +19043,6 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
@@ -18974,6 +19051,37 @@ export namespace Prisma {
   export type PlayersCreateOrConnectWithoutScoreInput = {
     where: PlayersWhereUniqueInput
     create: XOR<PlayersCreateWithoutScoreInput, PlayersUncheckedCreateWithoutScoreInput>
+  }
+
+  export type MatchesCreateWithoutPlayerScoreInput = {
+    id?: string
+    team1Id: string
+    team2Id: string
+    venue: string
+    date: Date | string
+    winner: $Enums.MatchesWinner
+    toss: $Enums.MatchesWinner
+    elected: $Enums.MatchTossElection
+    status: $Enums.TournamentStatus
+    innings?: InningCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchesUncheckedCreateWithoutPlayerScoreInput = {
+    id?: string
+    team1Id: string
+    team2Id: string
+    venue: string
+    date: Date | string
+    winner: $Enums.MatchesWinner
+    toss: $Enums.MatchesWinner
+    elected: $Enums.MatchTossElection
+    status: $Enums.TournamentStatus
+    innings?: InningUncheckedCreateNestedManyWithoutMatchInput
+  }
+
+  export type MatchesCreateOrConnectWithoutPlayerScoreInput = {
+    where: MatchesWhereUniqueInput
+    create: XOR<MatchesCreateWithoutPlayerScoreInput, MatchesUncheckedCreateWithoutPlayerScoreInput>
   }
 
   export type PlayersUpsertWithoutScoreInput = {
@@ -18992,7 +19100,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
@@ -19003,10 +19110,46 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
+  }
+
+  export type MatchesUpsertWithoutPlayerScoreInput = {
+    update: XOR<MatchesUpdateWithoutPlayerScoreInput, MatchesUncheckedUpdateWithoutPlayerScoreInput>
+    create: XOR<MatchesCreateWithoutPlayerScoreInput, MatchesUncheckedCreateWithoutPlayerScoreInput>
+    where?: MatchesWhereInput
+  }
+
+  export type MatchesUpdateToOneWithWhereWithoutPlayerScoreInput = {
+    where?: MatchesWhereInput
+    data: XOR<MatchesUpdateWithoutPlayerScoreInput, MatchesUncheckedUpdateWithoutPlayerScoreInput>
+  }
+
+  export type MatchesUpdateWithoutPlayerScoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
+    venue?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
+    toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
+    elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
+    innings?: InningUpdateManyWithoutMatchNestedInput
+  }
+
+  export type MatchesUncheckedUpdateWithoutPlayerScoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
+    venue?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
+    toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
+    elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
+    innings?: InningUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type InningCreateWithoutMatchInput = {
@@ -19015,9 +19158,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     balls?: BallsCreateNestedManyWithoutInningInput
   }
 
@@ -19027,9 +19170,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     balls?: BallsUncheckedCreateNestedManyWithoutInningInput
   }
 
@@ -19040,6 +19183,50 @@ export namespace Prisma {
 
   export type InningCreateManyMatchInputEnvelope = {
     data: InningCreateManyMatchInput | InningCreateManyMatchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlayerScoreCreateWithoutMatchInput = {
+    id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
+    fantasyPoints: number
+    run: number
+    sixes: number
+    fours: number
+    others: number
+    runsConceded: number
+    wickets: number
+    ballsBowled: number
+    catches: number
+    runout: number
+    dotBall: number
+    player: PlayersCreateNestedOneWithoutScoreInput
+  }
+
+  export type PlayerScoreUncheckedCreateWithoutMatchInput = {
+    id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
+    fantasyPoints: number
+    run: number
+    sixes: number
+    fours: number
+    others: number
+    runsConceded: number
+    wickets: number
+    ballsBowled: number
+    catches: number
+    runout: number
+    dotBall: number
+    playerId: string
+  }
+
+  export type PlayerScoreCreateOrConnectWithoutMatchInput = {
+    where: PlayerScoreWhereUniqueInput
+    create: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput>
+  }
+
+  export type PlayerScoreCreateManyMatchInputEnvelope = {
+    data: PlayerScoreCreateManyMatchInput | PlayerScoreCreateManyMatchInput[]
     skipDuplicates?: boolean
   }
 
@@ -19068,34 +19255,52 @@ export namespace Prisma {
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
-    batsman1?: StringFilter<"Inning"> | string
-    batsman2?: StringFilter<"Inning"> | string
-    bowler?: StringFilter<"Inning"> | string
+    batsman1?: StringNullableFilter<"Inning"> | string | null
+    batsman2?: StringNullableFilter<"Inning"> | string | null
+    bowler?: StringNullableFilter<"Inning"> | string | null
     matchId?: StringFilter<"Inning"> | string
+  }
+
+  export type PlayerScoreUpsertWithWhereUniqueWithoutMatchInput = {
+    where: PlayerScoreWhereUniqueInput
+    update: XOR<PlayerScoreUpdateWithoutMatchInput, PlayerScoreUncheckedUpdateWithoutMatchInput>
+    create: XOR<PlayerScoreCreateWithoutMatchInput, PlayerScoreUncheckedCreateWithoutMatchInput>
+  }
+
+  export type PlayerScoreUpdateWithWhereUniqueWithoutMatchInput = {
+    where: PlayerScoreWhereUniqueInput
+    data: XOR<PlayerScoreUpdateWithoutMatchInput, PlayerScoreUncheckedUpdateWithoutMatchInput>
+  }
+
+  export type PlayerScoreUpdateManyWithWhereWithoutMatchInput = {
+    where: PlayerScoreScalarWhereInput
+    data: XOR<PlayerScoreUpdateManyMutationInput, PlayerScoreUncheckedUpdateManyWithoutMatchInput>
   }
 
   export type MatchesCreateWithoutInningsInput = {
     id?: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date | string
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
+    playerScore?: PlayerScoreCreateNestedManyWithoutMatchInput
   }
 
   export type MatchesUncheckedCreateWithoutInningsInput = {
     id?: string
-    team1: string
-    team2: string
+    team1Id: string
+    team2Id: string
     venue: string
     date: Date | string
     winner: $Enums.MatchesWinner
     toss: $Enums.MatchesWinner
     elected: $Enums.MatchTossElection
-    status: string
+    status: $Enums.TournamentStatus
+    playerScore?: PlayerScoreUncheckedCreateNestedManyWithoutMatchInput
   }
 
   export type MatchesCreateOrConnectWithoutInningsInput = {
@@ -19146,26 +19351,28 @@ export namespace Prisma {
 
   export type MatchesUpdateWithoutInningsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
+    playerScore?: PlayerScoreUpdateManyWithoutMatchNestedInput
   }
 
   export type MatchesUncheckedUpdateWithoutInningsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    team1?: StringFieldUpdateOperationsInput | string
-    team2?: StringFieldUpdateOperationsInput | string
+    team1Id?: StringFieldUpdateOperationsInput | string
+    team2Id?: StringFieldUpdateOperationsInput | string
     venue?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     winner?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     toss?: EnumMatchesWinnerFieldUpdateOperationsInput | $Enums.MatchesWinner
     elected?: EnumMatchTossElectionFieldUpdateOperationsInput | $Enums.MatchTossElection
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
+    playerScore?: PlayerScoreUncheckedUpdateManyWithoutMatchNestedInput
   }
 
   export type BallsUpsertWithWhereUniqueWithoutInningInput = {
@@ -19204,9 +19411,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     match: MatchesCreateNestedOneWithoutInningsInput
   }
 
@@ -19216,9 +19423,9 @@ export namespace Prisma {
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
     matchId: string
   }
 
@@ -19244,9 +19451,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     match?: MatchesUpdateOneRequiredWithoutInningsNestedInput
   }
 
@@ -19256,9 +19463,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     matchId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -19358,8 +19565,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
     owner: UserCreateNestedOneWithoutTournamentsInput
@@ -19367,11 +19574,11 @@ export namespace Prisma {
 
   export type TournamentUncheckedCreateWithoutTournamentJoinedTeamsInput = {
     id?: string
-    ownerId: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
+    ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
   }
@@ -19421,8 +19628,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     owner?: UserUpdateOneRequiredWithoutTournamentsNestedInput
@@ -19430,11 +19637,11 @@ export namespace Prisma {
 
   export type TournamentUncheckedUpdateWithoutTournamentJoinedTeamsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ownerId?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
@@ -19482,8 +19689,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool?: number | null
-    winner?: string | null
+    prizePool: number
+    winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
   }
@@ -19520,8 +19727,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput
@@ -19531,8 +19738,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedUpdateManyWithoutTournamentNestedInput
@@ -19542,8 +19749,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
-    winner?: NullableStringFieldUpdateOperationsInput | string | null
+    prizePool?: IntFieldUpdateOperationsInput | number
+    winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
@@ -19593,7 +19800,6 @@ export namespace Prisma {
     name: string
     role: $Enums.PlayerRole
     dexture: $Enums.PlayerDexture
-    playingStatus: $Enums.PlayerPlayingStatus
     countryStatus: $Enums.PlayerCountryStatus
   }
 
@@ -19602,10 +19808,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
-    score?: PlayerScoreUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersUncheckedUpdateWithoutSquadInput = {
@@ -19613,10 +19818,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
-    score?: PlayerScoreUncheckedUpdateOneWithoutPlayerNestedInput
+    score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
   export type PlayersUncheckedUpdateManyWithoutSquadInput = {
@@ -19624,13 +19828,29 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
     dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
-    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
   }
 
   export type UserTeamPlayersCreateManyPlayersInput = {
     id?: string
     userTeamsId: string
+  }
+
+  export type PlayerScoreCreateManyPlayerInput = {
+    id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
+    fantasyPoints: number
+    run: number
+    sixes: number
+    fours: number
+    others: number
+    runsConceded: number
+    wickets: number
+    ballsBowled: number
+    catches: number
+    runout: number
+    dotBall: number
+    matchId: string
   }
 
   export type UserTeamPlayersUpdateWithoutPlayersInput = {
@@ -19648,15 +19868,83 @@ export namespace Prisma {
     userTeamsId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type PlayerScoreUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    match?: MatchesUpdateOneRequiredWithoutPlayerScoreNestedInput
+  }
+
+  export type PlayerScoreUncheckedUpdateWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    matchId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PlayerScoreUncheckedUpdateManyWithoutPlayerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    matchId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type InningCreateManyMatchInput = {
     id?: string
     whichInning: $Enums.WhichInning
     score: number
     wickets: number
     extras: number
-    batsman1: string
-    batsman2: string
-    bowler: string
+    batsman1?: string | null
+    batsman2?: string | null
+    bowler?: string | null
+  }
+
+  export type PlayerScoreCreateManyMatchInput = {
+    id?: string
+    playingStatus: $Enums.PlayerPlayingStatus
+    fantasyPoints: number
+    run: number
+    sixes: number
+    fours: number
+    others: number
+    runsConceded: number
+    wickets: number
+    ballsBowled: number
+    catches: number
+    runout: number
+    dotBall: number
+    playerId: string
   }
 
   export type InningUpdateWithoutMatchInput = {
@@ -19665,9 +19953,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     balls?: BallsUpdateManyWithoutInningNestedInput
   }
 
@@ -19677,9 +19965,9 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
     balls?: BallsUncheckedUpdateManyWithoutInningNestedInput
   }
 
@@ -19689,9 +19977,60 @@ export namespace Prisma {
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
-    batsman1?: StringFieldUpdateOperationsInput | string
-    batsman2?: StringFieldUpdateOperationsInput | string
-    bowler?: StringFieldUpdateOperationsInput | string
+    batsman1?: NullableStringFieldUpdateOperationsInput | string | null
+    batsman2?: NullableStringFieldUpdateOperationsInput | string | null
+    bowler?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PlayerScoreUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    player?: PlayersUpdateOneRequiredWithoutScoreNestedInput
+  }
+
+  export type PlayerScoreUncheckedUpdateWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    playerId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PlayerScoreUncheckedUpdateManyWithoutMatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    playingStatus?: EnumPlayerPlayingStatusFieldUpdateOperationsInput | $Enums.PlayerPlayingStatus
+    fantasyPoints?: IntFieldUpdateOperationsInput | number
+    run?: IntFieldUpdateOperationsInput | number
+    sixes?: IntFieldUpdateOperationsInput | number
+    fours?: IntFieldUpdateOperationsInput | number
+    others?: IntFieldUpdateOperationsInput | number
+    runsConceded?: IntFieldUpdateOperationsInput | number
+    wickets?: IntFieldUpdateOperationsInput | number
+    ballsBowled?: IntFieldUpdateOperationsInput | number
+    catches?: IntFieldUpdateOperationsInput | number
+    runout?: IntFieldUpdateOperationsInput | number
+    dotBall?: IntFieldUpdateOperationsInput | number
+    playerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BallsCreateManyInningInput = {
