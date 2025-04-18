@@ -4,13 +4,13 @@ import { squadSchema } from "../../types";
 
 export const squadRouter = Router();
 
-squadRouter.get('/:squadName', async(req, res) => {
+squadRouter.get('/:squadName', async (req, res) => {
     const squadName = req.params.squadName;
     if (!squadName) {
         res.status(400)
-        .json({
-            message: "squadName is required"
-        })
+            .json({
+                message: "squadName is required"
+            })
         return;
     }
 
@@ -25,31 +25,31 @@ squadRouter.get('/:squadName', async(req, res) => {
                 logo: true,
                 players: true
             }
-        }) 
+        })
 
         res.status(200)
-        .json({
-            message: "squad fetching success",
-            squadRes
-        })
+            .json({
+                message: "squad fetching success",
+                squadRes
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "fetching squad failed"
-        })
+            .json({
+                message: "fetching squad failed"
+            })
     }
 })
 
-squadRouter.post('/', async(req,res) => {
+squadRouter.post('/', async (req, res) => {
     const parsedData = squadSchema.safeParse(req.body);
     if (!parsedData.success) {
         res.status(400)
-        .json({
-            message: "validation failed"
-        })
+            .json({
+                message: "validation failed"
+            })
         return
     }
-    
+
     try {
         const squadRes = await client.squad.create({
             data: {
@@ -61,14 +61,39 @@ squadRouter.post('/', async(req,res) => {
         })
 
         res.status(200)
-        .json({
-            message: "squad creation success",
-            squadId: squadRes.id
-        })
+            .json({
+                message: "squad creation success",
+                squadId: squadRes.id
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "squad creation failed"
-        })
+            .json({
+                message: "squad creation failed"
+            })
+    }
+})
+
+squadRouter.delete('/:squadId', async (req, res) => {
+    const squadId = req.params.squadId;
+    if (!squadId) {
+        res.status(400)
+            .json({
+                message: "squadId is required"
+            })
+        return
+    }
+
+    try {
+        // Todo delete squad
+
+        res.status(200)
+            .json({
+                message: "squad deleted successfully"
+            })
+    } catch (error) {
+        res.status(400)
+            .json({
+                message: "squad deletion failed"
+            })
     }
 })

@@ -6,13 +6,13 @@ import { publicKeySchema } from "../../types";
 export const userRouter = Router();
 userRouter.use(userMiddleware)
 
-userRouter.get("/:userId", async(req,res) => {
+userRouter.get("/:userId", async (req, res) => {
     const userId = req.query.userId as string
     if (!userId) {
         res.status(400)
-        .json({
-            message: "userId is required"
-        })
+            .json({
+                message: "userId is required"
+            })
         return;
     }
 
@@ -28,26 +28,26 @@ userRouter.get("/:userId", async(req,res) => {
         })
 
         res.status(400)
-        .json({
-            message: "user fetching successful",
-            userRes
-        })
+            .json({
+                message: "user fetching successful",
+                userRes
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "fetching user failed"
-        })
+            .json({
+                message: "fetching user failed"
+            })
     }
 })
 
-userRouter.get("/metadata/bulk", async(req,res) => {
+userRouter.get("/metadata/bulk", async (req, res) => {
     const userIdRes = (req.query.ids) as string;
-    const userIds: string[] = userIdRes.substring(1, userIdRes.length-1).split(",");
+    const userIds: string[] = userIdRes.substring(1, userIdRes.length - 1).split(",");
     if (!userIds || !userIds.length) {
         res.status(400)
-        .json({
-            message: "userId is required"
-        })
+            .json({
+                message: "userId is required"
+            })
         return;
     }
 
@@ -65,25 +65,25 @@ userRouter.get("/metadata/bulk", async(req,res) => {
         })
 
         res.status(400)
-        .json({
-            message: "users fetching successful",
-            userRes
-        })
+            .json({
+                message: "users fetching successful",
+                userRes
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "fetching user failed"
-        })
+            .json({
+                message: "fetching user failed"
+            })
     }
 })
 
-userRouter.post("/publicKey", async(req,res) => {
+userRouter.post("/publicKey", async (req, res) => {
     const parsedData = publicKeySchema.safeParse(req.body);
     if (!parsedData.success) {
         res.status(400)
-        .json({
-            message: "validation failed"
-        })
+            .json({
+                message: "validation failed"
+            })
         return;
     }
 
@@ -97,24 +97,24 @@ userRouter.post("/publicKey", async(req,res) => {
             }
         })
         res.status(200)
-        .json({
-            message: "publickey updation success"
-        })
+            .json({
+                message: "publickey updation success"
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "publicKey updation failed"
-        })
+            .json({
+                message: "publicKey updation failed"
+            })
     }
 })
 
-userRouter.delete("/:userId", async(req,res) => {
+userRouter.delete("/:userId", async (req, res) => {
     const userId = req.params.userId;
     if (!userId) {
         res.status(400)
-        .json({
-            message: "userId is required"
-        })
+            .json({
+                message: "userId is required"
+            })
         return;
     }
 
@@ -122,13 +122,13 @@ userRouter.delete("/:userId", async(req,res) => {
         // Todo - delete user
 
         res.status(200)
-        .json({
-            message: "user deletion success"
-        }) 
+            .json({
+                message: "user deletion success"
+            })
     } catch (error) {
         res.status(400)
-        .json({
-            message: "user deletion failed"
-        })
+            .json({
+                message: "user deletion failed"
+            })
     }
 })
