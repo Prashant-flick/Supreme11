@@ -2,8 +2,10 @@ import { Router } from "express";
 import { matchesSchema } from "../../types";
 import client from "@repo/db/client"
 import type { Prisma } from "../../../../../packages/db/src/generated/prisma";
+import { adminMiddleware } from "../../middleware/admin";
 
 export const matchesRouter = Router();
+matchesRouter.use(adminMiddleware)
 
 matchesRouter.post('/', async (req, res) => {
   const parsedData = matchesSchema.safeParse(req.body);

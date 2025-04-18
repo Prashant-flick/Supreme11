@@ -1,8 +1,10 @@
 import { Router } from "express";
 import client from '@repo/db/client'
 import { playerSchema, playerUpdateSchema } from "../../types";
+import { adminMiddleware } from "../../middleware/admin";
 
 export const playerRouter = Router();
+playerRouter.use(adminMiddleware)
 
 playerRouter.get('/:playerId', async (req, res) => {
   const playerId = req.params.playerId;

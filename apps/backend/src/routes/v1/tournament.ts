@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { tournamentSchema } from "../../types/index";
 import client from "@repo/db/client";
+import { userMiddleware } from "../../middleware/user";
 
 export const tournamentRouter = Router();
+tournamentRouter.use(userMiddleware);
 
 tournamentRouter.get("/create", async (req: any, res: any) => {
   const parsedData = tournamentSchema.safeParse(req.body);

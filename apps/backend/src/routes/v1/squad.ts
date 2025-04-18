@@ -1,8 +1,10 @@
 import { Router } from "express";
 import client from '@repo/db/client'
 import { squadSchema } from "../../types";
+import { adminMiddleware } from "../../middleware/admin";
 
 export const squadRouter = Router();
+squadRouter.use(adminMiddleware)
 
 squadRouter.get('/:squadName', async (req, res) => {
   const squadName = req.params.squadName;

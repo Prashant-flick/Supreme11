@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { inningUpdateSchema } from "../../types";
 import client from '@repo/db/client'
+import { adminMiddleware } from "../../middleware/admin";
 
 export const inningRouter = Router();
+inningRouter.use(adminMiddleware)
 
 inningRouter.patch('/', async (req, res) => {
   const parsedData = inningUpdateSchema.safeParse(req.body)

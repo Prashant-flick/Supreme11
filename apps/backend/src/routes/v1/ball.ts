@@ -1,8 +1,10 @@
 import { Router } from "express";
 import client from '@repo/db/client';
 import { ballSchema } from "../../types";
+import { adminMiddleware } from "../../middleware/admin";
 
 export const ballRouter = Router();
+ballRouter.use(adminMiddleware)
 
 ballRouter.post('/', async (req, res) => {
   const parsedData = ballSchema.safeParse(req.body);

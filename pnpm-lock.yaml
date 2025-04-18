@@ -63,6 +63,18 @@ importers:
         specifier: ^3.24.3
         version: 3.24.3
 
+  apps/webHook:
+    dependencies:
+      '@types/express':
+        specifier: ^5.0.1
+        version: 5.0.1
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
   packages/db:
     dependencies:
       '@prisma/client':
