@@ -14,60 +14,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id        String @id @unique @default(cuid())
-  name      String
-  email     String @unique
-  password  String
-  publicKey String?
-  role      UserRole
-  teams     UserTeams[]
+model User {
+  id          String       @id @unique @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  publicKey   String?
+  role        UserRole
+  teams       UserTeams[]
+  tournaments Tournament[]
 }
 
-model UserTeams{
-  id                String @id @unique @default(cuid())
+model UserTeams {
+  id                String                  @id @unique @default(cuid())
   fantasyPoints     Int
   captain           String
   viceCaptain       String
   userId            String
-  user              User @relation(fields: [userId], references: [id])
+  user              User                    @relation(fields: [userId], references: [id])
   disabled          Boolean
   players           UserTeamPlayers[]
   tournamentsJoined TournamentJoinedTeams[]
 }
 
-model UserTeamPlayers{
-  id            String @id @unique @default(cuid())
-  userTeamsId   String
-  userTeams     UserTeams @relation(fields: [userTeamsId], references: [id])
-  playersId     String
-  players       Players @relation(fields: [playersId], references: [id])
+model UserTeamPlayers {
+  id          String    @id @unique @default(cuid())
+  userTeamsId String
+  userTeams   UserTeams @relation(fields: [userTeamsId], references: [id])
+  playersId   String
+  players     Players   @relation(fields: [playersId], references: [id])
 }
 
-model Squad{
-  id          String  @id @unique @default(cuid())
-  name        String @unique
+model Squad {
+  id          String    @id @unique @default(cuid())
+  name        String    @unique
   logo        String
   captain     String
   viceCaptain String
   players     Players[]
 }
 
-model Players{
-  id              String @id @unique @default(cuid())
+model Players {
+  id              String              @id @unique @default(cuid())
   name            String
   role            PlayerRole
   dexture         PlayerDexture
   playingStatus   PlayerPlayingStatus
   countryStatus   PlayerCountryStatus
   squadId         String
-  squad           Squad @relation(fields: [squadId], references: [id])
+  squad           Squad               @relation(fields: [squadId], references: [id])
   userTeamPlayers UserTeamPlayers[]
-  score           PlayerScore? @relation("PlayerToScore")
+  score           PlayerScore?        @relation("PlayerToScore")
 }
 
-model PlayerScore{
-  id            String @id @unique @default(cuid())
+model PlayerScore {
+  id            String  @id @unique @default(cuid())
   fantasyPoints Int
   run           Int
   sixes         Int
@@ -80,72 +81,76 @@ model PlayerScore{
   runout        Int
   dotBall       Int
   isPlaying     Boolean
-  playerId      String @unique
+  playerId      String  @unique
   player        Players @relation("PlayerToScore", fields: [playerId], references: [id])
 }
 
-model Matches{
-  id              String @id @unique @default(cuid())
-  team1           String
-  team2           String
-  venue           String
-  date            DateTime
-  winner          MatchesWinner
-  toss            MatchesWinner
-  elected         MatchTossElection
-  status          String
-  innings         Inning[]
+model Matches {
+  id      String            @id @unique @default(cuid())
+  team1   String
+  team2   String
+  venue   String
+  date    DateTime
+  winner  MatchesWinner
+  toss    MatchesWinner
+  elected MatchTossElection
+  status  String
+  innings Inning[]
 }
 
-model Inning{
-  id            String @id @unique @default(cuid())
-  whichInning   WhichInning
-  score         Int
-  wickets       Int
-  extras        Int
-  batsman1      String
-  batsman2      String
-  bowler        String
-  matchId       String
-  match         Matches @relation(fields: [matchId], references: [id])
-  balls         Balls[]
+model Inning {
+  id          String      @id @unique @default(cuid())
+  whichInning WhichInning
+  score       Int
+  wickets     Int
+  extras      Int
+  batsman1    String
+  batsman2    String
+  bowler      String
+  matchId     String
+  match       Matches     @relation(fields: [matchId], references: [id])
+  balls       Balls[]
 }
 
-model Balls{
-  id            String @id @unique @default(cuid())
-  ballNo        Int
-  whatHappend   WhatHappend
-  bowler        String
-  batsman       String
-  catch         String?
-  runout        String?
-  inningId      String
-  inning        Inning @relation(fields: [inningId], references: [id])
+model Balls {
+  id          String      @id @unique @default(cuid())
+  ballNo      Int
+  whatHappend WhatHappend
+  bowler      String
+  batsman     String
+  catch       String?
+  runout      String?
+  inningId    String
+  inning      Inning      @relation(fields: [inningId], references: [id])
 }
 
-model Tournament{
-  id            String @id @unique @default(cuid())
-  maxLimit      Int
-  entryFee      Int
-  prizePool     Int
-  winner        String
+model Tournament {
+  id                    String                  @id @unique @default(cuid())
+  ownerId               String
+  maxLimit              Int
+  entryFee              Int
+  prizePool             Int?
+  winner                String?
   tournamentJoinedTeams TournamentJoinedTeams[]
+  teamsJoined           Int
+  status                TournamentStatus
+  owner                 User                    @relation(fields: [ownerId], references: [id])
 }
 
-model TournamentJoinedTeams{
-  id            String @id @unique @default(cuid())
-  tournamentId    String
-  tournament     Tournament @relation(fields: [tournamentId], references: [id])
-  userTeamId    String
-  userTeam      UserTeams @relation(fields: [userTeamId], references: [id])
+model TournamentJoinedTeams {
+  id           String     @id @unique @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  userTeamId   String
+  userTeam     UserTeams  @relation(fields: [userTeamId], references: [id])
 }
 
-enum WhatHappend{
-  wd 
+enum WhatHappend {
+  wd
   six
-  four 
-  dot 
-  runout 
+  four
+  dot
+  runout
   catch
   bowled
   nb
@@ -156,45 +161,51 @@ enum WhatHappend{
   three
 }
 
-enum WhichInning{
+enum WhichInning {
   first
   second
 }
 
-enum MatchTossElection{
+enum TournamentStatus {
+  notStarted
+  started
+  ended
+}
+
+enum MatchTossElection {
   ball
   bat
 }
 
-enum MatchesWinner{
+enum MatchesWinner {
   team1
   team2
 }
 
-enum PlayerRole{
+enum PlayerRole {
   batsman
   bowler
   wk
   ar
 }
 
-enum PlayerDexture{
+enum PlayerDexture {
   right
   left
 }
 
-enum PlayerPlayingStatus{
+enum PlayerPlayingStatus {
   playing
   substitute
   notPlaying
 }
 
-enum PlayerCountryStatus{
+enum PlayerCountryStatus {
   indian
   foreign
 }
 
-enum UserRole{
+enum UserRole {
   user
   admin
 }
