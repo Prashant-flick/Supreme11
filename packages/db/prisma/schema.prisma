@@ -15,13 +15,13 @@ datasource db {
 }
 
 model User{
-  id        String @id @unique @default(cuid())
-  name      String
-  email     String @unique
-  password  String
-  publicKey String?
-  role      UserRole
-  teams     UserTeams[]
+  id          String @id @unique @default(cuid())
+  name        String
+  email       String @unique
+  password    String
+  publicKey   String?
+  role        UserRole
+  teams       UserTeams[]
 }
 
 model UserTeams{
@@ -46,7 +46,7 @@ model UserTeamPlayers{
 
 model Squad{
   id          String  @id @unique @default(cuid())
-  name        String @unique
+  name        String  @unique
   logo        String
   captain     String
   viceCaptain String
@@ -129,15 +129,16 @@ model Tournament{
   entryFee      Int
   prizePool     Int
   winner        String
+  ownerId       String
   tournamentJoinedTeams TournamentJoinedTeams[]
 }
 
 model TournamentJoinedTeams{
-  id            String @id @unique @default(cuid())
+  id              String @id @unique @default(cuid())
   tournamentId    String
-  tournament     Tournament @relation(fields: [tournamentId], references: [id])
-  userTeamId    String
-  userTeam      UserTeams @relation(fields: [userTeamId], references: [id])
+  tournament      Tournament @relation(fields: [tournamentId], references: [id])
+  userTeamId      String
+  userTeam        UserTeams @relation(fields: [userTeamId], references: [id])
 }
 
 enum WhatHappend{
