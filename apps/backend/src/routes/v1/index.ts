@@ -5,6 +5,13 @@ import client from "@repo/db/client";
 import { expiresInType, signinSchema, signupSchema } from "../../types";
 import { userRouter } from "./user";
 import { tournamentRouter } from "./tournament";
+import { squadRouter } from "./squad";
+import { playerRouter } from "./player";
+import { inningRouter } from "./inning";
+import { ballRouter } from "./ball";
+import { matchesRouter } from "./matches";
+import { playerScoreRouter } from "./playerScore";
+import { userTeamsRouter } from "./userTeams";
 
 export const router = Router();
 
@@ -171,3 +178,10 @@ const generateRefreshToken = (user: { id: string; role: "admin" | "user" }) => {
 
 router.use("/user", userRouter);
 router.use("/tournament", tournamentRouter);
+router.use("/squad", squadRouter);
+router.use("/player", playerRouter);
+router.use("/inning", inningRouter);
+router.use("/ball", ballRouter);
+router.use("/matches", matchesRouter);
+router.use("/playerScore", playerScoreRouter);
+router.use("/userTeam", userTeamsRouter);
