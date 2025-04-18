@@ -3,6 +3,7 @@ import jwt, {JwtPayload} from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import client from '@repo/db/client'
 import { expiresInType, signinSchema, signupSchema } from "../../types";
+import { userRouter } from "./user";
 
 export const router = Router();
 
@@ -154,3 +155,5 @@ const generateRefreshToken = (user: { id: string, role: 'admin' | 'user' }) => {
   })
   return token;
 }
+
+router.use("/user", userRouter)
