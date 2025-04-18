@@ -216,7 +216,8 @@ exports.Prisma.TournamentScalarFieldEnum = {
   maxLimit: 'maxLimit',
   entryFee: 'entryFee',
   prizePool: 'prizePool',
-  winner: 'winner'
+  winner: 'winner',
+  ownerId: 'ownerId'
 };
 
 exports.Prisma.TournamentJoinedTeamsScalarFieldEnum = {

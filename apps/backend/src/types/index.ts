@@ -23,14 +23,18 @@ export const squadSchema = z.object({
     logo: z.string(),
     captain: z.string(),
     viceCaptain: z.string(),
-
 })
 
-const playerSchema = z.object({
+export const playerSchema = z.object({
     name: z.string(),
     role: z.enum(["batsman", "bowler", "wk", "ar"]),
     dexture: z.enum(["right", "left"]),
     playingStatus: z.enum(["playing", "notPlaying", "substitute"]),
     squadId: z.string(),
     countryStatus: z.enum(["indian", "foreign"])
+})
+
+export const playerUpdateSchema = z.object({
+    playingStatus: z.enum(["playing", "notPlaying", "substitute"]),
+    playerId: z.string(),
 })

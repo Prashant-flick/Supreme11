@@ -12338,6 +12338,7 @@ export namespace Prisma {
     entryFee: number | null
     prizePool: number | null
     winner: string | null
+    ownerId: string | null
   }
 
   export type TournamentMaxAggregateOutputType = {
@@ -12346,6 +12347,7 @@ export namespace Prisma {
     entryFee: number | null
     prizePool: number | null
     winner: string | null
+    ownerId: string | null
   }
 
   export type TournamentCountAggregateOutputType = {
@@ -12354,6 +12356,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: number
+    ownerId: number
     _all: number
   }
 
@@ -12376,6 +12379,7 @@ export namespace Prisma {
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
   }
 
   export type TournamentMaxAggregateInputType = {
@@ -12384,6 +12388,7 @@ export namespace Prisma {
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
   }
 
   export type TournamentCountAggregateInputType = {
@@ -12392,6 +12397,7 @@ export namespace Prisma {
     entryFee?: true
     prizePool?: true
     winner?: true
+    ownerId?: true
     _all?: true
   }
 
@@ -12487,6 +12493,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
     _count: TournamentCountAggregateOutputType | null
     _avg: TournamentAvgAggregateOutputType | null
     _sum: TournamentSumAggregateOutputType | null
@@ -12514,6 +12521,7 @@ export namespace Prisma {
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
     tournamentJoinedTeams?: boolean | Tournament$tournamentJoinedTeamsArgs<ExtArgs>
     _count?: boolean | TournamentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tournament"]>
@@ -12524,6 +12532,7 @@ export namespace Prisma {
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
   }, ExtArgs["result"]["tournament"]>
 
   export type TournamentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12532,6 +12541,7 @@ export namespace Prisma {
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
   }, ExtArgs["result"]["tournament"]>
 
   export type TournamentSelectScalar = {
@@ -12540,9 +12550,10 @@ export namespace Prisma {
     entryFee?: boolean
     prizePool?: boolean
     winner?: boolean
+    ownerId?: boolean
   }
 
-  export type TournamentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maxLimit" | "entryFee" | "prizePool" | "winner", ExtArgs["result"]["tournament"]>
+  export type TournamentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "maxLimit" | "entryFee" | "prizePool" | "winner" | "ownerId", ExtArgs["result"]["tournament"]>
   export type TournamentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tournamentJoinedTeams?: boolean | Tournament$tournamentJoinedTeamsArgs<ExtArgs>
     _count?: boolean | TournamentCountOutputTypeDefaultArgs<ExtArgs>
@@ -12561,6 +12572,7 @@ export namespace Prisma {
       entryFee: number
       prizePool: number
       winner: string
+      ownerId: string
     }, ExtArgs["result"]["tournament"]>
     composites: {}
   }
@@ -12990,6 +13002,7 @@ export namespace Prisma {
     readonly entryFee: FieldRef<"Tournament", 'Int'>
     readonly prizePool: FieldRef<"Tournament", 'Int'>
     readonly winner: FieldRef<"Tournament", 'String'>
+    readonly ownerId: FieldRef<"Tournament", 'String'>
   }
     
 
@@ -14600,7 +14613,8 @@ export namespace Prisma {
     maxLimit: 'maxLimit',
     entryFee: 'entryFee',
     prizePool: 'prizePool',
-    winner: 'winner'
+    winner: 'winner',
+    ownerId: 'ownerId'
   };
 
   export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
@@ -15476,6 +15490,7 @@ export namespace Prisma {
     entryFee?: IntFilter<"Tournament"> | number
     prizePool?: IntFilter<"Tournament"> | number
     winner?: StringFilter<"Tournament"> | string
+    ownerId?: StringFilter<"Tournament"> | string
     tournamentJoinedTeams?: TournamentJoinedTeamsListRelationFilter
   }
 
@@ -15485,6 +15500,7 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
     tournamentJoinedTeams?: TournamentJoinedTeamsOrderByRelationAggregateInput
   }
 
@@ -15497,6 +15513,7 @@ export namespace Prisma {
     entryFee?: IntFilter<"Tournament"> | number
     prizePool?: IntFilter<"Tournament"> | number
     winner?: StringFilter<"Tournament"> | string
+    ownerId?: StringFilter<"Tournament"> | string
     tournamentJoinedTeams?: TournamentJoinedTeamsListRelationFilter
   }, "id" | "id">
 
@@ -15506,6 +15523,7 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
     _count?: TournamentCountOrderByAggregateInput
     _avg?: TournamentAvgOrderByAggregateInput
     _max?: TournamentMaxOrderByAggregateInput
@@ -15522,6 +15540,7 @@ export namespace Prisma {
     entryFee?: IntWithAggregatesFilter<"Tournament"> | number
     prizePool?: IntWithAggregatesFilter<"Tournament"> | number
     winner?: StringWithAggregatesFilter<"Tournament"> | string
+    ownerId?: StringWithAggregatesFilter<"Tournament"> | string
   }
 
   export type TournamentJoinedTeamsWhereInput = {
@@ -16261,6 +16280,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
     tournamentJoinedTeams?: TournamentJoinedTeamsCreateNestedManyWithoutTournamentInput
   }
 
@@ -16270,6 +16290,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutTournamentInput
   }
 
@@ -16279,6 +16300,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     tournamentJoinedTeams?: TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput
   }
 
@@ -16288,6 +16310,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedUpdateManyWithoutTournamentNestedInput
   }
 
@@ -16297,6 +16320,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
   }
 
   export type TournamentUpdateManyMutationInput = {
@@ -16305,6 +16329,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentUncheckedUpdateManyInput = {
@@ -16313,6 +16338,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsCreateInput = {
@@ -17083,6 +17109,7 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
   }
 
   export type TournamentAvgOrderByAggregateInput = {
@@ -17097,6 +17124,7 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
   }
 
   export type TournamentMinOrderByAggregateInput = {
@@ -17105,6 +17133,7 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     winner?: SortOrder
+    ownerId?: SortOrder
   }
 
   export type TournamentSumOrderByAggregateInput = {
@@ -18888,6 +18917,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
   }
 
   export type TournamentUncheckedCreateWithoutTournamentJoinedTeamsInput = {
@@ -18896,6 +18926,7 @@ export namespace Prisma {
     entryFee: number
     prizePool: number
     winner: string
+    ownerId: string
   }
 
   export type TournamentCreateOrConnectWithoutTournamentJoinedTeamsInput = {
@@ -18945,6 +18976,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentUncheckedUpdateWithoutTournamentJoinedTeamsInput = {
@@ -18953,6 +18985,7 @@ export namespace Prisma {
     entryFee?: IntFieldUpdateOperationsInput | number
     prizePool?: IntFieldUpdateOperationsInput | number
     winner?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserTeamsUpsertWithoutTournamentsJoinedInput = {

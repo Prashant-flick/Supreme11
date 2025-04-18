@@ -129,6 +129,7 @@ model Tournament {
   entryFee              Int
   prizePool             Int
   winner                String
+  ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
 }
 

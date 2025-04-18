@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import client from '@repo/db/client'
 import { expiresInType, signinSchema, signupSchema } from "../../types";
 import { userRouter } from "./user";
+import { squadRouter } from "./squad";
+import { playerRouter } from "./player";
 
 export const router = Router();
 
@@ -157,3 +159,5 @@ const generateRefreshToken = (user: { id: string, role: 'admin' | 'user' }) => {
 }
 
 router.use("/user", userRouter)
+router.use("/squad", squadRouter)
+router.use("/player", playerRouter)
