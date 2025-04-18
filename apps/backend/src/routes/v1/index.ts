@@ -1,24 +1,14 @@
 import { Router } from "express";
-<<<<<<< HEAD
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import client from '@repo/db/client'
-=======
 import jwt, { JwtPayload } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import client from "@repo/db/client";
->>>>>>> ddf9311f28e98659bd37cf2db8a0e551f6ee67fd
 import { expiresInType, signinSchema, signupSchema } from "../../types";
 import { userRouter } from "./user";
 import { tournamentRouter } from "./tournament";
 
 export const router = Router();
 
-<<<<<<< HEAD
-router.post('/refresh', async (req, res) => {
-=======
 router.post("/refresh", async (req, res) => {
->>>>>>> ddf9311f28e98659bd37cf2db8a0e551f6ee67fd
   const refreshToken = req.cookies?.refreshToken;
 
   if (!refreshToken) {
@@ -52,7 +42,6 @@ router.post("/refresh", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   const parsedData = signupSchema.safeParse(req.body);
-<<<<<<< HEAD
 
   if (!parsedData.success) {
     res.status(400).json({ message: "Validation failed" })
@@ -140,111 +129,11 @@ router.post("/signin", async (req, res) => {
 })
 
 router.post("/signout", async (req, res) => {
-  res.clearCookie('refreshToken', {
-    path: '/',
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-=======
-
-  if (!parsedData.success) {
-    res.status(400).json({ message: "Validation failed" });
-    return;
-  }
-
-  try {
-    const checkemailAndUsername = await client.user.findFirst({
-      where: {
-        email: parsedData.data.email,
-      },
-    });
-
-    if (checkemailAndUsername) {
-      res.status(403).json({
-        message: "user already exists",
-      });
-      return;
-    }
-
-    const hashedPassword = bcrypt.hashSync(
-      parsedData.data.password,
-      parseInt(process.env.BCRYPT_SECRET || "HEHE"),
-    );
-
-    const user = await client.user.create({
-      data: {
-        email: parsedData.data.email,
-        name: parsedData.data.name,
-        password: hashedPassword,
-        role: parsedData.data.role,
-      },
-    });
-
-    res.status(200).json({
-      userId: user.id,
-    });
-  } catch (error) {
-    res.status(404).json({ message: "axios error" });
-  }
-});
-
-router.post("/signin", async (req, res) => {
-  const parsedData = signinSchema.safeParse(req.body);
-  if (!parsedData.success) {
-    res.status(403).json({ message: "Validation failed" });
-    return;
-  }
-
-  try {
-    const user = await client.user.findUnique({
-      where: {
-        email: parsedData.data.email,
-      },
-    });
-
-    if (!user) {
-      res.status(403).json({ message: "user Doesn't exist" });
-      return;
-    }
-
-    const verifyPassword = bcrypt.compareSync(
-      parsedData.data.password,
-      user.password,
-    );
-
-    if (!verifyPassword) {
-      res.status(403).json({ message: "Invalid Password" });
-      return;
-    }
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
-
-    res.status(200).json({
-      accessToken,
-      userId: user.id,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: "signin error",
-    });
-  }
-});
-
-router.post("/signout", async (req, res) => {
   res.clearCookie("refreshToken", {
     path: "/",
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
->>>>>>> ddf9311f28e98659bd37cf2db8a0e551f6ee67fd
   });
 
   res.status(200).json({
@@ -252,27 +141,6 @@ router.post("/signout", async (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-const generateAccessToken = (user: { id: string, role: 'admin' | 'user' }) => {
-  const token = jwt.sign({
-    userId: user.id,
-    role: user.role
-  }, process.env.ACCESS_TOKEN_SECRET || "HELLO",
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY as expiresInType,
-    })
-  return token;
-}
-
-const generateRefreshToken = (user: { id: string, role: 'admin' | 'user' }) => {
-  const token = jwt.sign({
-    userId: user.id,
-    role: user.role
-  }, process.env.REFRESH_TOKEN_SECRET || "HELLO",
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY as expiresInType,
-    })
-=======
 const generateAccessToken = (user: { id: string; role: "admin" | "user" }) => {
   const token = jwt.sign(
     {
@@ -284,7 +152,6 @@ const generateAccessToken = (user: { id: string; role: "admin" | "user" }) => {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY as expiresInType,
     },
   );
->>>>>>> ddf9311f28e98659bd37cf2db8a0e551f6ee67fd
   return token;
 };
 
