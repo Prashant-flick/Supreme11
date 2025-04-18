@@ -114,6 +114,7 @@ model Inning{
   matchId       String
   match         Matches @relation(fields: [matchId], references: [id])
   balls         Balls[]
+  @@unique([matchId, whichInning])
 }
 
 model Balls{
@@ -163,6 +164,7 @@ enum WhatHappend {
   one
   two
   three
+  lbw
 }
 
 enum WhichInning {

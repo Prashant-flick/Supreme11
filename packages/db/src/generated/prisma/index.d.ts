@@ -86,7 +86,8 @@ export namespace $Enums {
   zero: 'zero',
   one: 'one',
   two: 'two',
-  three: 'three'
+  three: 'three',
+  lbw: 'lbw'
 };
 
 export type WhatHappend = (typeof WhatHappend)[keyof typeof WhatHappend]
@@ -15547,6 +15548,7 @@ export namespace Prisma {
 
   export type InningWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    matchId_whichInning?: InningMatchIdWhichInningCompoundUniqueInput
     AND?: InningWhereInput | InningWhereInput[]
     OR?: InningWhereInput[]
     NOT?: InningWhereInput | InningWhereInput[]
@@ -15560,7 +15562,7 @@ export namespace Prisma {
     matchId?: StringFilter<"Inning"> | string
     match?: XOR<MatchesScalarRelationFilter, MatchesWhereInput>
     balls?: BallsListRelationFilter
-  }, "id" | "id">
+  }, "id" | "id" | "matchId_whichInning">
 
   export type InningOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17235,6 +17237,11 @@ export namespace Prisma {
 
   export type BallsOrderByRelationAggregateInput = {
     _count?: SortOrder
+  }
+
+  export type InningMatchIdWhichInningCompoundUniqueInput = {
+    matchId: string
+    whichInning: $Enums.WhichInning
   }
 
   export type InningCountOrderByAggregateInput = {

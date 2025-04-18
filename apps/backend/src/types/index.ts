@@ -1,4 +1,5 @@
 import z from "zod";
+import { WhatHappend } from "../../../../packages/db/src/generated/prisma";
 
 export type expiresInType = `${number}${'M' | 'Y' | 'D'}`;
 
@@ -66,3 +67,23 @@ export const matchesSchema = z.object({
   status: z.enum(["upcoming", "started", "ended"])
 })
 
+export const inningUpdateSchema = z.object({
+  WhichInning: z.enum(["first", "second"]),
+  score: z.number(),
+  wickets: z.number(),
+  extras: z.number(),
+  bastman1: z.string(),
+  batsman2: z.string(),
+  bowler: z.string(),
+  matchId: z.string(),
+})
+
+export const ballSchema = z.object({
+  ballNo: z.number(),
+  WhatHappend: z.enum(["wd", "six", "four", "dot", "runout", "catch", "bowled", "lbw", "nb", "fh", "zero", "one", "two", "three"]),
+  bowler: z.string(),
+  batsman: z.string(),
+  runout: z.string().optional(),
+  catch: z.string().optional(),
+  inningId: z.string()
+})

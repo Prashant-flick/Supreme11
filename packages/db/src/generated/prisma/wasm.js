@@ -306,7 +306,8 @@ exports.WhatHappend = exports.$Enums.WhatHappend = {
   zero: 'zero',
   one: 'one',
   two: 'two',
-  three: 'three'
+  three: 'three',
+  lbw: 'lbw'
 };
 
 exports.Prisma.ModelName = {
