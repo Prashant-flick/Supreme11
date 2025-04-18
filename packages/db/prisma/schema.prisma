@@ -20,6 +20,7 @@ model User{
   email     String @unique
   password  String
   publicKey String?
+  role      UserRole
   teams     UserTeams[]
 }
 
@@ -62,6 +63,7 @@ model Players{
   squadId         String
   squad           Squad @relation(fields: [squadId], references: [id])
   userTeamPlayers UserTeamPlayers[]
+  score           PlayerScore? @relation("PlayerToScore")
 }
 
 model PlayerScore{
@@ -78,6 +80,8 @@ model PlayerScore{
   runout        Int
   dotBall       Int
   isPlaying     Boolean
+  playerId      String @unique
+  player        Players @relation("PlayerToScore", fields: [playerId], references: [id])
 }
 
 model Matches{
@@ -188,4 +192,9 @@ enum PlayerPlayingStatus{
 enum PlayerCountryStatus{
   indian
   foreign
+}
+
+enum UserRole{
+  user
+  admin
 }
