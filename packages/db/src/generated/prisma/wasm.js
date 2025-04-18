@@ -213,10 +213,13 @@ exports.Prisma.BallsScalarFieldEnum = {
 
 exports.Prisma.TournamentScalarFieldEnum = {
   id: 'id',
+  ownerId: 'ownerId',
   maxLimit: 'maxLimit',
   entryFee: 'entryFee',
   prizePool: 'prizePool',
-  winner: 'winner'
+  winner: 'winner',
+  teamsJoined: 'teamsJoined',
+  status: 'status'
 };
 
 exports.Prisma.TournamentJoinedTeamsScalarFieldEnum = {
@@ -296,6 +299,12 @@ exports.WhatHappend = exports.$Enums.WhatHappend = {
   one: 'one',
   two: 'two',
   three: 'three'
+};
+
+exports.TournamentStatus = exports.$Enums.TournamentStatus = {
+  notStarted: 'notStarted',
+  started: 'started',
+  ended: 'ended'
 };
 
 exports.Prisma.ModelName = {
