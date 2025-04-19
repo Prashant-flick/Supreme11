@@ -153,9 +153,12 @@ exports.Prisma.PlayersScalarFieldEnum = {
   id: 'id',
   name: 'name',
   role: 'role',
-  dexture: 'dexture',
+  battingDexture: 'battingDexture',
+  bowlingDexture: 'bowlingDexture',
   countryStatus: 'countryStatus',
-  squadId: 'squadId'
+  squadId: 'squadId',
+  age: 'age',
+  img: 'img'
 };
 
 exports.Prisma.PlayerScoreScalarFieldEnum = {

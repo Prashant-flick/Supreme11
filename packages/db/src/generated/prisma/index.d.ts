@@ -6572,27 +6572,36 @@ export namespace Prisma {
     id: string | null
     name: string | null
     role: $Enums.PlayerRole | null
-    dexture: $Enums.PlayerDexture | null
+    battingDexture: $Enums.PlayerDexture | null
+    bowlingDexture: $Enums.PlayerDexture | null
     countryStatus: $Enums.PlayerCountryStatus | null
     squadId: string | null
+    age: string | null
+    img: string | null
   }
 
   export type PlayersMaxAggregateOutputType = {
     id: string | null
     name: string | null
     role: $Enums.PlayerRole | null
-    dexture: $Enums.PlayerDexture | null
+    battingDexture: $Enums.PlayerDexture | null
+    bowlingDexture: $Enums.PlayerDexture | null
     countryStatus: $Enums.PlayerCountryStatus | null
     squadId: string | null
+    age: string | null
+    img: string | null
   }
 
   export type PlayersCountAggregateOutputType = {
     id: number
     name: number
     role: number
-    dexture: number
+    battingDexture: number
+    bowlingDexture: number
     countryStatus: number
     squadId: number
+    age: number
+    img: number
     _all: number
   }
 
@@ -6601,27 +6610,36 @@ export namespace Prisma {
     id?: true
     name?: true
     role?: true
-    dexture?: true
+    battingDexture?: true
+    bowlingDexture?: true
     countryStatus?: true
     squadId?: true
+    age?: true
+    img?: true
   }
 
   export type PlayersMaxAggregateInputType = {
     id?: true
     name?: true
     role?: true
-    dexture?: true
+    battingDexture?: true
+    bowlingDexture?: true
     countryStatus?: true
     squadId?: true
+    age?: true
+    img?: true
   }
 
   export type PlayersCountAggregateInputType = {
     id?: true
     name?: true
     role?: true
-    dexture?: true
+    battingDexture?: true
+    bowlingDexture?: true
     countryStatus?: true
     squadId?: true
+    age?: true
+    img?: true
     _all?: true
   }
 
@@ -6701,9 +6719,12 @@ export namespace Prisma {
     id: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
+    age: string
+    img: string
     _count: PlayersCountAggregateOutputType | null
     _min: PlayersMinAggregateOutputType | null
     _max: PlayersMaxAggregateOutputType | null
@@ -6727,9 +6748,12 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     role?: boolean
-    dexture?: boolean
+    battingDexture?: boolean
+    bowlingDexture?: boolean
     countryStatus?: boolean
     squadId?: boolean
+    age?: boolean
+    img?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
     userTeamPlayers?: boolean | Players$userTeamPlayersArgs<ExtArgs>
     score?: boolean | Players$scoreArgs<ExtArgs>
@@ -6740,9 +6764,12 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     role?: boolean
-    dexture?: boolean
+    battingDexture?: boolean
+    bowlingDexture?: boolean
     countryStatus?: boolean
     squadId?: boolean
+    age?: boolean
+    img?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["players"]>
 
@@ -6750,9 +6777,12 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     role?: boolean
-    dexture?: boolean
+    battingDexture?: boolean
+    bowlingDexture?: boolean
     countryStatus?: boolean
     squadId?: boolean
+    age?: boolean
+    img?: boolean
     squad?: boolean | SquadDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["players"]>
 
@@ -6760,12 +6790,15 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     role?: boolean
-    dexture?: boolean
+    battingDexture?: boolean
+    bowlingDexture?: boolean
     countryStatus?: boolean
     squadId?: boolean
+    age?: boolean
+    img?: boolean
   }
 
-  export type PlayersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "role" | "dexture" | "countryStatus" | "squadId", ExtArgs["result"]["players"]>
+  export type PlayersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "role" | "battingDexture" | "bowlingDexture" | "countryStatus" | "squadId" | "age" | "img", ExtArgs["result"]["players"]>
   export type PlayersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     squad?: boolean | SquadDefaultArgs<ExtArgs>
     userTeamPlayers?: boolean | Players$userTeamPlayersArgs<ExtArgs>
@@ -6790,9 +6823,12 @@ export namespace Prisma {
       id: string
       name: string
       role: $Enums.PlayerRole
-      dexture: $Enums.PlayerDexture
+      battingDexture: $Enums.PlayerDexture
+      bowlingDexture: $Enums.PlayerDexture
       countryStatus: $Enums.PlayerCountryStatus
       squadId: string
+      age: string
+      img: string
     }, ExtArgs["result"]["players"]>
     composites: {}
   }
@@ -7222,9 +7258,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Players", 'String'>
     readonly name: FieldRef<"Players", 'String'>
     readonly role: FieldRef<"Players", 'PlayerRole'>
-    readonly dexture: FieldRef<"Players", 'PlayerDexture'>
+    readonly battingDexture: FieldRef<"Players", 'PlayerDexture'>
+    readonly bowlingDexture: FieldRef<"Players", 'PlayerDexture'>
     readonly countryStatus: FieldRef<"Players", 'PlayerCountryStatus'>
     readonly squadId: FieldRef<"Players", 'String'>
+    readonly age: FieldRef<"Players", 'String'>
+    readonly img: FieldRef<"Players", 'String'>
   }
     
 
@@ -14695,9 +14734,12 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     role: 'role',
-    dexture: 'dexture',
+    battingDexture: 'battingDexture',
+    bowlingDexture: 'bowlingDexture',
     countryStatus: 'countryStatus',
-    squadId: 'squadId'
+    squadId: 'squadId',
+    age: 'age',
+    img: 'img'
   };
 
   export type PlayersScalarFieldEnum = (typeof PlayersScalarFieldEnum)[keyof typeof PlayersScalarFieldEnum]
@@ -15267,9 +15309,12 @@ export namespace Prisma {
     id?: StringFilter<"Players"> | string
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
+    age?: StringFilter<"Players"> | string
+    img?: StringFilter<"Players"> | string
     squad?: XOR<SquadScalarRelationFilter, SquadWhereInput>
     userTeamPlayers?: UserTeamPlayersListRelationFilter
     score?: PlayerScoreListRelationFilter
@@ -15279,9 +15324,12 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     role?: SortOrder
-    dexture?: SortOrder
+    battingDexture?: SortOrder
+    bowlingDexture?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
+    age?: SortOrder
+    img?: SortOrder
     squad?: SquadOrderByWithRelationInput
     userTeamPlayers?: UserTeamPlayersOrderByRelationAggregateInput
     score?: PlayerScoreOrderByRelationAggregateInput
@@ -15294,9 +15342,12 @@ export namespace Prisma {
     NOT?: PlayersWhereInput | PlayersWhereInput[]
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
+    age?: StringFilter<"Players"> | string
+    img?: StringFilter<"Players"> | string
     squad?: XOR<SquadScalarRelationFilter, SquadWhereInput>
     userTeamPlayers?: UserTeamPlayersListRelationFilter
     score?: PlayerScoreListRelationFilter
@@ -15306,9 +15357,12 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     role?: SortOrder
-    dexture?: SortOrder
+    battingDexture?: SortOrder
+    bowlingDexture?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
+    age?: SortOrder
+    img?: SortOrder
     _count?: PlayersCountOrderByAggregateInput
     _max?: PlayersMaxOrderByAggregateInput
     _min?: PlayersMinOrderByAggregateInput
@@ -15321,9 +15375,12 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Players"> | string
     name?: StringWithAggregatesFilter<"Players"> | string
     role?: EnumPlayerRoleWithAggregatesFilter<"Players"> | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureWithAggregatesFilter<"Players"> | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureWithAggregatesFilter<"Players"> | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureWithAggregatesFilter<"Players"> | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusWithAggregatesFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringWithAggregatesFilter<"Players"> | string
+    age?: StringWithAggregatesFilter<"Players"> | string
+    img?: StringWithAggregatesFilter<"Players"> | string
   }
 
   export type PlayerScoreWhereInput = {
@@ -16036,8 +16093,11 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
     squad: SquadCreateNestedOneWithoutPlayersInput
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
     score?: PlayerScoreCreateNestedManyWithoutPlayerInput
@@ -16047,9 +16107,12 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
+    age: string
+    img: string
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
     score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
@@ -16058,8 +16121,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
     score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
@@ -16069,9 +16135,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
     score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
@@ -16080,26 +16149,35 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
+    age: string
+    img: string
   }
 
   export type PlayersUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
   }
 
   export type PlayersUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
   }
 
   export type PlayerScoreCreateInput = {
@@ -16938,27 +17016,36 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     role?: SortOrder
-    dexture?: SortOrder
+    battingDexture?: SortOrder
+    bowlingDexture?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
+    age?: SortOrder
+    img?: SortOrder
   }
 
   export type PlayersMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     role?: SortOrder
-    dexture?: SortOrder
+    battingDexture?: SortOrder
+    bowlingDexture?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
+    age?: SortOrder
+    img?: SortOrder
   }
 
   export type PlayersMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     role?: SortOrder
-    dexture?: SortOrder
+    battingDexture?: SortOrder
+    bowlingDexture?: SortOrder
     countryStatus?: SortOrder
     squadId?: SortOrder
+    age?: SortOrder
+    img?: SortOrder
   }
 
   export type EnumPlayerRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -18791,8 +18878,11 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
     squad: SquadCreateNestedOneWithoutPlayersInput
     score?: PlayerScoreCreateNestedManyWithoutPlayerInput
   }
@@ -18801,9 +18891,12 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
+    age: string
+    img: string
     score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
 
@@ -18858,8 +18951,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
     score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
   }
@@ -18868,9 +18964,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
 
@@ -18878,8 +18977,11 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
     score?: PlayerScoreCreateNestedManyWithoutPlayerInput
   }
@@ -18888,8 +18990,11 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
     score?: PlayerScoreUncheckedCreateNestedManyWithoutPlayerInput
   }
@@ -18927,9 +19032,12 @@ export namespace Prisma {
     id?: StringFilter<"Players"> | string
     name?: StringFilter<"Players"> | string
     role?: EnumPlayerRoleFilter<"Players"> | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFilter<"Players"> | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFilter<"Players"> | $Enums.PlayerCountryStatus
     squadId?: StringFilter<"Players"> | string
+    age?: StringFilter<"Players"> | string
+    img?: StringFilter<"Players"> | string
   }
 
   export type SquadCreateWithoutPlayersInput = {
@@ -19101,8 +19209,11 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
     squad: SquadCreateNestedOneWithoutPlayersInput
     userTeamPlayers?: UserTeamPlayersCreateNestedManyWithoutPlayersInput
   }
@@ -19111,9 +19222,12 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
     squadId: string
+    age: string
+    img: string
     userTeamPlayers?: UserTeamPlayersUncheckedCreateNestedManyWithoutPlayersInput
   }
 
@@ -19168,8 +19282,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     squad?: SquadUpdateOneRequiredWithoutPlayersNestedInput
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
   }
@@ -19178,9 +19295,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
     squadId?: StringFieldUpdateOperationsInput | string
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
   }
 
@@ -19868,16 +19988,22 @@ export namespace Prisma {
     id?: string
     name: string
     role: $Enums.PlayerRole
-    dexture: $Enums.PlayerDexture
+    battingDexture: $Enums.PlayerDexture
+    bowlingDexture: $Enums.PlayerDexture
     countryStatus: $Enums.PlayerCountryStatus
+    age: string
+    img: string
   }
 
   export type PlayersUpdateWithoutSquadInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUpdateManyWithoutPlayersNestedInput
     score?: PlayerScoreUpdateManyWithoutPlayerNestedInput
   }
@@ -19886,8 +20012,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
     userTeamPlayers?: UserTeamPlayersUncheckedUpdateManyWithoutPlayersNestedInput
     score?: PlayerScoreUncheckedUpdateManyWithoutPlayerNestedInput
   }
@@ -19896,8 +20025,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: EnumPlayerRoleFieldUpdateOperationsInput | $Enums.PlayerRole
-    dexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    battingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
+    bowlingDexture?: EnumPlayerDextureFieldUpdateOperationsInput | $Enums.PlayerDexture
     countryStatus?: EnumPlayerCountryStatusFieldUpdateOperationsInput | $Enums.PlayerCountryStatus
+    age?: StringFieldUpdateOperationsInput | string
+    img?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserTeamPlayersCreateManyPlayersInput = {
