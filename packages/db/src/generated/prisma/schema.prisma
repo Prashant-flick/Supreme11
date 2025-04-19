@@ -134,8 +134,8 @@ model Tournament {
   id                    String                  @id @unique @default(cuid())
   maxLimit              Int
   entryFee              Int
-  prizePool             Int
-  winner                String
+  prizePool             Int?
+  winner                String?
   ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
   teamsJoined           Int

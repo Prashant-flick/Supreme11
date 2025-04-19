@@ -12619,8 +12619,8 @@ export namespace Prisma {
     id: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool: number | null
+    winner: string | null
     ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -12717,8 +12717,8 @@ export namespace Prisma {
       id: string
       maxLimit: number
       entryFee: number
-      prizePool: number
-      winner: string
+      prizePool: number | null
+      winner: string | null
       ownerId: string
       teamsJoined: number
       status: $Enums.TournamentStatus
@@ -15675,8 +15675,8 @@ export namespace Prisma {
     id?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
-    winner?: StringFilter<"Tournament"> | string
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
+    winner?: StringNullableFilter<"Tournament"> | string | null
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
@@ -15688,8 +15688,8 @@ export namespace Prisma {
     id?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrder
-    winner?: SortOrder
+    prizePool?: SortOrderInput | SortOrder
+    winner?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
@@ -15704,8 +15704,8 @@ export namespace Prisma {
     NOT?: TournamentWhereInput | TournamentWhereInput[]
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
-    winner?: StringFilter<"Tournament"> | string
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
+    winner?: StringNullableFilter<"Tournament"> | string | null
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
@@ -15717,8 +15717,8 @@ export namespace Prisma {
     id?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrder
-    winner?: SortOrder
+    prizePool?: SortOrderInput | SortOrder
+    winner?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     teamsJoined?: SortOrder
     status?: SortOrder
@@ -15736,8 +15736,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Tournament"> | string
     maxLimit?: IntWithAggregatesFilter<"Tournament"> | number
     entryFee?: IntWithAggregatesFilter<"Tournament"> | number
-    prizePool?: IntWithAggregatesFilter<"Tournament"> | number
-    winner?: StringWithAggregatesFilter<"Tournament"> | string
+    prizePool?: IntNullableWithAggregatesFilter<"Tournament"> | number | null
+    winner?: StringNullableWithAggregatesFilter<"Tournament"> | string | null
     ownerId?: StringWithAggregatesFilter<"Tournament"> | string
     teamsJoined?: IntWithAggregatesFilter<"Tournament"> | number
     status?: EnumTournamentStatusWithAggregatesFilter<"Tournament"> | $Enums.TournamentStatus
@@ -16485,8 +16485,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsCreateNestedManyWithoutTournamentInput
@@ -16497,8 +16497,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -16509,8 +16509,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput
@@ -16521,8 +16521,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -16533,8 +16533,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -16544,8 +16544,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
@@ -16554,8 +16554,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -17365,6 +17365,17 @@ export namespace Prisma {
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type TournamentCountOrderByAggregateInput = {
     id?: SortOrder
     maxLimit?: SortOrder
@@ -17410,6 +17421,22 @@ export namespace Prisma {
     entryFee?: SortOrder
     prizePool?: SortOrder
     teamsJoined?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type TournamentScalarRelationFilter = {
@@ -18051,6 +18078,14 @@ export namespace Prisma {
     connect?: TournamentJoinedTeamsWhereUniqueInput | TournamentJoinedTeamsWhereUniqueInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput = {
     create?: XOR<TournamentJoinedTeamsCreateWithoutTournamentInput, TournamentJoinedTeamsUncheckedCreateWithoutTournamentInput> | TournamentJoinedTeamsCreateWithoutTournamentInput[] | TournamentJoinedTeamsUncheckedCreateWithoutTournamentInput[]
     connectOrCreate?: TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput | TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput[]
@@ -18434,6 +18469,33 @@ export namespace Prisma {
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type UserTeamsCreateWithoutUserInput = {
     id?: string
     fantasyPoints: number
@@ -18468,8 +18530,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsCreateNestedManyWithoutTournamentInput
@@ -18479,8 +18541,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     teamsJoined: number
     status: $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutTournamentInput
@@ -18547,8 +18609,8 @@ export namespace Prisma {
     id?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
-    winner?: StringFilter<"Tournament"> | string
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
+    winner?: StringNullableFilter<"Tournament"> | string | null
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
     status?: EnumTournamentStatusFilter<"Tournament"> | $Enums.TournamentStatus
@@ -19572,8 +19634,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     teamsJoined: number
     status: $Enums.TournamentStatus
     owner: UserCreateNestedOneWithoutTournamentsInput
@@ -19583,8 +19645,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     ownerId: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -19635,8 +19697,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     owner?: UserUpdateOneRequiredWithoutTournamentsNestedInput
@@ -19646,8 +19708,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -19696,8 +19758,8 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
-    winner: string
+    prizePool?: number | null
+    winner?: string | null
     teamsJoined: number
     status: $Enums.TournamentStatus
   }
@@ -19734,8 +19796,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput
@@ -19745,8 +19807,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
     tournamentJoinedTeams?: TournamentJoinedTeamsUncheckedUpdateManyWithoutTournamentNestedInput
@@ -19756,8 +19818,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
-    winner?: StringFieldUpdateOperationsInput | string
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
+    winner?: NullableStringFieldUpdateOperationsInput | string | null
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
   }
