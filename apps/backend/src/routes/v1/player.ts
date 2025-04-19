@@ -80,10 +80,13 @@ playerRouter.post('/', async (req, res) => {
     const playerRes = await client.players.create({
       data: {
         name: parsedData.data?.name,
-        dexture: parsedData.data?.dexture,
+        battingDexture: parsedData.data?.battingDexture,
+        bowlingDexture: parsedData.data?.bowlingDexture,
         squadId: parsedData.data?.squadId,
         countryStatus: parsedData.data.countryStatus,
-        role: parsedData.data.role
+        role: parsedData.data.role,
+        age: parsedData.data.age,
+        img: parsedData.data.img
       }
     })
 

@@ -4,9 +4,10 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 puppeteer.use(StealthPlugin());
+
 const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000";
+const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
 
 interface squadInterface {
@@ -60,25 +61,24 @@ async function getSquads() {
 
   try {
     await page.goto(
-      "https://www.espncricinfo.com/series/ipl-2025-1449924/squads",
+      `${BaseUrl}/series/ipl-2025-1449924/squads`,
       {
         waitUntil: "domcontentloaded",
         timeout: 100000,
       }
     );
 
-    const squads = await page.evaluate(() => {
+    const rawSquads = await page.evaluate(() => {
       const squadCards = document.querySelectorAll('.ds-flex.lg\\:ds-flex-row.sm\\:ds-flex-col.lg\\:ds-items-center.lg\\:ds-justify-between.ds-py-2.ds-px-4.ds-flex-wrap.odd\\:ds-bg-fill-content-alternate');
 
-      const squads: squadInterface[] = [];
-
+      const squads: any[] = [];
       squadCards.forEach((squad) => {
         try {
           const squadNameElement = squad.querySelector(".ds-text-comfortable-m.ds-text-typo.ds-underline.ds-decoration-ui-stroke.ds-block");
           const squadLinkElement = squad.querySelector(".ds-inline-flex.ds-items-start.ds-leading-none");
           const squadImgElement = squad.querySelector("img");
 
-          const squadName = convertTeamAbbreviation(squadNameElement?.textContent?.trim() || "");
+          const squadName = squadNameElement?.textContent?.trim() || "";
           const link = squadLinkElement?.getAttribute("href") || "";
 
           squads.push({
@@ -90,10 +90,21 @@ async function getSquads() {
           console.error("Error scraping squad", error)
         }
       })
-
       return squads;
     })
+    const squads: squadInterface[] = rawSquads.map((squad) => {
+      const newSquadName = squad.squadName.split(' Squad')[0];
+      const name = convertTeamAbbreviation(newSquadName);
 
+      return {
+        squadName: name,
+        playerLink: squad.playerLink,
+        img: squad.img
+      }
+    })
+
+    await browser.close();
+    // console.log(squads);
     return squads;
   } catch (error) {
     console.error("Error scraping cricket scores:", error);
@@ -108,18 +119,18 @@ async function getPlayers(url: string, squadId: string) {
   const page = await browser.newPage();
 
   try {
-    await page.goto(url, {
+    await page.goto(`${BaseUrl}/${url}`, {
       waitUntil: "domcontentloaded",
       timeout: 100000,
     })
 
-    const players: playerInterface[] = [];
-    await page.evaluate(() => {
+    const rawPlayers = await page.evaluate(() => {
       try {
-        const playerCards = document.querySelectorAll(".ds-border-line.odd\\:ds-border-r.ds-border-b")
+        const playerCards = document.querySelectorAll(".ds-border-line.odd\\:ds-border-r.ds-border-b");
+        const players: any[] = [];
 
         playerCards.forEach((card) => {
-          const playerNameElement = card.querySelector('.ds-text-compact-s.ds-font-bold ds-text-typo.ds-underline.ds-decoration-ui-stroke.ds-block.ds-cursor-pointer');
+          const playerNameElement = card.querySelector('.ds-text-compact-s.ds-font-bold.ds-text-typo.ds-underline.ds-decoration-ui-stroke.ds-block.ds-cursor-pointer');
           const playerRoleElement = card.querySelector('.ds-text-tight-s.ds-font-regular.ds-mb-2.ds-mt-1');
           const playerAgeElemenet = card.querySelector('.ds-flex.ds-items-center.ds-space-x-1');
           const playerDextureElem = card.querySelectorAll('.ds-flex.ds-items-start.ds-space-x-1');
@@ -127,12 +138,12 @@ async function getPlayers(url: string, squadId: string) {
           const PlayerImgElem = card.querySelector('img');
 
           const playerName = playerNameElement?.textContent?.trim() || "";
-          const playerAge = playerAgeElemenet?.textContent?.trim().split(': ')[1] || "";
+          const playerAge = playerAgeElemenet?.textContent?.trim().split(':')[1] || "";
           const playerRole = playerRoleElement?.textContent?.trim() || "";
           const playerCountryStatus = playerCountryStatusElem ? "foreign" : "indian";
           const playerDexture: ("left" | "right")[] = [];
           playerDextureElem.forEach((dextureElem) => {
-            const dexture = dextureElem.textContent?.trim().split(': ')[1] || "";
+            const dexture = dextureElem.textContent?.trim().split(':')[1] || "";
             playerDexture.push((dexture.split(' ')[0]).toLowerCase() as ("left" | "right"));
           })
           const playerImg = PlayerImgElem?.src || "";
@@ -143,16 +154,32 @@ async function getPlayers(url: string, squadId: string) {
             battingDexture: playerDexture[0],
             bowlingDexture: playerDexture[1],
             countryStatus: playerCountryStatus,
-            squadId,
             role: playerRole.includes("WicketKeeper") ? "wk" : playerRole.includes("Allrounder") ? "ar" : playerRole.includes("Batter") ? "batsman" : "bowler",
             img: playerImg
           })
         })
+
+        return players;
       } catch (error) {
         console.error;
       }
+      return [];
     })
 
+    const players: playerInterface[] = rawPlayers?.map((player) => {
+      return {
+        name: player.name,
+        age: player.age,
+        battingDexture: player.battingDexture,
+        bowlingDexture: player.bowlingDexture,
+        img: player.img,
+        role: player.role,
+        countryStatus: player.countryStatus,
+        squadId
+      }
+    });
+
+    console.log(players);
     return players;
   } catch (error) {
     console.error
@@ -176,6 +203,8 @@ async function createPlayer(player: playerInterface) {
 async function getSquadPlayers() {
   const squads = await getSquads();
 
+  console.log('squad return', squads.length);
+
   await Promise.all(
     squads.map(async (squad) => {
       const squadRes = await axios.post(`${BackendUrl}/squad`, {
@@ -185,8 +214,7 @@ async function getSquadPlayers() {
         viceCaptain: "tobeDeclared"
       });
 
-      const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
-
+      const players = await getPlayers(squad.playerLink, squadRes.data.id);
       if (players) {
         await Promise.all(
           players.map(async (player) => {
