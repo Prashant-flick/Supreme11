@@ -28,6 +28,6 @@ tournamentRouter.get("/create", async (req: any, res: any) => {
       message: "tournament created successfully",
     });
   } catch (err) {
-    res.status(400).json({ message: "error creating tournament" });
+    res.status(400).json({ message: "error creating tournament", err: err });
   }
 });
