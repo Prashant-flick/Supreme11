@@ -128,10 +128,11 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.UserTeamsScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   fantasyPoints: 'fantasyPoints',
   captain: 'captain',
   viceCaptain: 'viceCaptain',
-  userId: 'userId',
+  ownerId: 'ownerId',
   disabled: 'disabled'
 };
 
@@ -231,7 +232,8 @@ exports.Prisma.TournamentScalarFieldEnum = {
 exports.Prisma.TournamentJoinedTeamsScalarFieldEnum = {
   id: 'id',
   tournamentId: 'tournamentId',
-  userTeamId: 'userTeamId'
+  userTeamId: 'userTeamId',
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {

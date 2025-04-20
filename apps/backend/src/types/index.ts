@@ -112,8 +112,15 @@ export const tournamentSchema = z.object({
   maxLimit: z.number(),
   entryFee: z.number(),
 });
+
 export const joinTournamentSchema = z.object({
   teamId: z.string(),
   tournamentId: z.string(),
 });
 
+export const userTeamsSchema = z.object({
+  captain: z.string(),
+  viceCaptain: z.string(),
+  selectedPlayersIds: z.array(z.string()),
+  tournamentId: z.string()
+})

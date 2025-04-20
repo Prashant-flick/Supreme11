@@ -3298,74 +3298,84 @@ export namespace Prisma {
   }
 
   export type UserTeamsAvgAggregateOutputType = {
+    name: number | null
     fantasyPoints: number | null
   }
 
   export type UserTeamsSumAggregateOutputType = {
+    name: number | null
     fantasyPoints: number | null
   }
 
   export type UserTeamsMinAggregateOutputType = {
     id: string | null
+    name: number | null
     fantasyPoints: number | null
     captain: string | null
     viceCaptain: string | null
-    userId: string | null
+    ownerId: string | null
     disabled: boolean | null
   }
 
   export type UserTeamsMaxAggregateOutputType = {
     id: string | null
+    name: number | null
     fantasyPoints: number | null
     captain: string | null
     viceCaptain: string | null
-    userId: string | null
+    ownerId: string | null
     disabled: boolean | null
   }
 
   export type UserTeamsCountAggregateOutputType = {
     id: number
+    name: number
     fantasyPoints: number
     captain: number
     viceCaptain: number
-    userId: number
+    ownerId: number
     disabled: number
     _all: number
   }
 
 
   export type UserTeamsAvgAggregateInputType = {
+    name?: true
     fantasyPoints?: true
   }
 
   export type UserTeamsSumAggregateInputType = {
+    name?: true
     fantasyPoints?: true
   }
 
   export type UserTeamsMinAggregateInputType = {
     id?: true
+    name?: true
     fantasyPoints?: true
     captain?: true
     viceCaptain?: true
-    userId?: true
+    ownerId?: true
     disabled?: true
   }
 
   export type UserTeamsMaxAggregateInputType = {
     id?: true
+    name?: true
     fantasyPoints?: true
     captain?: true
     viceCaptain?: true
-    userId?: true
+    ownerId?: true
     disabled?: true
   }
 
   export type UserTeamsCountAggregateInputType = {
     id?: true
+    name?: true
     fantasyPoints?: true
     captain?: true
     viceCaptain?: true
-    userId?: true
+    ownerId?: true
     disabled?: true
     _all?: true
   }
@@ -3458,10 +3468,11 @@ export namespace Prisma {
 
   export type UserTeamsGroupByOutputType = {
     id: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
-    userId: string
+    ownerId: string
     disabled: boolean | null
     _count: UserTeamsCountAggregateOutputType | null
     _avg: UserTeamsAvgAggregateOutputType | null
@@ -3486,10 +3497,11 @@ export namespace Prisma {
 
   export type UserTeamsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     fantasyPoints?: boolean
     captain?: boolean
     viceCaptain?: boolean
-    userId?: boolean
+    ownerId?: boolean
     disabled?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     players?: boolean | UserTeams$playersArgs<ExtArgs>
@@ -3499,34 +3511,37 @@ export namespace Prisma {
 
   export type UserTeamsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     fantasyPoints?: boolean
     captain?: boolean
     viceCaptain?: boolean
-    userId?: boolean
+    ownerId?: boolean
     disabled?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userTeams"]>
 
   export type UserTeamsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     fantasyPoints?: boolean
     captain?: boolean
     viceCaptain?: boolean
-    userId?: boolean
+    ownerId?: boolean
     disabled?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userTeams"]>
 
   export type UserTeamsSelectScalar = {
     id?: boolean
+    name?: boolean
     fantasyPoints?: boolean
     captain?: boolean
     viceCaptain?: boolean
-    userId?: boolean
+    ownerId?: boolean
     disabled?: boolean
   }
 
-  export type UserTeamsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fantasyPoints" | "captain" | "viceCaptain" | "userId" | "disabled", ExtArgs["result"]["userTeams"]>
+  export type UserTeamsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "fantasyPoints" | "captain" | "viceCaptain" | "ownerId" | "disabled", ExtArgs["result"]["userTeams"]>
   export type UserTeamsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     players?: boolean | UserTeams$playersArgs<ExtArgs>
@@ -3549,10 +3564,11 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      name: number
       fantasyPoints: number
       captain: string
       viceCaptain: string
-      userId: string
+      ownerId: string
       disabled: boolean | null
     }, ExtArgs["result"]["userTeams"]>
     composites: {}
@@ -3981,10 +3997,11 @@ export namespace Prisma {
    */
   interface UserTeamsFieldRefs {
     readonly id: FieldRef<"UserTeams", 'String'>
+    readonly name: FieldRef<"UserTeams", 'Int'>
     readonly fantasyPoints: FieldRef<"UserTeams", 'Int'>
     readonly captain: FieldRef<"UserTeams", 'String'>
     readonly viceCaptain: FieldRef<"UserTeams", 'String'>
-    readonly userId: FieldRef<"UserTeams", 'String'>
+    readonly ownerId: FieldRef<"UserTeams", 'String'>
     readonly disabled: FieldRef<"UserTeams", 'Boolean'>
   }
     
@@ -12697,7 +12714,7 @@ export namespace Prisma {
     id: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool: number | null
     winner: string
     ownerId: string
     teamsJoined: number
@@ -12795,7 +12812,7 @@ export namespace Prisma {
       id: string
       maxLimit: number
       entryFee: number
-      prizePool: number
+      prizePool: number | null
       winner: string
       ownerId: string
       teamsJoined: number
@@ -13685,18 +13702,21 @@ export namespace Prisma {
     id: string | null
     tournamentId: string | null
     userTeamId: string | null
+    userId: string | null
   }
 
   export type TournamentJoinedTeamsMaxAggregateOutputType = {
     id: string | null
     tournamentId: string | null
     userTeamId: string | null
+    userId: string | null
   }
 
   export type TournamentJoinedTeamsCountAggregateOutputType = {
     id: number
     tournamentId: number
     userTeamId: number
+    userId: number
     _all: number
   }
 
@@ -13705,18 +13725,21 @@ export namespace Prisma {
     id?: true
     tournamentId?: true
     userTeamId?: true
+    userId?: true
   }
 
   export type TournamentJoinedTeamsMaxAggregateInputType = {
     id?: true
     tournamentId?: true
     userTeamId?: true
+    userId?: true
   }
 
   export type TournamentJoinedTeamsCountAggregateInputType = {
     id?: true
     tournamentId?: true
     userTeamId?: true
+    userId?: true
     _all?: true
   }
 
@@ -13796,6 +13819,7 @@ export namespace Prisma {
     id: string
     tournamentId: string
     userTeamId: string
+    userId: string
     _count: TournamentJoinedTeamsCountAggregateOutputType | null
     _min: TournamentJoinedTeamsMinAggregateOutputType | null
     _max: TournamentJoinedTeamsMaxAggregateOutputType | null
@@ -13819,6 +13843,7 @@ export namespace Prisma {
     id?: boolean
     tournamentId?: boolean
     userTeamId?: boolean
+    userId?: boolean
     tournament?: boolean | TournamentDefaultArgs<ExtArgs>
     userTeam?: boolean | UserTeamsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tournamentJoinedTeams"]>
@@ -13827,6 +13852,7 @@ export namespace Prisma {
     id?: boolean
     tournamentId?: boolean
     userTeamId?: boolean
+    userId?: boolean
     tournament?: boolean | TournamentDefaultArgs<ExtArgs>
     userTeam?: boolean | UserTeamsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tournamentJoinedTeams"]>
@@ -13835,6 +13861,7 @@ export namespace Prisma {
     id?: boolean
     tournamentId?: boolean
     userTeamId?: boolean
+    userId?: boolean
     tournament?: boolean | TournamentDefaultArgs<ExtArgs>
     userTeam?: boolean | UserTeamsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tournamentJoinedTeams"]>
@@ -13843,9 +13870,10 @@ export namespace Prisma {
     id?: boolean
     tournamentId?: boolean
     userTeamId?: boolean
+    userId?: boolean
   }
 
-  export type TournamentJoinedTeamsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tournamentId" | "userTeamId", ExtArgs["result"]["tournamentJoinedTeams"]>
+  export type TournamentJoinedTeamsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tournamentId" | "userTeamId" | "userId", ExtArgs["result"]["tournamentJoinedTeams"]>
   export type TournamentJoinedTeamsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tournament?: boolean | TournamentDefaultArgs<ExtArgs>
     userTeam?: boolean | UserTeamsDefaultArgs<ExtArgs>
@@ -13869,6 +13897,7 @@ export namespace Prisma {
       id: string
       tournamentId: string
       userTeamId: string
+      userId: string
     }, ExtArgs["result"]["tournamentJoinedTeams"]>
     composites: {}
   }
@@ -14297,6 +14326,7 @@ export namespace Prisma {
     readonly id: FieldRef<"TournamentJoinedTeams", 'String'>
     readonly tournamentId: FieldRef<"TournamentJoinedTeams", 'String'>
     readonly userTeamId: FieldRef<"TournamentJoinedTeams", 'String'>
+    readonly userId: FieldRef<"TournamentJoinedTeams", 'String'>
   }
     
 
@@ -14739,10 +14769,11 @@ export namespace Prisma {
 
   export const UserTeamsScalarFieldEnum: {
     id: 'id',
+    name: 'name',
     fantasyPoints: 'fantasyPoints',
     captain: 'captain',
     viceCaptain: 'viceCaptain',
-    userId: 'userId',
+    ownerId: 'ownerId',
     disabled: 'disabled'
   };
 
@@ -14869,7 +14900,8 @@ export namespace Prisma {
   export const TournamentJoinedTeamsScalarFieldEnum: {
     id: 'id',
     tournamentId: 'tournamentId',
-    userTeamId: 'userTeamId'
+    userTeamId: 'userTeamId',
+    userId: 'userId'
   };
 
   export type TournamentJoinedTeamsScalarFieldEnum = (typeof TournamentJoinedTeamsScalarFieldEnum)[keyof typeof TournamentJoinedTeamsScalarFieldEnum]
@@ -15178,10 +15210,11 @@ export namespace Prisma {
     OR?: UserTeamsWhereInput[]
     NOT?: UserTeamsWhereInput | UserTeamsWhereInput[]
     id?: StringFilter<"UserTeams"> | string
+    name?: IntFilter<"UserTeams"> | number
     fantasyPoints?: IntFilter<"UserTeams"> | number
     captain?: StringFilter<"UserTeams"> | string
     viceCaptain?: StringFilter<"UserTeams"> | string
-    userId?: StringFilter<"UserTeams"> | string
+    ownerId?: StringFilter<"UserTeams"> | string
     disabled?: BoolNullableFilter<"UserTeams"> | boolean | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     players?: UserTeamPlayersListRelationFilter
@@ -15190,10 +15223,11 @@ export namespace Prisma {
 
   export type UserTeamsOrderByWithRelationInput = {
     id?: SortOrder
+    name?: SortOrder
     fantasyPoints?: SortOrder
     captain?: SortOrder
     viceCaptain?: SortOrder
-    userId?: SortOrder
+    ownerId?: SortOrder
     disabled?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     players?: UserTeamPlayersOrderByRelationAggregateInput
@@ -15205,10 +15239,11 @@ export namespace Prisma {
     AND?: UserTeamsWhereInput | UserTeamsWhereInput[]
     OR?: UserTeamsWhereInput[]
     NOT?: UserTeamsWhereInput | UserTeamsWhereInput[]
+    name?: IntFilter<"UserTeams"> | number
     fantasyPoints?: IntFilter<"UserTeams"> | number
     captain?: StringFilter<"UserTeams"> | string
     viceCaptain?: StringFilter<"UserTeams"> | string
-    userId?: StringFilter<"UserTeams"> | string
+    ownerId?: StringFilter<"UserTeams"> | string
     disabled?: BoolNullableFilter<"UserTeams"> | boolean | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     players?: UserTeamPlayersListRelationFilter
@@ -15217,10 +15252,11 @@ export namespace Prisma {
 
   export type UserTeamsOrderByWithAggregationInput = {
     id?: SortOrder
+    name?: SortOrder
     fantasyPoints?: SortOrder
     captain?: SortOrder
     viceCaptain?: SortOrder
-    userId?: SortOrder
+    ownerId?: SortOrder
     disabled?: SortOrderInput | SortOrder
     _count?: UserTeamsCountOrderByAggregateInput
     _avg?: UserTeamsAvgOrderByAggregateInput
@@ -15234,10 +15270,11 @@ export namespace Prisma {
     OR?: UserTeamsScalarWhereWithAggregatesInput[]
     NOT?: UserTeamsScalarWhereWithAggregatesInput | UserTeamsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserTeams"> | string
+    name?: IntWithAggregatesFilter<"UserTeams"> | number
     fantasyPoints?: IntWithAggregatesFilter<"UserTeams"> | number
     captain?: StringWithAggregatesFilter<"UserTeams"> | string
     viceCaptain?: StringWithAggregatesFilter<"UserTeams"> | string
-    userId?: StringWithAggregatesFilter<"UserTeams"> | string
+    ownerId?: StringWithAggregatesFilter<"UserTeams"> | string
     disabled?: BoolNullableWithAggregatesFilter<"UserTeams"> | boolean | null
   }
 
@@ -15789,7 +15826,7 @@ export namespace Prisma {
     id?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
     winner?: StringFilter<"Tournament"> | string
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
@@ -15802,7 +15839,7 @@ export namespace Prisma {
     id?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrder
+    prizePool?: SortOrderInput | SortOrder
     winner?: SortOrder
     ownerId?: SortOrder
     teamsJoined?: SortOrder
@@ -15818,7 +15855,7 @@ export namespace Prisma {
     NOT?: TournamentWhereInput | TournamentWhereInput[]
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
     winner?: StringFilter<"Tournament"> | string
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
@@ -15831,7 +15868,7 @@ export namespace Prisma {
     id?: SortOrder
     maxLimit?: SortOrder
     entryFee?: SortOrder
-    prizePool?: SortOrder
+    prizePool?: SortOrderInput | SortOrder
     winner?: SortOrder
     ownerId?: SortOrder
     teamsJoined?: SortOrder
@@ -15850,7 +15887,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Tournament"> | string
     maxLimit?: IntWithAggregatesFilter<"Tournament"> | number
     entryFee?: IntWithAggregatesFilter<"Tournament"> | number
-    prizePool?: IntWithAggregatesFilter<"Tournament"> | number
+    prizePool?: IntNullableWithAggregatesFilter<"Tournament"> | number | null
     winner?: StringWithAggregatesFilter<"Tournament"> | string
     ownerId?: StringWithAggregatesFilter<"Tournament"> | string
     teamsJoined?: IntWithAggregatesFilter<"Tournament"> | number
@@ -15864,6 +15901,7 @@ export namespace Prisma {
     id?: StringFilter<"TournamentJoinedTeams"> | string
     tournamentId?: StringFilter<"TournamentJoinedTeams"> | string
     userTeamId?: StringFilter<"TournamentJoinedTeams"> | string
+    userId?: StringFilter<"TournamentJoinedTeams"> | string
     tournament?: XOR<TournamentScalarRelationFilter, TournamentWhereInput>
     userTeam?: XOR<UserTeamsScalarRelationFilter, UserTeamsWhereInput>
   }
@@ -15872,6 +15910,7 @@ export namespace Prisma {
     id?: SortOrder
     tournamentId?: SortOrder
     userTeamId?: SortOrder
+    userId?: SortOrder
     tournament?: TournamentOrderByWithRelationInput
     userTeam?: UserTeamsOrderByWithRelationInput
   }
@@ -15883,6 +15922,7 @@ export namespace Prisma {
     NOT?: TournamentJoinedTeamsWhereInput | TournamentJoinedTeamsWhereInput[]
     tournamentId?: StringFilter<"TournamentJoinedTeams"> | string
     userTeamId?: StringFilter<"TournamentJoinedTeams"> | string
+    userId?: StringFilter<"TournamentJoinedTeams"> | string
     tournament?: XOR<TournamentScalarRelationFilter, TournamentWhereInput>
     userTeam?: XOR<UserTeamsScalarRelationFilter, UserTeamsWhereInput>
   }, "id" | "id">
@@ -15891,6 +15931,7 @@ export namespace Prisma {
     id?: SortOrder
     tournamentId?: SortOrder
     userTeamId?: SortOrder
+    userId?: SortOrder
     _count?: TournamentJoinedTeamsCountOrderByAggregateInput
     _max?: TournamentJoinedTeamsMaxOrderByAggregateInput
     _min?: TournamentJoinedTeamsMinOrderByAggregateInput
@@ -15903,6 +15944,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"TournamentJoinedTeams"> | string
     tournamentId?: StringWithAggregatesFilter<"TournamentJoinedTeams"> | string
     userTeamId?: StringWithAggregatesFilter<"TournamentJoinedTeams"> | string
+    userId?: StringWithAggregatesFilter<"TournamentJoinedTeams"> | string
   }
 
   export type UserCreateInput = {
@@ -15978,6 +16020,7 @@ export namespace Prisma {
 
   export type UserTeamsCreateInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -15989,10 +16032,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedCreateInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
-    userId: string
+    ownerId: string
     disabled?: boolean | null
     players?: UserTeamPlayersUncheckedCreateNestedManyWithoutUserTeamsInput
     tournamentsJoined?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutUserTeamInput
@@ -16000,6 +16044,7 @@ export namespace Prisma {
 
   export type UserTeamsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -16011,10 +16056,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     disabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     players?: UserTeamPlayersUncheckedUpdateManyWithoutUserTeamsNestedInput
     tournamentsJoined?: TournamentJoinedTeamsUncheckedUpdateManyWithoutUserTeamNestedInput
@@ -16022,15 +16068,17 @@ export namespace Prisma {
 
   export type UserTeamsCreateManyInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
-    userId: string
+    ownerId: string
     disabled?: boolean | null
   }
 
   export type UserTeamsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -16039,10 +16087,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     disabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -16641,7 +16690,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -16653,7 +16702,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     ownerId: string
     teamsJoined: number
@@ -16665,7 +16714,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -16677,7 +16726,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
@@ -16689,7 +16738,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     ownerId: string
     teamsJoined: number
@@ -16700,7 +16749,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -16710,7 +16759,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
@@ -16719,6 +16768,7 @@ export namespace Prisma {
 
   export type TournamentJoinedTeamsCreateInput = {
     id?: string
+    userId: string
     tournament: TournamentCreateNestedOneWithoutTournamentJoinedTeamsInput
     userTeam: UserTeamsCreateNestedOneWithoutTournamentsJoinedInput
   }
@@ -16727,10 +16777,12 @@ export namespace Prisma {
     id?: string
     tournamentId: string
     userTeamId: string
+    userId: string
   }
 
   export type TournamentJoinedTeamsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     tournament?: TournamentUpdateOneRequiredWithoutTournamentJoinedTeamsNestedInput
     userTeam?: UserTeamsUpdateOneRequiredWithoutTournamentsJoinedNestedInput
   }
@@ -16739,22 +16791,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tournamentId?: StringFieldUpdateOperationsInput | string
     userTeamId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsCreateManyInput = {
     id?: string
     tournamentId: string
     userTeamId: string
+    userId: string
   }
 
   export type TournamentJoinedTeamsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     tournamentId?: StringFieldUpdateOperationsInput | string
     userTeamId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -16935,36 +16991,41 @@ export namespace Prisma {
 
   export type UserTeamsCountOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     fantasyPoints?: SortOrder
     captain?: SortOrder
     viceCaptain?: SortOrder
-    userId?: SortOrder
+    ownerId?: SortOrder
     disabled?: SortOrder
   }
 
   export type UserTeamsAvgOrderByAggregateInput = {
+    name?: SortOrder
     fantasyPoints?: SortOrder
   }
 
   export type UserTeamsMaxOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     fantasyPoints?: SortOrder
     captain?: SortOrder
     viceCaptain?: SortOrder
-    userId?: SortOrder
+    ownerId?: SortOrder
     disabled?: SortOrder
   }
 
   export type UserTeamsMinOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     fantasyPoints?: SortOrder
     captain?: SortOrder
     viceCaptain?: SortOrder
-    userId?: SortOrder
+    ownerId?: SortOrder
     disabled?: SortOrder
   }
 
   export type UserTeamsSumOrderByAggregateInput = {
+    name?: SortOrder
     fantasyPoints?: SortOrder
   }
 
@@ -17539,6 +17600,17 @@ export namespace Prisma {
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type TournamentCountOrderByAggregateInput = {
     id?: SortOrder
     maxLimit?: SortOrder
@@ -17586,6 +17658,22 @@ export namespace Prisma {
     teamsJoined?: SortOrder
   }
 
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type TournamentScalarRelationFilter = {
     is?: TournamentWhereInput
     isNot?: TournamentWhereInput
@@ -17595,18 +17683,21 @@ export namespace Prisma {
     id?: SortOrder
     tournamentId?: SortOrder
     userTeamId?: SortOrder
+    userId?: SortOrder
   }
 
   export type TournamentJoinedTeamsMaxOrderByAggregateInput = {
     id?: SortOrder
     tournamentId?: SortOrder
     userTeamId?: SortOrder
+    userId?: SortOrder
   }
 
   export type TournamentJoinedTeamsMinOrderByAggregateInput = {
     id?: SortOrder
     tournamentId?: SortOrder
     userTeamId?: SortOrder
+    userId?: SortOrder
   }
 
   export type UserTeamsCreateNestedManyWithoutUserInput = {
@@ -18225,6 +18316,14 @@ export namespace Prisma {
     connect?: TournamentJoinedTeamsWhereUniqueInput | TournamentJoinedTeamsWhereUniqueInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type TournamentJoinedTeamsUpdateManyWithoutTournamentNestedInput = {
     create?: XOR<TournamentJoinedTeamsCreateWithoutTournamentInput, TournamentJoinedTeamsUncheckedCreateWithoutTournamentInput> | TournamentJoinedTeamsCreateWithoutTournamentInput[] | TournamentJoinedTeamsUncheckedCreateWithoutTournamentInput[]
     connectOrCreate?: TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput | TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput[]
@@ -18608,8 +18707,36 @@ export namespace Prisma {
     _max?: NestedEnumWhatHappendFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type UserTeamsCreateWithoutUserInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -18620,6 +18747,7 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedCreateWithoutUserInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -18642,7 +18770,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -18653,7 +18781,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -18691,10 +18819,11 @@ export namespace Prisma {
     OR?: UserTeamsScalarWhereInput[]
     NOT?: UserTeamsScalarWhereInput | UserTeamsScalarWhereInput[]
     id?: StringFilter<"UserTeams"> | string
+    name?: IntFilter<"UserTeams"> | number
     fantasyPoints?: IntFilter<"UserTeams"> | number
     captain?: StringFilter<"UserTeams"> | string
     viceCaptain?: StringFilter<"UserTeams"> | string
-    userId?: StringFilter<"UserTeams"> | string
+    ownerId?: StringFilter<"UserTeams"> | string
     disabled?: BoolNullableFilter<"UserTeams"> | boolean | null
   }
 
@@ -18721,7 +18850,7 @@ export namespace Prisma {
     id?: StringFilter<"Tournament"> | string
     maxLimit?: IntFilter<"Tournament"> | number
     entryFee?: IntFilter<"Tournament"> | number
-    prizePool?: IntFilter<"Tournament"> | number
+    prizePool?: IntNullableFilter<"Tournament"> | number | null
     winner?: StringFilter<"Tournament"> | string
     ownerId?: StringFilter<"Tournament"> | string
     teamsJoined?: IntFilter<"Tournament"> | number
@@ -18775,12 +18904,14 @@ export namespace Prisma {
 
   export type TournamentJoinedTeamsCreateWithoutUserTeamInput = {
     id?: string
+    userId: string
     tournament: TournamentCreateNestedOneWithoutTournamentJoinedTeamsInput
   }
 
   export type TournamentJoinedTeamsUncheckedCreateWithoutUserTeamInput = {
     id?: string
     tournamentId: string
+    userId: string
   }
 
   export type TournamentJoinedTeamsCreateOrConnectWithoutUserTeamInput = {
@@ -18872,10 +19003,12 @@ export namespace Prisma {
     id?: StringFilter<"TournamentJoinedTeams"> | string
     tournamentId?: StringFilter<"TournamentJoinedTeams"> | string
     userTeamId?: StringFilter<"TournamentJoinedTeams"> | string
+    userId?: StringFilter<"TournamentJoinedTeams"> | string
   }
 
   export type UserTeamsCreateWithoutPlayersInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -18886,10 +19019,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedCreateWithoutPlayersInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
-    userId: string
+    ownerId: string
     disabled?: boolean | null
     tournamentsJoined?: TournamentJoinedTeamsUncheckedCreateNestedManyWithoutUserTeamInput
   }
@@ -18943,6 +19077,7 @@ export namespace Prisma {
 
   export type UserTeamsUpdateWithoutPlayersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -18953,10 +19088,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateWithoutPlayersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     disabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tournamentsJoined?: TournamentJoinedTeamsUncheckedUpdateManyWithoutUserTeamNestedInput
   }
@@ -19709,12 +19845,14 @@ export namespace Prisma {
 
   export type TournamentJoinedTeamsCreateWithoutTournamentInput = {
     id?: string
+    userId: string
     userTeam: UserTeamsCreateNestedOneWithoutTournamentsJoinedInput
   }
 
   export type TournamentJoinedTeamsUncheckedCreateWithoutTournamentInput = {
     id?: string
     userTeamId: string
+    userId: string
   }
 
   export type TournamentJoinedTeamsCreateOrConnectWithoutTournamentInput = {
@@ -19803,7 +19941,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -19814,7 +19952,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     ownerId: string
     teamsJoined: number
@@ -19828,6 +19966,7 @@ export namespace Prisma {
 
   export type UserTeamsCreateWithoutTournamentsJoinedInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -19838,10 +19977,11 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedCreateWithoutTournamentsJoinedInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
-    userId: string
+    ownerId: string
     disabled?: boolean | null
     players?: UserTeamPlayersUncheckedCreateNestedManyWithoutUserTeamsInput
   }
@@ -19866,7 +20006,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -19877,7 +20017,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
@@ -19897,6 +20037,7 @@ export namespace Prisma {
 
   export type UserTeamsUpdateWithoutTournamentsJoinedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -19907,16 +20048,18 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateWithoutTournamentsJoinedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
     disabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     players?: UserTeamPlayersUncheckedUpdateManyWithoutUserTeamsNestedInput
   }
 
   export type UserTeamsCreateManyUserInput = {
     id?: string
+    name: number
     fantasyPoints: number
     captain: string
     viceCaptain: string
@@ -19927,7 +20070,7 @@ export namespace Prisma {
     id?: string
     maxLimit: number
     entryFee: number
-    prizePool: number
+    prizePool?: number | null
     winner: string
     teamsJoined: number
     status: $Enums.TournamentStatus
@@ -19935,6 +20078,7 @@ export namespace Prisma {
 
   export type UserTeamsUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -19945,6 +20089,7 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -19955,6 +20100,7 @@ export namespace Prisma {
 
   export type UserTeamsUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: IntFieldUpdateOperationsInput | number
     fantasyPoints?: IntFieldUpdateOperationsInput | number
     captain?: StringFieldUpdateOperationsInput | string
     viceCaptain?: StringFieldUpdateOperationsInput | string
@@ -19965,7 +20111,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -19976,7 +20122,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -19987,7 +20133,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     maxLimit?: IntFieldUpdateOperationsInput | number
     entryFee?: IntFieldUpdateOperationsInput | number
-    prizePool?: IntFieldUpdateOperationsInput | number
+    prizePool?: NullableIntFieldUpdateOperationsInput | number | null
     winner?: StringFieldUpdateOperationsInput | string
     teamsJoined?: IntFieldUpdateOperationsInput | number
     status?: EnumTournamentStatusFieldUpdateOperationsInput | $Enums.TournamentStatus
@@ -20001,6 +20147,7 @@ export namespace Prisma {
   export type TournamentJoinedTeamsCreateManyUserTeamInput = {
     id?: string
     tournamentId: string
+    userId: string
   }
 
   export type UserTeamPlayersUpdateWithoutUserTeamsInput = {
@@ -20020,17 +20167,20 @@ export namespace Prisma {
 
   export type TournamentJoinedTeamsUpdateWithoutUserTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     tournament?: TournamentUpdateOneRequiredWithoutTournamentJoinedTeamsNestedInput
   }
 
   export type TournamentJoinedTeamsUncheckedUpdateWithoutUserTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     tournamentId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsUncheckedUpdateManyWithoutUserTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     tournamentId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PlayersCreateManySquadInput = {
@@ -20326,21 +20476,25 @@ export namespace Prisma {
   export type TournamentJoinedTeamsCreateManyTournamentInput = {
     id?: string
     userTeamId: string
+    userId: string
   }
 
   export type TournamentJoinedTeamsUpdateWithoutTournamentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     userTeam?: UserTeamsUpdateOneRequiredWithoutTournamentsJoinedNestedInput
   }
 
   export type TournamentJoinedTeamsUncheckedUpdateWithoutTournamentInput = {
     id?: StringFieldUpdateOperationsInput | string
     userTeamId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsUncheckedUpdateManyWithoutTournamentInput = {
     id?: StringFieldUpdateOperationsInput | string
     userTeamId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
 

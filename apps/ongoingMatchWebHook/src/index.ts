@@ -82,7 +82,7 @@ const getMatchTime = async () => {
       if (!matchInterval[match.id].interval) {
         const interval = setInterval(() => {
           getMatchData(match);
-        }, 60 * 1000);
+        }, 30 * 1000);
         matchInterval[match.id].interval = interval
       }
     })

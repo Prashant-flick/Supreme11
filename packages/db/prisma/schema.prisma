@@ -27,11 +27,12 @@ model User {
 
 model UserTeams {
   id                String                  @id @unique @default(cuid())
+  name              Int
   fantasyPoints     Int
   captain           String
   viceCaptain       String
-  userId            String
-  user              User                    @relation(fields: [userId], references: [id])
+  ownerId           String
+  user              User                    @relation(fields: [ownerId], references: [id])
   disabled          Boolean?
   players           UserTeamPlayers[]
   tournamentsJoined TournamentJoinedTeams[]
@@ -138,7 +139,7 @@ model Tournament {
   id                    String                  @id @unique @default(cuid())
   maxLimit              Int
   entryFee              Int
-  prizePool             Int
+  prizePool             Int?
   winner                String
   ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
@@ -153,6 +154,7 @@ model TournamentJoinedTeams {
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   userTeamId   String
   userTeam     UserTeams  @relation(fields: [userTeamId], references: [id])
+  userId       String
 }
 
 enum WhatHappend {
