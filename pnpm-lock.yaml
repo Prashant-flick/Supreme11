@@ -106,8 +106,11 @@ importers:
         specifier: ^6.3.1
         version: 6.3.2(@types/node@22.14.0)
 
-  apps/webHook:
+  apps/ongoingMatchWebHook:
     dependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@types/axios':
         specifier: ^0.14.4
         version: 0.14.4
@@ -132,6 +135,45 @@ importers:
       puppeteer-extra-plugin-stealth:
         specifier: ^2.11.2
         version: 2.11.2(puppeteer-extra@3.3.6(puppeteer-core@24.6.1)(puppeteer@24.6.1(typescript@5.8.3)))
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  apps/webHook:
+    dependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@types/axios':
+        specifier: ^0.14.4
+        version: 0.14.4
+      axios:
+        specifier: ^1.8.4
+        version: 1.8.4
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
+      esbuild:
+        specifier: ^0.25.2
+        version: 0.25.2
+      puppeteer:
+        specifier: ^24.6.1
+        version: 24.6.1(typescript@5.8.3)
+      puppeteer-core:
+        specifier: ^24.6.1
+        version: 24.6.1
+      puppeteer-extra:
+        specifier: ^3.3.6
+        version: 3.3.6(puppeteer-core@24.6.1)(puppeteer@24.6.1(typescript@5.8.3))
+      puppeteer-extra-plugin-stealth:
+        specifier: ^2.11.2
+        version: 2.11.2(puppeteer-extra@3.3.6(puppeteer-core@24.6.1)(puppeteer@24.6.1(typescript@5.8.3)))
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  packages/common:
+    dependencies:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3

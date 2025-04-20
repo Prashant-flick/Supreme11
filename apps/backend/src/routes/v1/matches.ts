@@ -3,11 +3,11 @@ import { matchesSchema } from "../../types";
 import client from "@repo/db/client"
 import type { Prisma } from "../../../../../packages/db/src/generated/prisma";
 import { adminMiddleware } from "../../middleware/admin";
+import { userMiddleware } from "../../middleware/user";
 
 export const matchesRouter = Router();
-matchesRouter.use(adminMiddleware)
 
-matchesRouter.post('/', async (req, res) => {
+matchesRouter.post('/', adminMiddleware, async (req, res) => {
   const parsedData = matchesSchema.safeParse(req.body);
   if (!parsedData.success) {
     res.status(400)
@@ -28,7 +28,10 @@ matchesRouter.post('/', async (req, res) => {
           winner: parsedData.data.winner,
           toss: parsedData.data.toss,
           elected: parsedData.data.elected,
-          status: parsedData.data.status
+          status: parsedData.data.status,
+          league: parsedData.data.league,
+          link: parsedData.data.link,
+          result: parsedData.data.result
         }
       });
 
@@ -48,6 +51,28 @@ matchesRouter.post('/', async (req, res) => {
     res.status(400)
       .json({
         message: "match creation failed"
+      })
+  }
+})
+
+matchesRouter.get('/league/:leagueName', userMiddleware, async (req, res) => {
+  try {
+    const leagueName = req.params.leagueName;
+    const matchesRes = await client.matches.findMany({
+      where: {
+        league: leagueName
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "matches fetching success",
+        matchesRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "matches feching failed"
       })
   }
 })

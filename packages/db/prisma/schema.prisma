@@ -87,12 +87,12 @@ model PlayerScore {
   player        Players             @relation(fields: [playerId], references: [id])
   matchId       String
   match         Matches             @relation(fields: [matchId], references: [id])
-
   @@unique([playerId, matchId])
 }
 
 model Matches {
   id          String            @id @unique @default(cuid())
+  league      String
   team1Id     String
   team2Id     String
   venue       String
@@ -101,6 +101,8 @@ model Matches {
   toss        MatchesWinner
   elected     MatchTossElection
   status      TournamentStatus
+  result      String
+  link        String
   innings     Inning[]
   playerScore PlayerScore[]
 }
@@ -117,7 +119,6 @@ model Inning {
   matchId     String
   match       Matches     @relation(fields: [matchId], references: [id])
   balls       Balls[]
-
   @@unique([matchId, whichInning])
 }
 

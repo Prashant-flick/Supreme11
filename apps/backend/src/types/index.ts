@@ -1,5 +1,4 @@
 import z from "zod";
-import { WhatHappend } from "../../../../packages/db/src/generated/prisma";
 
 export type expiresInType = `${number}${"M" | "Y" | "D"}`;
 
@@ -60,10 +59,13 @@ export const playerScoreUpdateSchema = z.object({
 });
 
 export const matchesSchema = z.object({
+  league: z.string(),
   team1Id: z.string(),
   team2Id: z.string(),
   venue: z.string(),
   date: z.date(),
+  link: z.string(),
+  result: z.string(),
   winner: z.enum(["team1", "team2", "tobeDeclared"]),
   toss: z.enum(["team1", "team2", "tobeDeclared"]),
   elected: z.enum(["bat", "ball", "tobeDeclared"]),

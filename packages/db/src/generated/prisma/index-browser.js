@@ -181,6 +181,7 @@ exports.Prisma.PlayerScoreScalarFieldEnum = {
 
 exports.Prisma.MatchesScalarFieldEnum = {
   id: 'id',
+  league: 'league',
   team1Id: 'team1Id',
   team2Id: 'team2Id',
   venue: 'venue',
@@ -188,7 +189,9 @@ exports.Prisma.MatchesScalarFieldEnum = {
   winner: 'winner',
   toss: 'toss',
   elected: 'elected',
-  status: 'status'
+  status: 'status',
+  result: 'result',
+  link: 'link'
 };
 
 exports.Prisma.InningScalarFieldEnum = {

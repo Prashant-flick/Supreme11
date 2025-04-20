@@ -93,6 +93,7 @@ model PlayerScore {
 
 model Matches {
   id          String            @id @unique @default(cuid())
+  league      String
   team1Id     String
   team2Id     String
   venue       String
@@ -101,6 +102,8 @@ model Matches {
   toss        MatchesWinner
   elected     MatchTossElection
   status      TournamentStatus
+  result      String
+  link        String
   innings     Inning[]
   playerScore PlayerScore[]
 }

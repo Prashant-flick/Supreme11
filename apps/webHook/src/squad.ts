@@ -2,6 +2,7 @@ import axios from "axios";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import dotenv from 'dotenv';
+import { playerInterface, squadInterface } from "@repo/common/types";
 
 dotenv.config();
 puppeteer.use(StealthPlugin());
@@ -9,23 +10,6 @@ puppeteer.use(StealthPlugin());
 const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000";
 const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
-
-interface squadInterface {
-  squadName: string,
-  playerLink: string,
-  img: string,
-}
-
-interface playerInterface {
-  name: string,
-  age: string,
-  battingDexture: "left" | "right",
-  bowlingDexture: "left" | "right",
-  role: "batsman" | "bowler" | "ar" | "wk",
-  countryStatus: "foreign" | "indian",
-  squadId: string,
-  img: string,
-}
 
 function convertTeamAbbreviation(teamName: string): string {
   switch (teamName.trim().toLowerCase()) {
