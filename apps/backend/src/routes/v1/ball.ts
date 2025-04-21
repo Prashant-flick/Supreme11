@@ -23,9 +23,14 @@ ballRouter.post('/', async (req, res) => {
         runout: parsedData.data.runout,
         bowler: parsedData.data.bowler,
         batsman: parsedData.data.batsman,
-        ballNo: parsedData.data.ballNo,
+        overNo: Number(parsedData.data.overNo),
+        overBallNo: Number(parsedData.data.overBallNo),
         catch: parsedData.data.catch,
-        whatHappend: parsedData.data.WhatHappend
+        whatHappendtext: parsedData.data.whatHappendText,
+        whatHappendWicketText: parsedData.data.whatHappendWicketText,
+        lbw: parsedData.data.lbw,
+        stump: parsedData.data.stump,
+        run: parsedData.data.run
       }
     })
 

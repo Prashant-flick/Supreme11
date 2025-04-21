@@ -1,5 +1,4 @@
 import z from "zod";
-import { WhatHappend } from "../../../../packages/db/src/generated/prisma";
 
 export type expiresInType = `${number}${"M" | "Y" | "D"}`;
 
@@ -60,10 +59,13 @@ export const playerScoreUpdateSchema = z.object({
 });
 
 export const matchesSchema = z.object({
+  league: z.string(),
   team1Id: z.string(),
   team2Id: z.string(),
   venue: z.string(),
   date: z.date(),
+  link: z.string(),
+  result: z.string(),
   winner: z.enum(["team1", "team2", "tobeDeclared"]),
   toss: z.enum(["team1", "team2", "tobeDeclared"]),
   elected: z.enum(["bat", "ball", "tobeDeclared"]),
@@ -82,27 +84,17 @@ export const inningUpdateSchema = z.object({
 });
 
 export const ballSchema = z.object({
-  ballNo: z.number(),
-  WhatHappend: z.enum([
-    "wd",
-    "six",
-    "four",
-    "dot",
-    "runout",
-    "catch",
-    "bowled",
-    "lbw",
-    "nb",
-    "fh",
-    "zero",
-    "one",
-    "two",
-    "three",
-  ]),
+  overNo: z.string(),
+  overBallNo: z.string(),
+  whatHappendText: z.string(),
+  whatHappendWicketText: z.string().optional(),
+  run: z.string(),
   bowler: z.string(),
   batsman: z.string(),
   runout: z.string().optional(),
   catch: z.string().optional(),
+  stump: z.string().optional(),
+  lbw: z.boolean(),
   inningId: z.string(),
 });
 
@@ -110,8 +102,15 @@ export const tournamentSchema = z.object({
   maxLimit: z.number(),
   entryFee: z.number(),
 });
+
 export const joinTournamentSchema = z.object({
   teamId: z.string(),
   tournamentId: z.string(),
 });
 
+export const userTeamsSchema = z.object({
+  captain: z.string(),
+  viceCaptain: z.string(),
+  selectedPlayersIds: z.array(z.string()),
+  tournamentId: z.string()
+})

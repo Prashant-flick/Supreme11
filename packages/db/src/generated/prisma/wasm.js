@@ -128,10 +128,11 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.UserTeamsScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   fantasyPoints: 'fantasyPoints',
   captain: 'captain',
   viceCaptain: 'viceCaptain',
-  userId: 'userId',
+  ownerId: 'ownerId',
   disabled: 'disabled'
 };
 
@@ -181,6 +182,7 @@ exports.Prisma.PlayerScoreScalarFieldEnum = {
 
 exports.Prisma.MatchesScalarFieldEnum = {
   id: 'id',
+  league: 'league',
   team1Id: 'team1Id',
   team2Id: 'team2Id',
   venue: 'venue',
@@ -188,12 +190,15 @@ exports.Prisma.MatchesScalarFieldEnum = {
   winner: 'winner',
   toss: 'toss',
   elected: 'elected',
-  status: 'status'
+  status: 'status',
+  result: 'result',
+  link: 'link'
 };
 
 exports.Prisma.InningScalarFieldEnum = {
   id: 'id',
   whichInning: 'whichInning',
+  teamName: 'teamName',
   score: 'score',
   wickets: 'wickets',
   extras: 'extras',
@@ -205,12 +210,17 @@ exports.Prisma.InningScalarFieldEnum = {
 
 exports.Prisma.BallsScalarFieldEnum = {
   id: 'id',
-  ballNo: 'ballNo',
-  whatHappend: 'whatHappend',
+  overNo: 'overNo',
+  whatHappendtext: 'whatHappendtext',
+  whatHappendWicketText: 'whatHappendWicketText',
+  overBallNo: 'overBallNo',
   bowler: 'bowler',
   batsman: 'batsman',
   catch: 'catch',
   runout: 'runout',
+  stump: 'stump',
+  lbw: 'lbw',
+  run: 'run',
   inningId: 'inningId'
 };
 
@@ -228,7 +238,8 @@ exports.Prisma.TournamentScalarFieldEnum = {
 exports.Prisma.TournamentJoinedTeamsScalarFieldEnum = {
   id: 'id',
   tournamentId: 'tournamentId',
-  userTeamId: 'userTeamId'
+  userTeamId: 'userTeamId',
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -294,23 +305,6 @@ exports.TournamentStatus = exports.$Enums.TournamentStatus = {
 exports.WhichInning = exports.$Enums.WhichInning = {
   first: 'first',
   second: 'second'
-};
-
-exports.WhatHappend = exports.$Enums.WhatHappend = {
-  wd: 'wd',
-  six: 'six',
-  four: 'four',
-  dot: 'dot',
-  runout: 'runout',
-  catch: 'catch',
-  bowled: 'bowled',
-  nb: 'nb',
-  fh: 'fh',
-  zero: 'zero',
-  one: 'one',
-  two: 'two',
-  three: 'three',
-  lbw: 'lbw'
 };
 
 exports.Prisma.ModelName = {

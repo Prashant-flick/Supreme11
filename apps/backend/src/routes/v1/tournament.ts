@@ -6,10 +6,11 @@ import { userMiddleware } from "../../middleware/user";
 export const tournamentRouter = Router();
 tournamentRouter.use(userMiddleware);
 
-tournamentRouter.post("/create", async (req: any, res: any) => {
+tournamentRouter.post("/create", async (req, res) => {
   const parsedData = tournamentSchema.safeParse(req.body);
   if (!parsedData.success) {
-    return res.status(400).json({ message: "validation failed" });
+    res.status(400).json({ message: "validation failed" });
+    return;
   }
 
   const { maxLimit, entryFee } = parsedData.data;
@@ -21,6 +22,7 @@ tournamentRouter.post("/create", async (req: any, res: any) => {
         ownerId: req.userId!,
         teamsJoined: 1,
         status: "upcoming",
+        winner: "tobeDeclared",
       },
     });
     res.status(200).json({
@@ -32,12 +34,13 @@ tournamentRouter.post("/create", async (req: any, res: any) => {
   }
 });
 
-tournamentRouter.patch("/join", async (req: any, res: any) => {
+tournamentRouter.patch("/join", async (req, res) => {
   const parsedData = joinTournamentSchema.safeParse(req.body);
   if (!parsedData.success) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "error parsing the data",
     });
+    return;
   }
 
   const { teamId, tournamentId } = parsedData.data;
@@ -47,17 +50,17 @@ tournamentRouter.patch("/join", async (req: any, res: any) => {
         id: tournamentId,
       },
     });
-    if (!tournamentDetails) {
-      return res.status(404).json({ message: "tournament not found" });
-    }
-    if (tournamentDetails.teamsJoined >= tournamentDetails.maxLimit) {
-      return res.status(409).json({ messaga: "Tournament full" });
+
+    if (tournamentDetails && tournamentDetails.teamsJoined >= tournamentDetails.maxLimit) {
+      res.status(409).json({ messaga: "Tournament full" });
+      return
     }
     const joinedTournamentResponse = await client.$transaction([
       client.tournamentJoinedTeams.create({
         data: {
           tournamentId: tournamentId,
           userTeamId: teamId,
+          userId: req.userId!
         },
       }),
 
@@ -73,12 +76,12 @@ tournamentRouter.patch("/join", async (req: any, res: any) => {
       }),
     ]);
 
-    return res.status(200).json({
+    res.status(200).json({
       joinedTournamentResponse,
       message: "joined tournament successfully",
     });
   } catch (err) {
-    return res.status(400).json({ message: "error joining tournament", err });
+    res.status(400).json({ message: "error joining tournament", err });
   }
 });
 

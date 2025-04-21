@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc -b",
+    "build2": "npx esbuild src/*.ts --bundle --platform=node --outdir=dist --tsconfig=tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "pnpm run build && pnpm start",
+    "dev2": "pnpm run build2 && pnpm start"
   },
   "author": "",
   "license": "ISC",

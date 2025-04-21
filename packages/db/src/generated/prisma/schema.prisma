@@ -27,11 +27,12 @@ model User {
 
 model UserTeams {
   id                String                  @id @unique @default(cuid())
+  name              Int
   fantasyPoints     Int
   captain           String
   viceCaptain       String
-  userId            String
-  user              User                    @relation(fields: [userId], references: [id])
+  ownerId           String
+  user              User                    @relation(fields: [ownerId], references: [id])
   disabled          Boolean?
   players           UserTeamPlayers[]
   tournamentsJoined TournamentJoinedTeams[]
@@ -93,6 +94,7 @@ model PlayerScore {
 
 model Matches {
   id          String            @id @unique @default(cuid())
+  league      String
   team1Id     String
   team2Id     String
   venue       String
@@ -101,6 +103,8 @@ model Matches {
   toss        MatchesWinner
   elected     MatchTossElection
   status      TournamentStatus
+  result      String
+  link        String
   innings     Inning[]
   playerScore PlayerScore[]
 }
@@ -108,6 +112,7 @@ model Matches {
 model Inning {
   id          String      @id @unique @default(cuid())
   whichInning WhichInning
+  teamName    String?
   score       Int
   wickets     Int
   extras      Int
@@ -122,22 +127,27 @@ model Inning {
 }
 
 model Balls {
-  id          String      @id @unique @default(cuid())
-  ballNo      Int
-  whatHappend WhatHappend
-  bowler      String
-  batsman     String
-  catch       String?
-  runout      String?
-  inningId    String
-  inning      Inning      @relation(fields: [inningId], references: [id])
+  id                    String  @id @unique @default(cuid())
+  overNo                Int
+  whatHappendtext       String
+  whatHappendWicketText String?
+  overBallNo            Int
+  bowler                String
+  batsman               String
+  catch                 String?
+  runout                String?
+  stump                 String?
+  lbw                   Boolean
+  run                   String
+  inningId              String
+  inning                Inning  @relation(fields: [inningId], references: [id])
 }
 
 model Tournament {
   id                    String                  @id @unique @default(cuid())
   maxLimit              Int
   entryFee              Int
-  prizePool             Int
+  prizePool             Int?
   winner                String
   ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
@@ -152,23 +162,7 @@ model TournamentJoinedTeams {
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   userTeamId   String
   userTeam     UserTeams  @relation(fields: [userTeamId], references: [id])
-}
-
-enum WhatHappend {
-  wd
-  six
-  four
-  dot
-  runout
-  catch
-  bowled
-  nb
-  fh
-  zero
-  one
-  two
-  three
-  lbw
+  userId       String
 }
 
 enum WhichInning {

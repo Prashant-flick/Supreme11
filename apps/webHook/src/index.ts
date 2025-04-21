@@ -2,6 +2,7 @@ import axios from "axios";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import dotenv from 'dotenv';
+import { matchInterface } from "@repo/common/types";
 
 dotenv.config();
 puppeteer.use(StealthPlugin());
@@ -9,18 +10,6 @@ puppeteer.use(StealthPlugin());
 const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000";
 const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
-
-interface matchInterface {
-  team1Name: string,
-  team2Name: string,
-  venue: string,
-  toss: 'team1' | 'team2' | 'tobeDeclared',
-  winner: 'team1' | 'team2' | 'tobeDeclared',
-  elected: 'bat' | 'ball' | 'tobeDeclared',
-  status: 'upcoming' | 'started' | 'ended',
-  link: string,
-  date: Date
-}
 
 function convertTeamAbbreviation(teamName: string): string {
   switch (teamName.trim().toLowerCase()) {
@@ -109,6 +98,9 @@ async function getMatches() {
         : 'tobeDeclared';
       const status = match.matchResult === 'Match yet to begin' ? 'upcoming' : 'ended';
       const date = parseDateTime(match.matchDate, match.matchTime);
+      const link: string[] = match.matchLink.split('/');
+      link.pop();
+      const newLink = link.join('/') + '/ball-by-ball-commentary';
 
       return {
         team1Name: team1,
@@ -118,7 +110,7 @@ async function getMatches() {
         status,
         winner,
         venue: match.matchVenue,
-        link: match.matchLink,
+        link: newLink,
         date,
       };
     });
