@@ -98,6 +98,9 @@ async function getMatches() {
         : 'tobeDeclared';
       const status = match.matchResult === 'Match yet to begin' ? 'upcoming' : 'ended';
       const date = parseDateTime(match.matchDate, match.matchTime);
+      const link: string[] = match.matchLink.split('/');
+      link.pop();
+      const newLink = link.join('/') + '/ball-by-ball-commentary';
 
       return {
         team1Name: team1,
@@ -107,7 +110,7 @@ async function getMatches() {
         status,
         winner,
         venue: match.matchVenue,
-        link: match.matchLink,
+        link: newLink,
         date,
       };
     });

@@ -73,27 +73,7 @@ export type TournamentJoinedTeams = $Result.DefaultSelection<Prisma.$TournamentJ
  * Enums
  */
 export namespace $Enums {
-  export const WhatHappend: {
-  wd: 'wd',
-  six: 'six',
-  four: 'four',
-  dot: 'dot',
-  runout: 'runout',
-  catch: 'catch',
-  bowled: 'bowled',
-  nb: 'nb',
-  fh: 'fh',
-  zero: 'zero',
-  one: 'one',
-  two: 'two',
-  three: 'three',
-  lbw: 'lbw'
-};
-
-export type WhatHappend = (typeof WhatHappend)[keyof typeof WhatHappend]
-
-
-export const WhichInning: {
+  export const WhichInning: {
   first: 'first',
   second: 'second'
 };
@@ -171,10 +151,6 @@ export const UserRole: {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 }
-
-export type WhatHappend = $Enums.WhatHappend
-
-export const WhatHappend: typeof $Enums.WhatHappend
 
 export type WhichInning = $Enums.WhichInning
 
@@ -10229,6 +10205,7 @@ export namespace Prisma {
   export type InningMinAggregateOutputType = {
     id: string | null
     whichInning: $Enums.WhichInning | null
+    teamName: string | null
     score: number | null
     wickets: number | null
     extras: number | null
@@ -10241,6 +10218,7 @@ export namespace Prisma {
   export type InningMaxAggregateOutputType = {
     id: string | null
     whichInning: $Enums.WhichInning | null
+    teamName: string | null
     score: number | null
     wickets: number | null
     extras: number | null
@@ -10253,6 +10231,7 @@ export namespace Prisma {
   export type InningCountAggregateOutputType = {
     id: number
     whichInning: number
+    teamName: number
     score: number
     wickets: number
     extras: number
@@ -10279,6 +10258,7 @@ export namespace Prisma {
   export type InningMinAggregateInputType = {
     id?: true
     whichInning?: true
+    teamName?: true
     score?: true
     wickets?: true
     extras?: true
@@ -10291,6 +10271,7 @@ export namespace Prisma {
   export type InningMaxAggregateInputType = {
     id?: true
     whichInning?: true
+    teamName?: true
     score?: true
     wickets?: true
     extras?: true
@@ -10303,6 +10284,7 @@ export namespace Prisma {
   export type InningCountAggregateInputType = {
     id?: true
     whichInning?: true
+    teamName?: true
     score?: true
     wickets?: true
     extras?: true
@@ -10402,6 +10384,7 @@ export namespace Prisma {
   export type InningGroupByOutputType = {
     id: string
     whichInning: $Enums.WhichInning
+    teamName: string | null
     score: number
     wickets: number
     extras: number
@@ -10433,6 +10416,7 @@ export namespace Prisma {
   export type InningSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     whichInning?: boolean
+    teamName?: boolean
     score?: boolean
     wickets?: boolean
     extras?: boolean
@@ -10448,6 +10432,7 @@ export namespace Prisma {
   export type InningSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     whichInning?: boolean
+    teamName?: boolean
     score?: boolean
     wickets?: boolean
     extras?: boolean
@@ -10461,6 +10446,7 @@ export namespace Prisma {
   export type InningSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     whichInning?: boolean
+    teamName?: boolean
     score?: boolean
     wickets?: boolean
     extras?: boolean
@@ -10474,6 +10460,7 @@ export namespace Prisma {
   export type InningSelectScalar = {
     id?: boolean
     whichInning?: boolean
+    teamName?: boolean
     score?: boolean
     wickets?: boolean
     extras?: boolean
@@ -10483,7 +10470,7 @@ export namespace Prisma {
     matchId?: boolean
   }
 
-  export type InningOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "whichInning" | "score" | "wickets" | "extras" | "batsman1" | "batsman2" | "bowler" | "matchId", ExtArgs["result"]["inning"]>
+  export type InningOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "whichInning" | "teamName" | "score" | "wickets" | "extras" | "batsman1" | "batsman2" | "bowler" | "matchId", ExtArgs["result"]["inning"]>
   export type InningInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     match?: boolean | MatchesDefaultArgs<ExtArgs>
     balls?: boolean | Inning$ballsArgs<ExtArgs>
@@ -10505,6 +10492,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       whichInning: $Enums.WhichInning
+      teamName: string | null
       score: number
       wickets: number
       extras: number
@@ -10939,6 +10927,7 @@ export namespace Prisma {
   interface InningFieldRefs {
     readonly id: FieldRef<"Inning", 'String'>
     readonly whichInning: FieldRef<"Inning", 'WhichInning'>
+    readonly teamName: FieldRef<"Inning", 'String'>
     readonly score: FieldRef<"Inning", 'Int'>
     readonly wickets: FieldRef<"Inning", 'Int'>
     readonly extras: FieldRef<"Inning", 'Int'>
@@ -11397,86 +11386,120 @@ export namespace Prisma {
   }
 
   export type BallsAvgAggregateOutputType = {
-    ballNo: number | null
+    overNo: number | null
+    overBallNo: number | null
   }
 
   export type BallsSumAggregateOutputType = {
-    ballNo: number | null
+    overNo: number | null
+    overBallNo: number | null
   }
 
   export type BallsMinAggregateOutputType = {
     id: string | null
-    ballNo: number | null
-    whatHappend: $Enums.WhatHappend | null
+    overNo: number | null
+    whatHappendtext: string | null
+    whatHappendWicketText: string | null
+    overBallNo: number | null
     bowler: string | null
     batsman: string | null
     catch: string | null
     runout: string | null
+    stump: string | null
+    lbw: boolean | null
+    run: string | null
     inningId: string | null
   }
 
   export type BallsMaxAggregateOutputType = {
     id: string | null
-    ballNo: number | null
-    whatHappend: $Enums.WhatHappend | null
+    overNo: number | null
+    whatHappendtext: string | null
+    whatHappendWicketText: string | null
+    overBallNo: number | null
     bowler: string | null
     batsman: string | null
     catch: string | null
     runout: string | null
+    stump: string | null
+    lbw: boolean | null
+    run: string | null
     inningId: string | null
   }
 
   export type BallsCountAggregateOutputType = {
     id: number
-    ballNo: number
-    whatHappend: number
+    overNo: number
+    whatHappendtext: number
+    whatHappendWicketText: number
+    overBallNo: number
     bowler: number
     batsman: number
     catch: number
     runout: number
+    stump: number
+    lbw: number
+    run: number
     inningId: number
     _all: number
   }
 
 
   export type BallsAvgAggregateInputType = {
-    ballNo?: true
+    overNo?: true
+    overBallNo?: true
   }
 
   export type BallsSumAggregateInputType = {
-    ballNo?: true
+    overNo?: true
+    overBallNo?: true
   }
 
   export type BallsMinAggregateInputType = {
     id?: true
-    ballNo?: true
-    whatHappend?: true
+    overNo?: true
+    whatHappendtext?: true
+    whatHappendWicketText?: true
+    overBallNo?: true
     bowler?: true
     batsman?: true
     catch?: true
     runout?: true
+    stump?: true
+    lbw?: true
+    run?: true
     inningId?: true
   }
 
   export type BallsMaxAggregateInputType = {
     id?: true
-    ballNo?: true
-    whatHappend?: true
+    overNo?: true
+    whatHappendtext?: true
+    whatHappendWicketText?: true
+    overBallNo?: true
     bowler?: true
     batsman?: true
     catch?: true
     runout?: true
+    stump?: true
+    lbw?: true
+    run?: true
     inningId?: true
   }
 
   export type BallsCountAggregateInputType = {
     id?: true
-    ballNo?: true
-    whatHappend?: true
+    overNo?: true
+    whatHappendtext?: true
+    whatHappendWicketText?: true
+    overBallNo?: true
     bowler?: true
     batsman?: true
     catch?: true
     runout?: true
+    stump?: true
+    lbw?: true
+    run?: true
     inningId?: true
     _all?: true
   }
@@ -11569,12 +11592,17 @@ export namespace Prisma {
 
   export type BallsGroupByOutputType = {
     id: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch: string | null
     runout: string | null
+    stump: string | null
+    lbw: boolean
+    run: string
     inningId: string
     _count: BallsCountAggregateOutputType | null
     _avg: BallsAvgAggregateOutputType | null
@@ -11599,52 +11627,72 @@ export namespace Prisma {
 
   export type BallsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ballNo?: boolean
-    whatHappend?: boolean
+    overNo?: boolean
+    whatHappendtext?: boolean
+    whatHappendWicketText?: boolean
+    overBallNo?: boolean
     bowler?: boolean
     batsman?: boolean
     catch?: boolean
     runout?: boolean
+    stump?: boolean
+    lbw?: boolean
+    run?: boolean
     inningId?: boolean
     inning?: boolean | InningDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["balls"]>
 
   export type BallsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ballNo?: boolean
-    whatHappend?: boolean
+    overNo?: boolean
+    whatHappendtext?: boolean
+    whatHappendWicketText?: boolean
+    overBallNo?: boolean
     bowler?: boolean
     batsman?: boolean
     catch?: boolean
     runout?: boolean
+    stump?: boolean
+    lbw?: boolean
+    run?: boolean
     inningId?: boolean
     inning?: boolean | InningDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["balls"]>
 
   export type BallsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    ballNo?: boolean
-    whatHappend?: boolean
+    overNo?: boolean
+    whatHappendtext?: boolean
+    whatHappendWicketText?: boolean
+    overBallNo?: boolean
     bowler?: boolean
     batsman?: boolean
     catch?: boolean
     runout?: boolean
+    stump?: boolean
+    lbw?: boolean
+    run?: boolean
     inningId?: boolean
     inning?: boolean | InningDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["balls"]>
 
   export type BallsSelectScalar = {
     id?: boolean
-    ballNo?: boolean
-    whatHappend?: boolean
+    overNo?: boolean
+    whatHappendtext?: boolean
+    whatHappendWicketText?: boolean
+    overBallNo?: boolean
     bowler?: boolean
     batsman?: boolean
     catch?: boolean
     runout?: boolean
+    stump?: boolean
+    lbw?: boolean
+    run?: boolean
     inningId?: boolean
   }
 
-  export type BallsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ballNo" | "whatHappend" | "bowler" | "batsman" | "catch" | "runout" | "inningId", ExtArgs["result"]["balls"]>
+  export type BallsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "overNo" | "whatHappendtext" | "whatHappendWicketText" | "overBallNo" | "bowler" | "batsman" | "catch" | "runout" | "stump" | "lbw" | "run" | "inningId", ExtArgs["result"]["balls"]>
   export type BallsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     inning?: boolean | InningDefaultArgs<ExtArgs>
   }
@@ -11662,12 +11710,17 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      ballNo: number
-      whatHappend: $Enums.WhatHappend
+      overNo: number
+      whatHappendtext: string
+      whatHappendWicketText: string | null
+      overBallNo: number
       bowler: string
       batsman: string
       catch: string | null
       runout: string | null
+      stump: string | null
+      lbw: boolean
+      run: string
       inningId: string
     }, ExtArgs["result"]["balls"]>
     composites: {}
@@ -12094,12 +12147,17 @@ export namespace Prisma {
    */
   interface BallsFieldRefs {
     readonly id: FieldRef<"Balls", 'String'>
-    readonly ballNo: FieldRef<"Balls", 'Int'>
-    readonly whatHappend: FieldRef<"Balls", 'WhatHappend'>
+    readonly overNo: FieldRef<"Balls", 'Int'>
+    readonly whatHappendtext: FieldRef<"Balls", 'String'>
+    readonly whatHappendWicketText: FieldRef<"Balls", 'String'>
+    readonly overBallNo: FieldRef<"Balls", 'Int'>
     readonly bowler: FieldRef<"Balls", 'String'>
     readonly batsman: FieldRef<"Balls", 'String'>
     readonly catch: FieldRef<"Balls", 'String'>
     readonly runout: FieldRef<"Balls", 'String'>
+    readonly stump: FieldRef<"Balls", 'String'>
+    readonly lbw: FieldRef<"Balls", 'Boolean'>
+    readonly run: FieldRef<"Balls", 'String'>
     readonly inningId: FieldRef<"Balls", 'String'>
   }
     
@@ -14857,6 +14915,7 @@ export namespace Prisma {
   export const InningScalarFieldEnum: {
     id: 'id',
     whichInning: 'whichInning',
+    teamName: 'teamName',
     score: 'score',
     wickets: 'wickets',
     extras: 'extras',
@@ -14871,12 +14930,17 @@ export namespace Prisma {
 
   export const BallsScalarFieldEnum: {
     id: 'id',
-    ballNo: 'ballNo',
-    whatHappend: 'whatHappend',
+    overNo: 'overNo',
+    whatHappendtext: 'whatHappendtext',
+    whatHappendWicketText: 'whatHappendWicketText',
+    overBallNo: 'overBallNo',
     bowler: 'bowler',
     batsman: 'batsman',
     catch: 'catch',
     runout: 'runout',
+    stump: 'stump',
+    lbw: 'lbw',
+    run: 'run',
     inningId: 'inningId'
   };
 
@@ -15108,20 +15172,6 @@ export namespace Prisma {
    * Reference to a field of type 'WhichInning[]'
    */
   export type ListEnumWhichInningFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhichInning[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'WhatHappend'
-   */
-  export type EnumWhatHappendFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatHappend'>
-    
-
-
-  /**
-   * Reference to a field of type 'WhatHappend[]'
-   */
-  export type ListEnumWhatHappendFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatHappend[]'>
     
 
 
@@ -15672,6 +15722,7 @@ export namespace Prisma {
     NOT?: InningWhereInput | InningWhereInput[]
     id?: StringFilter<"Inning"> | string
     whichInning?: EnumWhichInningFilter<"Inning"> | $Enums.WhichInning
+    teamName?: StringNullableFilter<"Inning"> | string | null
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
@@ -15686,6 +15737,7 @@ export namespace Prisma {
   export type InningOrderByWithRelationInput = {
     id?: SortOrder
     whichInning?: SortOrder
+    teamName?: SortOrderInput | SortOrder
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
@@ -15704,6 +15756,7 @@ export namespace Prisma {
     OR?: InningWhereInput[]
     NOT?: InningWhereInput | InningWhereInput[]
     whichInning?: EnumWhichInningFilter<"Inning"> | $Enums.WhichInning
+    teamName?: StringNullableFilter<"Inning"> | string | null
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
@@ -15718,6 +15771,7 @@ export namespace Prisma {
   export type InningOrderByWithAggregationInput = {
     id?: SortOrder
     whichInning?: SortOrder
+    teamName?: SortOrderInput | SortOrder
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
@@ -15738,6 +15792,7 @@ export namespace Prisma {
     NOT?: InningScalarWhereWithAggregatesInput | InningScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Inning"> | string
     whichInning?: EnumWhichInningWithAggregatesFilter<"Inning"> | $Enums.WhichInning
+    teamName?: StringNullableWithAggregatesFilter<"Inning"> | string | null
     score?: IntWithAggregatesFilter<"Inning"> | number
     wickets?: IntWithAggregatesFilter<"Inning"> | number
     extras?: IntWithAggregatesFilter<"Inning"> | number
@@ -15752,24 +15807,34 @@ export namespace Prisma {
     OR?: BallsWhereInput[]
     NOT?: BallsWhereInput | BallsWhereInput[]
     id?: StringFilter<"Balls"> | string
-    ballNo?: IntFilter<"Balls"> | number
-    whatHappend?: EnumWhatHappendFilter<"Balls"> | $Enums.WhatHappend
+    overNo?: IntFilter<"Balls"> | number
+    whatHappendtext?: StringFilter<"Balls"> | string
+    whatHappendWicketText?: StringNullableFilter<"Balls"> | string | null
+    overBallNo?: IntFilter<"Balls"> | number
     bowler?: StringFilter<"Balls"> | string
     batsman?: StringFilter<"Balls"> | string
     catch?: StringNullableFilter<"Balls"> | string | null
     runout?: StringNullableFilter<"Balls"> | string | null
+    stump?: StringNullableFilter<"Balls"> | string | null
+    lbw?: BoolFilter<"Balls"> | boolean
+    run?: StringFilter<"Balls"> | string
     inningId?: StringFilter<"Balls"> | string
     inning?: XOR<InningScalarRelationFilter, InningWhereInput>
   }
 
   export type BallsOrderByWithRelationInput = {
     id?: SortOrder
-    ballNo?: SortOrder
-    whatHappend?: SortOrder
+    overNo?: SortOrder
+    whatHappendtext?: SortOrder
+    whatHappendWicketText?: SortOrderInput | SortOrder
+    overBallNo?: SortOrder
     bowler?: SortOrder
     batsman?: SortOrder
     catch?: SortOrderInput | SortOrder
     runout?: SortOrderInput | SortOrder
+    stump?: SortOrderInput | SortOrder
+    lbw?: SortOrder
+    run?: SortOrder
     inningId?: SortOrder
     inning?: InningOrderByWithRelationInput
   }
@@ -15779,24 +15844,34 @@ export namespace Prisma {
     AND?: BallsWhereInput | BallsWhereInput[]
     OR?: BallsWhereInput[]
     NOT?: BallsWhereInput | BallsWhereInput[]
-    ballNo?: IntFilter<"Balls"> | number
-    whatHappend?: EnumWhatHappendFilter<"Balls"> | $Enums.WhatHappend
+    overNo?: IntFilter<"Balls"> | number
+    whatHappendtext?: StringFilter<"Balls"> | string
+    whatHappendWicketText?: StringNullableFilter<"Balls"> | string | null
+    overBallNo?: IntFilter<"Balls"> | number
     bowler?: StringFilter<"Balls"> | string
     batsman?: StringFilter<"Balls"> | string
     catch?: StringNullableFilter<"Balls"> | string | null
     runout?: StringNullableFilter<"Balls"> | string | null
+    stump?: StringNullableFilter<"Balls"> | string | null
+    lbw?: BoolFilter<"Balls"> | boolean
+    run?: StringFilter<"Balls"> | string
     inningId?: StringFilter<"Balls"> | string
     inning?: XOR<InningScalarRelationFilter, InningWhereInput>
   }, "id" | "id">
 
   export type BallsOrderByWithAggregationInput = {
     id?: SortOrder
-    ballNo?: SortOrder
-    whatHappend?: SortOrder
+    overNo?: SortOrder
+    whatHappendtext?: SortOrder
+    whatHappendWicketText?: SortOrderInput | SortOrder
+    overBallNo?: SortOrder
     bowler?: SortOrder
     batsman?: SortOrder
     catch?: SortOrderInput | SortOrder
     runout?: SortOrderInput | SortOrder
+    stump?: SortOrderInput | SortOrder
+    lbw?: SortOrder
+    run?: SortOrder
     inningId?: SortOrder
     _count?: BallsCountOrderByAggregateInput
     _avg?: BallsAvgOrderByAggregateInput
@@ -15810,12 +15885,17 @@ export namespace Prisma {
     OR?: BallsScalarWhereWithAggregatesInput[]
     NOT?: BallsScalarWhereWithAggregatesInput | BallsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Balls"> | string
-    ballNo?: IntWithAggregatesFilter<"Balls"> | number
-    whatHappend?: EnumWhatHappendWithAggregatesFilter<"Balls"> | $Enums.WhatHappend
+    overNo?: IntWithAggregatesFilter<"Balls"> | number
+    whatHappendtext?: StringWithAggregatesFilter<"Balls"> | string
+    whatHappendWicketText?: StringNullableWithAggregatesFilter<"Balls"> | string | null
+    overBallNo?: IntWithAggregatesFilter<"Balls"> | number
     bowler?: StringWithAggregatesFilter<"Balls"> | string
     batsman?: StringWithAggregatesFilter<"Balls"> | string
     catch?: StringNullableWithAggregatesFilter<"Balls"> | string | null
     runout?: StringNullableWithAggregatesFilter<"Balls"> | string | null
+    stump?: StringNullableWithAggregatesFilter<"Balls"> | string | null
+    lbw?: BoolWithAggregatesFilter<"Balls"> | boolean
+    run?: StringWithAggregatesFilter<"Balls"> | string
     inningId?: StringWithAggregatesFilter<"Balls"> | string
   }
 
@@ -16526,6 +16606,7 @@ export namespace Prisma {
   export type InningCreateInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -16539,6 +16620,7 @@ export namespace Prisma {
   export type InningUncheckedCreateInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -16552,6 +16634,7 @@ export namespace Prisma {
   export type InningUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -16565,6 +16648,7 @@ export namespace Prisma {
   export type InningUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -16578,6 +16662,7 @@ export namespace Prisma {
   export type InningCreateManyInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -16590,6 +16675,7 @@ export namespace Prisma {
   export type InningUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -16601,6 +16687,7 @@ export namespace Prisma {
   export type InningUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -16612,77 +16699,112 @@ export namespace Prisma {
 
   export type BallsCreateInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
     inning: InningCreateNestedOneWithoutBallsInput
   }
 
   export type BallsUncheckedCreateInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
     inningId: string
   }
 
   export type BallsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
     inning?: InningUpdateOneRequiredWithoutBallsNestedInput
   }
 
   export type BallsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
     inningId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BallsCreateManyInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
     inningId: string
   }
 
   export type BallsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
   }
 
   export type BallsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
     inningId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -17482,6 +17604,7 @@ export namespace Prisma {
   export type InningCountOrderByAggregateInput = {
     id?: SortOrder
     whichInning?: SortOrder
+    teamName?: SortOrder
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
@@ -17500,6 +17623,7 @@ export namespace Prisma {
   export type InningMaxOrderByAggregateInput = {
     id?: SortOrder
     whichInning?: SortOrder
+    teamName?: SortOrder
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
@@ -17512,6 +17636,7 @@ export namespace Prisma {
   export type InningMinOrderByAggregateInput = {
     id?: SortOrder
     whichInning?: SortOrder
+    teamName?: SortOrder
     score?: SortOrder
     wickets?: SortOrder
     extras?: SortOrder
@@ -17537,11 +17662,9 @@ export namespace Prisma {
     _max?: NestedEnumWhichInningFilter<$PrismaModel>
   }
 
-  export type EnumWhatHappendFilter<$PrismaModel = never> = {
-    equals?: $Enums.WhatHappend | EnumWhatHappendFieldRefInput<$PrismaModel>
-    in?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    not?: NestedEnumWhatHappendFilter<$PrismaModel> | $Enums.WhatHappend
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type InningScalarRelationFilter = {
@@ -17551,53 +17674,68 @@ export namespace Prisma {
 
   export type BallsCountOrderByAggregateInput = {
     id?: SortOrder
-    ballNo?: SortOrder
-    whatHappend?: SortOrder
+    overNo?: SortOrder
+    whatHappendtext?: SortOrder
+    whatHappendWicketText?: SortOrder
+    overBallNo?: SortOrder
     bowler?: SortOrder
     batsman?: SortOrder
     catch?: SortOrder
     runout?: SortOrder
+    stump?: SortOrder
+    lbw?: SortOrder
+    run?: SortOrder
     inningId?: SortOrder
   }
 
   export type BallsAvgOrderByAggregateInput = {
-    ballNo?: SortOrder
+    overNo?: SortOrder
+    overBallNo?: SortOrder
   }
 
   export type BallsMaxOrderByAggregateInput = {
     id?: SortOrder
-    ballNo?: SortOrder
-    whatHappend?: SortOrder
+    overNo?: SortOrder
+    whatHappendtext?: SortOrder
+    whatHappendWicketText?: SortOrder
+    overBallNo?: SortOrder
     bowler?: SortOrder
     batsman?: SortOrder
     catch?: SortOrder
     runout?: SortOrder
+    stump?: SortOrder
+    lbw?: SortOrder
+    run?: SortOrder
     inningId?: SortOrder
   }
 
   export type BallsMinOrderByAggregateInput = {
     id?: SortOrder
-    ballNo?: SortOrder
-    whatHappend?: SortOrder
+    overNo?: SortOrder
+    whatHappendtext?: SortOrder
+    whatHappendWicketText?: SortOrder
+    overBallNo?: SortOrder
     bowler?: SortOrder
     batsman?: SortOrder
     catch?: SortOrder
     runout?: SortOrder
+    stump?: SortOrder
+    lbw?: SortOrder
+    run?: SortOrder
     inningId?: SortOrder
   }
 
   export type BallsSumOrderByAggregateInput = {
-    ballNo?: SortOrder
+    overNo?: SortOrder
+    overBallNo?: SortOrder
   }
 
-  export type EnumWhatHappendWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.WhatHappend | EnumWhatHappendFieldRefInput<$PrismaModel>
-    in?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    not?: NestedEnumWhatHappendWithAggregatesFilter<$PrismaModel> | $Enums.WhatHappend
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumWhatHappendFilter<$PrismaModel>
-    _max?: NestedEnumWhatHappendFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -18284,8 +18422,8 @@ export namespace Prisma {
     connect?: InningWhereUniqueInput
   }
 
-  export type EnumWhatHappendFieldUpdateOperationsInput = {
-    set?: $Enums.WhatHappend
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type InningUpdateOneRequiredWithoutBallsNestedInput = {
@@ -18690,21 +18828,17 @@ export namespace Prisma {
     _max?: NestedEnumWhichInningFilter<$PrismaModel>
   }
 
-  export type NestedEnumWhatHappendFilter<$PrismaModel = never> = {
-    equals?: $Enums.WhatHappend | EnumWhatHappendFieldRefInput<$PrismaModel>
-    in?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    not?: NestedEnumWhatHappendFilter<$PrismaModel> | $Enums.WhatHappend
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedEnumWhatHappendWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.WhatHappend | EnumWhatHappendFieldRefInput<$PrismaModel>
-    in?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WhatHappend[] | ListEnumWhatHappendFieldRefInput<$PrismaModel>
-    not?: NestedEnumWhatHappendWithAggregatesFilter<$PrismaModel> | $Enums.WhatHappend
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumWhatHappendFilter<$PrismaModel>
-    _max?: NestedEnumWhatHappendFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -19517,6 +19651,7 @@ export namespace Prisma {
   export type InningCreateWithoutMatchInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -19529,6 +19664,7 @@ export namespace Prisma {
   export type InningUncheckedCreateWithoutMatchInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -19614,6 +19750,7 @@ export namespace Prisma {
     NOT?: InningScalarWhereInput | InningScalarWhereInput[]
     id?: StringFilter<"Inning"> | string
     whichInning?: EnumWhichInningFilter<"Inning"> | $Enums.WhichInning
+    teamName?: StringNullableFilter<"Inning"> | string | null
     score?: IntFilter<"Inning"> | number
     wickets?: IntFilter<"Inning"> | number
     extras?: IntFilter<"Inning"> | number
@@ -19678,22 +19815,32 @@ export namespace Prisma {
 
   export type BallsCreateWithoutInningInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
   }
 
   export type BallsUncheckedCreateWithoutInningInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
   }
 
   export type BallsCreateOrConnectWithoutInningInput = {
@@ -19770,18 +19917,24 @@ export namespace Prisma {
     OR?: BallsScalarWhereInput[]
     NOT?: BallsScalarWhereInput | BallsScalarWhereInput[]
     id?: StringFilter<"Balls"> | string
-    ballNo?: IntFilter<"Balls"> | number
-    whatHappend?: EnumWhatHappendFilter<"Balls"> | $Enums.WhatHappend
+    overNo?: IntFilter<"Balls"> | number
+    whatHappendtext?: StringFilter<"Balls"> | string
+    whatHappendWicketText?: StringNullableFilter<"Balls"> | string | null
+    overBallNo?: IntFilter<"Balls"> | number
     bowler?: StringFilter<"Balls"> | string
     batsman?: StringFilter<"Balls"> | string
     catch?: StringNullableFilter<"Balls"> | string | null
     runout?: StringNullableFilter<"Balls"> | string | null
+    stump?: StringNullableFilter<"Balls"> | string | null
+    lbw?: BoolFilter<"Balls"> | boolean
+    run?: StringFilter<"Balls"> | string
     inningId?: StringFilter<"Balls"> | string
   }
 
   export type InningCreateWithoutBallsInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -19794,6 +19947,7 @@ export namespace Prisma {
   export type InningUncheckedCreateWithoutBallsInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -19822,6 +19976,7 @@ export namespace Prisma {
   export type InningUpdateWithoutBallsInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -19834,6 +19989,7 @@ export namespace Prisma {
   export type InningUncheckedUpdateWithoutBallsInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -20322,6 +20478,7 @@ export namespace Prisma {
   export type InningCreateManyMatchInput = {
     id?: string
     whichInning: $Enums.WhichInning
+    teamName?: string | null
     score: number
     wickets: number
     extras: number
@@ -20350,6 +20507,7 @@ export namespace Prisma {
   export type InningUpdateWithoutMatchInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -20362,6 +20520,7 @@ export namespace Prisma {
   export type InningUncheckedUpdateWithoutMatchInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -20374,6 +20533,7 @@ export namespace Prisma {
   export type InningUncheckedUpdateManyWithoutMatchInput = {
     id?: StringFieldUpdateOperationsInput | string
     whichInning?: EnumWhichInningFieldUpdateOperationsInput | $Enums.WhichInning
+    teamName?: NullableStringFieldUpdateOperationsInput | string | null
     score?: IntFieldUpdateOperationsInput | number
     wickets?: IntFieldUpdateOperationsInput | number
     extras?: IntFieldUpdateOperationsInput | number
@@ -20435,42 +20595,62 @@ export namespace Prisma {
 
   export type BallsCreateManyInningInput = {
     id?: string
-    ballNo: number
-    whatHappend: $Enums.WhatHappend
+    overNo: number
+    whatHappendtext: string
+    whatHappendWicketText?: string | null
+    overBallNo: number
     bowler: string
     batsman: string
     catch?: string | null
     runout?: string | null
+    stump?: string | null
+    lbw: boolean
+    run: string
   }
 
   export type BallsUpdateWithoutInningInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
   }
 
   export type BallsUncheckedUpdateWithoutInningInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
   }
 
   export type BallsUncheckedUpdateManyWithoutInningInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ballNo?: IntFieldUpdateOperationsInput | number
-    whatHappend?: EnumWhatHappendFieldUpdateOperationsInput | $Enums.WhatHappend
+    overNo?: IntFieldUpdateOperationsInput | number
+    whatHappendtext?: StringFieldUpdateOperationsInput | string
+    whatHappendWicketText?: NullableStringFieldUpdateOperationsInput | string | null
+    overBallNo?: IntFieldUpdateOperationsInput | number
     bowler?: StringFieldUpdateOperationsInput | string
     batsman?: StringFieldUpdateOperationsInput | string
     catch?: NullableStringFieldUpdateOperationsInput | string | null
     runout?: NullableStringFieldUpdateOperationsInput | string | null
+    stump?: NullableStringFieldUpdateOperationsInput | string | null
+    lbw?: BoolFieldUpdateOperationsInput | boolean
+    run?: StringFieldUpdateOperationsInput | string
   }
 
   export type TournamentJoinedTeamsCreateManyTournamentInput = {

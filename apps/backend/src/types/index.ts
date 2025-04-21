@@ -84,27 +84,17 @@ export const inningUpdateSchema = z.object({
 });
 
 export const ballSchema = z.object({
-  ballNo: z.number(),
-  WhatHappend: z.enum([
-    "wd",
-    "six",
-    "four",
-    "dot",
-    "runout",
-    "catch",
-    "bowled",
-    "lbw",
-    "nb",
-    "fh",
-    "zero",
-    "one",
-    "two",
-    "three",
-  ]),
+  overNo: z.string(),
+  overBallNo: z.string(),
+  whatHappendText: z.string(),
+  whatHappendWicketText: z.string().optional(),
+  run: z.string(),
   bowler: z.string(),
   batsman: z.string(),
   runout: z.string().optional(),
   catch: z.string().optional(),
+  stump: z.string().optional(),
+  lbw: z.boolean(),
   inningId: z.string(),
 });
 

@@ -198,6 +198,7 @@ exports.Prisma.MatchesScalarFieldEnum = {
 exports.Prisma.InningScalarFieldEnum = {
   id: 'id',
   whichInning: 'whichInning',
+  teamName: 'teamName',
   score: 'score',
   wickets: 'wickets',
   extras: 'extras',
@@ -209,12 +210,17 @@ exports.Prisma.InningScalarFieldEnum = {
 
 exports.Prisma.BallsScalarFieldEnum = {
   id: 'id',
-  ballNo: 'ballNo',
-  whatHappend: 'whatHappend',
+  overNo: 'overNo',
+  whatHappendtext: 'whatHappendtext',
+  whatHappendWicketText: 'whatHappendWicketText',
+  overBallNo: 'overBallNo',
   bowler: 'bowler',
   batsman: 'batsman',
   catch: 'catch',
   runout: 'runout',
+  stump: 'stump',
+  lbw: 'lbw',
+  run: 'run',
   inningId: 'inningId'
 };
 
@@ -299,23 +305,6 @@ exports.TournamentStatus = exports.$Enums.TournamentStatus = {
 exports.WhichInning = exports.$Enums.WhichInning = {
   first: 'first',
   second: 'second'
-};
-
-exports.WhatHappend = exports.$Enums.WhatHappend = {
-  wd: 'wd',
-  six: 'six',
-  four: 'four',
-  dot: 'dot',
-  runout: 'runout',
-  catch: 'catch',
-  bowled: 'bowled',
-  nb: 'nb',
-  fh: 'fh',
-  zero: 'zero',
-  one: 'one',
-  two: 'two',
-  three: 'three',
-  lbw: 'lbw'
 };
 
 exports.Prisma.ModelName = {

@@ -16,7 +16,8 @@ userTeamsRouter.post("/create", async (req, res) => {
   try {
     const tournamentRes = await client.tournamentJoinedTeams.findMany({
       where: {
-        tournamentId: parsedData.data.tournamentId
+        tournamentId: parsedData.data.tournamentId,
+        userId: req.userId!
       }
     })
     await client.$transaction(async (tx) => {
