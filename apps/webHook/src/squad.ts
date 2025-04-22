@@ -1,34 +1,48 @@
-import axios from "axios";
+import axios, { AxiosInstance } from 'axios';
+import { CookieJar } from 'tough-cookie';
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import dotenv from 'dotenv';
 import { playerInterface, squadInterface } from "@repo/common/types";
+import { Page } from 'puppeteer'
 
 dotenv.config();
 puppeteer.use(StealthPlugin());
 
-const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000";
+const cookieJar = new CookieJar();
+
+const axiosInstance: AxiosInstance = axios.create({
+  withCredentials: true,
+  jar: cookieJar
+});
+
+const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000/api/v1";
 const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
 const email = process.env.EMAIL;
-const password = process.env.PASSOWRD;
+const password = process.env.PASSWORD;
 let userId: string = "";
 
 const getAccessToken = async () => {
   if (!email || !password) {
-    console.error("email ans passowrd required");
+    console.error("email and passowrd required");
     return;
   }
 
-  if (accessToken) {
-    const accessTokenRes = await axios.post(`${BackendUrl}/refresh`, {}, {
-      withCredentials: true
-    })
+  // if (accessToken) {
+  //   try {
+  //     const accessTokenRes = await axiosInstance.post(`${BackendUrl}/refresh`, {}, {
+  //       withCredentials: true
+  //     })
 
-    accessToken = accessTokenRes.data.accessToken
-    userId = accessTokenRes.data.userId
-  } else {
-    const signInRes = await axios.post(`${BackendUrl}/signin`, {
+  //     accessToken = accessTokenRes.data.accessToken
+  //     userId = accessTokenRes.data.userId
+  //   } catch (error) {
+  //     console.error;
+  //   }
+  // } else {
+  try {
+    const signInRes = await axiosInstance.post(`${BackendUrl}/signin`, {
       email,
       password
     }, {
@@ -37,8 +51,30 @@ const getAccessToken = async () => {
 
     accessToken = signInRes.data.accessToken
     userId = signInRes.data.userId
+  } catch (error) {
+    console.error
   }
+  // }
+}
 
+async function autoScroll(page: Page) {
+  await page.evaluate(() => {
+    return new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 500;
+
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeight - window.innerHeight) {
+          clearInterval(timer);
+          resolve(true);
+        }
+      }, 1000);
+    });
+  });
 }
 
 function convertTeamAbbreviation(teamName: string): string {
@@ -82,6 +118,10 @@ async function getSquads() {
       }
     );
 
+    await page.evaluate(() => {
+      window.scrollBy(0, 600);
+    })
+
     const rawSquads = await page.evaluate(() => {
       const squadCards = document.querySelectorAll('.ds-flex.lg\\:ds-flex-row.sm\\:ds-flex-col.lg\\:ds-items-center.lg\\:ds-justify-between.ds-py-2.ds-px-4.ds-flex-wrap.odd\\:ds-bg-fill-content-alternate');
 
@@ -90,16 +130,17 @@ async function getSquads() {
         try {
           const squadNameElement = squad.querySelector(".ds-text-comfortable-m.ds-text-typo.ds-underline.ds-decoration-ui-stroke.ds-block");
           const squadLinkElement = squad.querySelector(".ds-inline-flex.ds-items-start.ds-leading-none");
-          const squadImgElement = squad.querySelector("img");
+          const squadImgElement = squad.querySelector('img');
 
           const squadName = squadNameElement?.textContent?.trim() || "";
           const link = squadLinkElement?.getAttribute("href") || "";
+          const img = squadImgElement?.getAttribute('src') || "";
 
           squads.push({
             squadName,
             playerLink: link,
-            img: squadImgElement?.src || "",
-          })
+            img
+          });
         } catch (error) {
           console.error("Error scraping squad", error)
         }
@@ -137,6 +178,8 @@ async function getPlayers(url: string, squadId: string) {
       timeout: 100000,
     })
 
+    await autoScroll(page);
+
     const rawPlayers = await page.evaluate(() => {
       try {
         const playerCards = document.querySelectorAll(".ds-border-line.odd\\:ds-border-r.ds-border-b");
@@ -154,18 +197,24 @@ async function getPlayers(url: string, squadId: string) {
           const playerAge = playerAgeElemenet?.textContent?.trim().split(':')[1] || "";
           const playerRole = playerRoleElement?.textContent?.trim() || "";
           const playerCountryStatus = playerCountryStatusElem ? "foreign" : "indian";
-          const playerDexture: ("left" | "right")[] = [];
+          const playerDexture: ("left" | "right" | "tobeDeclared")[] = [];
           playerDextureElem.forEach((dextureElem) => {
-            const dexture = dextureElem.textContent?.trim().split(':')[1] || "";
-            playerDexture.push((dexture.split(' ')[0]).toLowerCase() as ("left" | "right"));
+            const dexture = (dextureElem.textContent?.trim().split(':')[1] || "").toLowerCase();
+            if (dexture.includes('legbreak') || dexture.includes('right')) {
+              playerDexture.push('right');
+            } else if (dexture.includes('left')) {
+              playerDexture.push('left')
+            } else {
+              playerDexture.push('tobeDeclared');
+            }
           })
           const playerImg = PlayerImgElem?.src || "";
 
           players.push({
             name: playerName,
             age: playerAge,
-            battingDexture: playerDexture[0],
-            bowlingDexture: playerDexture[1],
+            battingDexture: playerDexture[0] || "tobeDeclared",
+            bowlingDexture: playerDexture[1] || "tobeDeclared",
             countryStatus: playerCountryStatus,
             role: playerRole.includes("WicketKeeper") ? "wk" : playerRole.includes("Allrounder") ? "ar" : playerRole.includes("Batter") ? "batsman" : "bowler",
             img: playerImg
@@ -201,50 +250,54 @@ async function getPlayers(url: string, squadId: string) {
 }
 
 async function createPlayer(player: playerInterface) {
+  console.log(player);
   try {
-    await axios.post(`${BackendUrl}/playerj`, player, {
+    const playerRes = await axios.post(`${BackendUrl}/player`, player, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     })
+    console.log(playerRes.data);
   } catch (error) {
     console.error
   }
 }
 
 async function getSquadPlayers() {
-  await getAccessToken();
+  try {
+    await getAccessToken();
 
-  if (!accessToken) {
-    console.error("access token required for creating squads and backend call");
-    return;
-  }
-  const squads = await getSquads();
+    if (!accessToken) {
+      console.error("access token required for creating squads and backend call");
+      return;
+    }
+    const squads = await getSquads();
 
-  console.log('squad return', squads.length);
+    console.log('squad return', squads.length);
 
-  for (const [index, squad] of squads.entries()) {
-    // const squadRes = await axios.post(`${BackendUrl}/squad`, {
-    //   name: squad.squadName,
-    //   logo: squad.img,
-    //   captain: "tobeDeclared",
-    //   viceCaptain: "tobeDeclared"
-    // }, {
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`
-    //   }
-    // });
-    console.log(index, squad);
+    for (const squad of squads) {
+      const squadRes = await axios.post(`${BackendUrl}/squad`, {
+        name: squad.squadName,
+        logo: squad.img,
+        captain: "tobeDeclared",
+        viceCaptain: "tobeDeclared"
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
+      console.log(squad.squadName, players?.length);
 
-    const players = await getPlayers(squad.playerLink, '1');
-    // if (players) {
-    //   await Promise.all(
-    //     players.map(async (player) => {
-    //       await createPlayer(player);
-    //     })
-    //   );
-    // }
-    console.log(players);
+      if (players) {
+        console.log(squad.squadName, players.length);
+        for (const player of players) {
+          await createPlayer(player);
+        }
+      }
+    }
+  } catch (error) {
+    console.error
   }
 }
 

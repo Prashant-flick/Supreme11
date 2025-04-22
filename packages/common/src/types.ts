@@ -20,8 +20,8 @@ export interface squadInterface {
 export interface playerInterface {
   name: string,
   age: string,
-  battingDexture: "left" | "right",
-  bowlingDexture: "left" | "right",
+  battingDexture: "left" | "right" | "tobeDeclared",
+  bowlingDexture: "left" | "right" | "tobeDeclared",
   role: "batsman" | "bowler" | "ar" | "wk",
   countryStatus: "foreign" | "indian",
   squadId: string,

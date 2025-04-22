@@ -28,8 +28,8 @@ export const squadSchema = z.object({
 export const playerSchema = z.object({
   name: z.string(),
   role: z.enum(["batsman", "bowler", "wk", "ar"]),
-  battingDexture: z.enum(["right", "left"]),
-  bowlingDexture: z.enum(["right", "left"]),
+  battingDexture: z.enum(["right", "left", "tobeDeclared"]),
+  bowlingDexture: z.enum(["right", "left", "tobeDeclared"]),
   age: z.string(),
   img: z.string(),
   squadId: z.string(),

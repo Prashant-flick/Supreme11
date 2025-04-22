@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -196,6 +195,7 @@ enum PlayerRole {
 enum PlayerDexture {
   right
   left
+  tobeDeclared
 }
 
 enum PlayerPlayingStatus {
