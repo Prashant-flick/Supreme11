@@ -250,14 +250,12 @@ async function getPlayers(url: string, squadId: string) {
 }
 
 async function createPlayer(player: playerInterface) {
-  console.log(player);
   try {
     const playerRes = await axios.post(`${BackendUrl}/player`, player, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     })
-    console.log(playerRes.data);
   } catch (error) {
     console.error
   }
@@ -273,8 +271,6 @@ async function getSquadPlayers() {
     }
     const squads = await getSquads();
 
-    console.log('squad return', squads.length);
-
     for (const squad of squads) {
       const squadRes = await axios.post(`${BackendUrl}/squad`, {
         name: squad.squadName,
@@ -286,11 +282,9 @@ async function getSquadPlayers() {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
-      console.log(squad.squadName, players?.length);
 
+      const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
       if (players) {
-        console.log(squad.squadName, players.length);
         for (const player of players) {
           await createPlayer(player);
         }

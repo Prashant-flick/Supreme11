@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { matchesSchema } from "../../types";
-import client from "@repo/db/client"
-import type { Prisma } from "../../../../../packages/db/src/generated/prisma";
+import client from "@repo/db/client";
+import { Prisma } from "../../../../../packages/db/node_modules/@prisma/client"
 import { adminMiddleware } from "../../middleware/admin";
 import { userMiddleware } from "../../middleware/user";
 
@@ -18,13 +18,14 @@ matchesRouter.post('/', adminMiddleware, async (req, res) => {
   }
 
   try {
-    const matchRes = await client.$transaction(async (tx) => {
+    const date = new Date(parsedData.data.date);
+    await client.$transaction(async (tx) => {
       const match = await tx.matches.create({
         data: {
           team1Id: parsedData.data.team1Id,
           team2Id: parsedData.data.team2Id,
           venue: parsedData.data.venue,
-          date: parsedData.data.date,
+          date,
           winner: parsedData.data.winner,
           toss: parsedData.data.toss,
           elected: parsedData.data.elected,
@@ -39,8 +40,6 @@ matchesRouter.post('/', adminMiddleware, async (req, res) => {
       await createInning("second", match.id, tx);
       await createMatchPlayer(parsedData.data.team1Id, match.id, tx);
       await createMatchPlayer(parsedData.data.team2Id, match.id, tx);
-
-      return match;
     });
 
     res.status(200)

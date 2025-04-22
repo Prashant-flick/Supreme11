@@ -67,7 +67,6 @@ playerRouter.get('/squadPlayers', async (req, res) => {
 })
 
 playerRouter.post('/', async (req, res) => {
-  console.log('create player');
   const parsedData = playerSchema.safeParse(req.body);
   if (!parsedData.success) {
     res.status(400)
@@ -76,7 +75,6 @@ playerRouter.post('/', async (req, res) => {
       })
     return
   }
-  console.log('parsed success');
 
   try {
     const playerRes = await client.players.create({

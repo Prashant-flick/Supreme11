@@ -40,8 +40,6 @@ router.post("/refresh", async (req, res) => {
       role: decoded.role,
     });
     res.status(200).json({ accessToken, userId: decoded.userId });
-    console.log("send token");
-
   } catch (err) {
     res.status(403).json({
       message: "jwt verification failed",
@@ -72,8 +70,6 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashedPassword = bcrypt.hashSync(parsedData.data.password, parseInt(process.env.BCRYPT_SECRET || "10"));
-
-    console.log("hashed Passowrd", hashedPassword);
 
     const user = await client.user.create({
       data: {

@@ -8,7 +8,9 @@ export interface matchInterface {
   status: 'upcoming' | 'started' | 'ended',
   link: string,
   date: Date,
-  id?: string
+  id?: string,
+  league: string,
+  result: string
 }
 
 export interface squadInterface {

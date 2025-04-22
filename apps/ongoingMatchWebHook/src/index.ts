@@ -46,7 +46,6 @@ const getCompletedMatches = async (page: Page, matchId: string) => {
   rawTeamNameData.map((teamName) => {
     teamsName.push(teamName);
   })
-  console.log(teamsName);
 
   const balls: { [over: string]: { ballRun: string, overNo: string, overBallNo: string, whatHappend: string, whatHappendWicket: string, send: boolean, inning: string } } = {};
 
@@ -182,7 +181,6 @@ const getCompletedMatches = async (page: Page, matchId: string) => {
         const lbw = overData.whatHappendWicket.includes('lbw');
         const inning = overData.inning
 
-        console.log(overNo, overBallNo, bowler, batsman, run, catchingPlayer, stumpPlayer, runoutPlayers, wicket, lbw, inning);
         await axios.post(`${BackendUrl}/ball`, {
           overNo,
           overBallNo,
@@ -230,7 +228,6 @@ const getMatchData = async () => {
       return text;
     })
     const matchStatus = ['won', 'lost', 'tied'].some(status => rawMatchStatus?.includes(status));
-    console.log(matchStatus);
     if (matchStatus) {
       await getCompletedMatches(page, '');
     }
@@ -245,7 +242,6 @@ const getMatchData = async () => {
     //   return innings;
     // })
     // const inningNo = rawInningData.length;
-    // console.log(inningNo);
 
     await browser.close();
   } catch (error) {
