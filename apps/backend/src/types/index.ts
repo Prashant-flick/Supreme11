@@ -96,6 +96,7 @@ export const ballSchema = z.object({
   stump: z.string().optional(),
   lbw: z.boolean(),
   inningId: z.string(),
+  otherInningId: z.string(),
 });
 
 export const tournamentSchema = z.object({

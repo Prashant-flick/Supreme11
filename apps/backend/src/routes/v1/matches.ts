@@ -36,8 +36,19 @@ matchesRouter.post('/', adminMiddleware, async (req, res) => {
         }
       });
 
-      await createInning("first", match.id, tx);
-      await createInning("second", match.id, tx);
+      const squad1Res = await tx.squad.findFirst({
+        where: {
+          id: parsedData.data.team1Id
+        }
+      })
+      const squad2Res = await tx.squad.findFirst({
+        where: {
+          id: parsedData.data.team2Id
+        }
+      })
+
+      await createInning("first", match.id, tx, match.status === 'ended' ? squad1Res?.name : '');
+      await createInning("second", match.id, tx, match.status === 'ended' ? squad2Res?.name : '');
       await createMatchPlayer(parsedData.data.team1Id, match.id, tx);
       await createMatchPlayer(parsedData.data.team2Id, match.id, tx);
     });
@@ -76,14 +87,52 @@ matchesRouter.get('/league/:leagueName', userMiddleware, async (req, res) => {
   }
 })
 
-const createInning = async (whichInning: "first" | "second", matchId: string, tx: Prisma.TransactionClient) => {
+matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!matchId) {
+    res.status(400)
+      .json({
+        message: "matchId is required"
+      })
+    return;
+  }
+
+  try {
+    const matchRes = await client.matches.findFirst({
+      where: {
+        id: matchId
+      },
+      include: {
+        innings: {
+          select: {
+            id: true
+          }
+        }
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "match fetching success",
+        matchRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "match fetching error"
+      })
+  }
+})
+
+const createInning = async (whichInning: "first" | "second", matchId: string, tx: Prisma.TransactionClient, teamName?: string) => {
   await tx.inning.create({
     data: {
       whichInning,
       score: 0,
       wickets: 0,
       extras: 0,
-      matchId
+      matchId,
+      teamName
     }
   });
 }

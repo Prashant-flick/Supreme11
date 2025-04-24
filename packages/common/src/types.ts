@@ -1,4 +1,6 @@
 export interface matchInterface {
+  team1Id?: string,
+  team2Id?: string,
   team1Name: string,
   team2Name: string,
   venue: string,

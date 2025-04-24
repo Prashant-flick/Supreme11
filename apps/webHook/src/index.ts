@@ -158,7 +158,7 @@ async function getMatches() {
         link: newLink,
         date,
         league: match.league,
-        result: match.matchResult
+        result: match.matchResult,
       };
     });
 
@@ -213,6 +213,9 @@ async function createMatches() {
           Authorization: `Bearer ${accessToken}`
         }
       })
+
+      console.log('match creation success');
+      return;
     } catch (error) {
       console.error
     }
