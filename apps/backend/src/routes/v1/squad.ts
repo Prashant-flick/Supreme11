@@ -39,6 +39,38 @@ squadRouter.get("/:squadName", async (req, res) => {
   }
 });
 
+squadRouter.get("/squadId/:squadId", async (req, res) => {
+  const squadId = req.params.squadId;
+  if (!squadId) {
+    res.status(400).json({
+      message: "squadName is required",
+    });
+    return;
+  }
+
+  try {
+    const squadRes = await client.squad.findFirst({
+      where: {
+        id: squadId,
+      },
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+      },
+    });
+
+    res.status(200).json({
+      message: "squad fetching success",
+      squadRes,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "fetching squad failed",
+    });
+  }
+});
+
 squadRouter.post("/", async (req, res) => {
   const parsedData = squadSchema.safeParse(req.body);
   if (!parsedData.success) {

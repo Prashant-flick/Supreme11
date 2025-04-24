@@ -89,9 +89,11 @@ matchesRouter.get('/league/:leagueName', userMiddleware, async (req, res) => {
 
 matchesRouter.get("/all", userMiddleware, async (req, res) => {
   try {
-    const matchesRes = await client.matches.findMany();
-
-    console.log(matchesRes);
+    const matchesRes = await client.matches.findMany({
+      include: {
+        innings: true
+      }
+    });
 
     res.status(200)
       .json({

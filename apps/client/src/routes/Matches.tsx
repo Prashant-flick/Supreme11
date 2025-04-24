@@ -7,22 +7,61 @@ import { matchInterface } from "@repo/common/types";
 import { useAuth } from "@/context/UseAuth";
 import { useNavigate } from "react-router-dom";
 
-interface accType {
-  live: matchInterface[];
-  upcoming: matchInterface[];
-  completed: matchInterface[];
+interface matchCompleteInterface extends matchInterface {
+  innings: {
+    id: string;
+    matchId: string;
+    whichInning: "1st" | "2nd";
+    teamName: string | null;
+    score: number;
+    wickets: number;
+    extras: number;
+    batsman1: string | null;
+    batsman2: string | null;
+    bowler: string | null;
+  }[];
+  team1ImgSrc: string;
+  team2ImgSrc: string;
+  team1FullName: string;
+  team2FullName: string;
 }
 
 export default function Matches() {
   const { accessToken } = useAuth();
-  const [liveMatches, setLiveMatches] = useState<matchInterface[]>([]);
-  const [upcomingMatches, setUpcomingMatches] = useState<matchInterface[]>([]);
-  const [completedMatches, setCompletedMatches] = useState<matchInterface[]>([]);
+  const [liveMatches, setLiveMatches] = useState<matchCompleteInterface[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<matchCompleteInterface[]>([]);
+  const [completedMatches, setCompletedMatches] = useState<matchCompleteInterface[]>([]);
   const navigate = useNavigate();
 
   console.log(liveMatches);
   console.log(upcomingMatches);
   console.log(completedMatches);
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  function getTeamFullName(abbreviation: string): string {
+    const abbr = abbreviation.toUpperCase();
+
+    const teamMap: Record<string, string> = {
+      CSK: "Chennai Super Kings",
+      DC: "Delhi Capitals",
+      GT: "Gujarat Titans",
+      KKR: "Kolkata Knight Riders",
+      LSG: "Lucknow Super Giants",
+      MI: "Mumbai Indians",
+      PBKS: "Punjab Kings",
+      RCB: "Royal Challengers Bangalore",
+      RR: "Rajasthan Royals",
+      SRH: "Sunrisers Hyderabad",
+    };
+
+    return teamMap[abbr] || "Unknown Team";
+  }
 
   const getMatches = async () => {
     try {
@@ -31,17 +70,36 @@ export default function Matches() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(matchesRes);
 
-      const { live, upcoming, completed } = matchesRes.data.matchesRes.reduce(
-        (acc: accType, match: matchInterface) => {
-          if (match.status === "started") acc.live.push(match);
-          else if (match.status === "upcoming") acc.upcoming.push(match);
-          else if (match.status === "ended") acc.completed.push(match);
-          return acc;
-        },
-        { live: [], upcoming: [], completed: [] }
-      );
+      const live: matchCompleteInterface[] = [];
+      const upcoming: matchCompleteInterface[] = [];
+      const completed: matchCompleteInterface[] = [];
+
+      for (const match of matchesRes.data.matchesRes) {
+        const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        const team2Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team2Id}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        match.team1ImgSrc = team1Res.data.squadRes.logo;
+        match.team2ImgSrc = team2Res.data.squadRes.logo;
+        match.team1FullName = getTeamFullName(team1Res.data.squadRes.name);
+        match.team2FullName = getTeamFullName(team2Res.data.squadRes.name);
+        match.team1Name = team1Res.data.squadRes.name;
+        match.team2Name = team2Res.data.squadRes.name;
+        match.date = new Date(match.date);
+
+        if (match.status === "started") {
+          live.push(match);
+        } else if (match.status === "upcoming") {
+          upcoming.push(match);
+        } else if (match.status === "ended") {
+          completed.push(match);
+        }
+      }
 
       setLiveMatches(live);
       setUpcomingMatches(upcoming);
@@ -322,48 +380,48 @@ export default function Matches() {
               </button>
             </div>
             <div className="space-y-4">
-              {mockCompletedMatches.map((match) => (
-                <div
-                  key={match.id}
-                  className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-500">{match.matchType}</span>
-                    <span className="text-sm text-gray-500">{match.date}</span>
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center space-x-2">
-                      <img
-                        src={match.homeTeam.logoSrc}
-                        alt={match.homeTeam.shortName}
-                        className="w-5 h-5"
-                      />
-                      <div>
-                        <span className="font-medium">{match.homeTeam.shortName}</span>
-                        <p className="text-xs text-gray-600">{match.homeTeam.score}</p>
+              {completedMatches &&
+                completedMatches.length > 0 &&
+                completedMatches.map((match) => (
+                  <div
+                    key={match.id}
+                    className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-500">{match.league}</span>
+                      <span className="text-sm text-gray-500">
+                        {match.date.toLocaleDateString("en-US", options)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center space-x-2">
+                        <img src={match.team1ImgSrc} alt={match.team1Name} className="w-5 h-5" />
+                        <div>
+                          <span className="font-medium">{match.team1Name}</span>
+                          <p className="text-xs text-gray-600">
+                            {match?.innings[1].score}/{match.innings[1].wickets}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-medium bg-gray-100 px-2 py-1 rounded">vs</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="text-right">
+                          <span className="font-medium">{match.team2Name}</span>
+                          <p className="text-xs text-gray-600">
+                            {match?.innings[0].score}/{match.innings[0].wickets}
+                          </p>
+                        </div>
+                        <img src={match.team2ImgSrc} alt={match.team2Name} className="w-5 h-5" />
                       </div>
                     </div>
-                    <span className="text-xs font-medium bg-gray-100 px-2 py-1 rounded">vs</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="text-right">
-                        <span className="font-medium">{match.awayTeam.shortName}</span>
-                        <p className="text-xs text-gray-600">{match.awayTeam.score}</p>
-                      </div>
-                      <img
-                        src={match.awayTeam.logoSrc}
-                        alt={match.awayTeam.shortName}
-                        className="w-5 h-5"
-                      />
+                    <div className="text-sm text-gray-700 font-medium mb-3">{match.result}</div>
+                    <div className="flex justify-end">
+                      <button className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 py-1 px-3 rounded">
+                        Match Details
+                      </button>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-700 font-medium mb-3">{match.result}</div>
-                  <div className="flex justify-end">
-                    <button className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 py-1 px-3 rounded">
-                      Match Details
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
