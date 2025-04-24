@@ -2,9 +2,41 @@ import { PageLayout } from "@/components/layout/page-layout";
 import { LiveMatchCard } from "@/components/dashboard/live-match-card";
 import { TournamentsSection } from "@/components/dashboard/tournaments-section";
 import { UpcomingMatchesSection } from "@/components/dashboard/upcoming-matches-section";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { conf } from "../config/index";
+import { tournamentInerface } from "@repo/common/types";
+import { useAuth } from "@/context/UseAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-  // Mock data - in a real app, this would come from an API or database
+  const { accessToken, isLogin } = useAuth();
+  const [tournament, setTournament] = useState<tournamentInerface[] | []>([]);
+  const navigate = useNavigate();
+
+  const getTournaments = async () => {
+    try {
+      const tournametRes = await axios.get(`${conf.backendUrl}/tournament/myTournament`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setTournament(tournametRes.data.tournamentRes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    console.log(accessToken, isLogin);
+    if (accessToken) {
+      getTournaments();
+    }
+    // else {
+    //   navigate("/auth");
+    // }
+  }, [accessToken]);
+
   const navItems = [
     { href: "/dashboard", label: "Dashboard", isActive: true },
     { href: "/teams", label: "My Teams" },

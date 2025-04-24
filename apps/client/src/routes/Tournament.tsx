@@ -1,10 +1,18 @@
-import { useState } from "react";
-// import Link from "next/link";
-// import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, X, ChevronDown, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { Trophy, Users, X, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { useAuth } from "@/context/UseAuth";
+import { useNavigate } from "react-router-dom";
 
-const Link = ({ href, className, children }) => {
+const Link = ({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: React.ReactNode;
+}) => {
   return (
     <a href={href} className={className}>
       {children}
@@ -12,8 +20,19 @@ const Link = ({ href, className, children }) => {
   );
 };
 
-// Image component to replace Next.js Image
-const Image = ({ src, width, height, alt, className }) => {
+const Image = ({
+  src,
+  width,
+  height,
+  alt,
+  className,
+}: {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  className: string;
+}) => {
   return (
     <img
       src={src}
@@ -28,10 +47,20 @@ const Image = ({ src, width, height, alt, className }) => {
 
 export default function TournamentPage() {
   const [activeTab, setActiveTab] = useState("standings");
-  const [activeTeamId, setActiveTeamId] = useState(null);
+  const [activeTeamId, setActiveTeamId] = useState<number | null>(null);
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
-  // Function to toggle team details modal
-  const toggleTeamDetails = (teamId) => {
+  const getTournament = async () => {};
+  useEffect(() => {
+    if (accessToken) {
+      getTournament();
+    } else {
+      navigate("/auth");
+    }
+  });
+
+  const toggleTeamDetails = (teamId: number) => {
     if (activeTeamId === teamId) {
       setActiveTeamId(null);
     } else {
@@ -39,7 +68,6 @@ export default function TournamentPage() {
     }
   };
 
-  // Sample data for teams and standings
   const teams = [
     {
       id: 1,
@@ -115,7 +143,6 @@ export default function TournamentPage() {
     },
   ];
 
-  // Sample data for player points
   const playerPoints = [
     { id: 1, name: "Virat Kohli", team: "IND", role: "Batsman", points: 126 },
     { id: 2, name: "Jasprit Bumrah", team: "IND", role: "Bowler", points: 118 },
@@ -127,7 +154,6 @@ export default function TournamentPage() {
     { id: 8, name: "Ben Stokes", team: "ENG", role: "All-rounder", points: 92 },
   ];
 
-  // Sample team details
   const teamPlayers = {
     1: [
       { id: 1, name: "Virat Kohli", team: "IND", role: "Batsman", points: 87 },
@@ -203,13 +229,14 @@ export default function TournamentPage() {
     ],
   };
 
-  // Get team details for active team
   const getActiveTeamPlayers = () => {
-    return teamPlayers[activeTeamId] || [];
+    if (activeTeamId) {
+      return teamPlayers[activeTeamId as keyof typeof teamPlayers] || [];
+    }
   };
 
   // Function to get the trend icon
-  const getTrendIcon = (trend) => {
+  const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
         return <ArrowUp className="h-4 w-4 text-green-500" />;
@@ -503,7 +530,7 @@ export default function TournamentPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {getActiveTeamPlayers().map((player) => (
+                        {getActiveTeamPlayers()?.map((player) => (
                           <tr key={player.id}>
                             <td className="px-4 py-3 whitespace-nowrap">
                               <div className="flex items-center">

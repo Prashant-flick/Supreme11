@@ -31,3 +31,15 @@ export interface playerInterface {
   squadId: string,
   img: string,
 }
+
+export interface tournamentInerface {
+  maxLimit: number;
+  entryFee: number;
+  matchId: string;
+  status: "ended" | "started" | "upcoming";
+  id: string;
+  prizePool: number | null;
+  winner: string;
+  ownerId: string;
+  teamsJoined: number;
+}

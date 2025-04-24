@@ -1,18 +1,21 @@
-// import Link from "next/link";
-// import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/UseAuth";
 import { ChevronRight, Trophy, Zap, Shield, Coins, CircleDollarSign } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Link = ({ href, className, children }) => {
-  return (
-    <a href={href} className={className}>
-      {children}
-    </a>
-  );
-};
-
-// Image component to replace Next.js Image
-const Image = ({ src, width, height, alt, className }) => {
+const Image = ({
+  src,
+  width,
+  height,
+  alt,
+  className,
+}: {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  className: string;
+}) => {
   return (
     <img
       src={src}
@@ -26,8 +29,19 @@ const Image = ({ src, width, height, alt, className }) => {
 };
 
 export default function LandingPage() {
+  const { isLogin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (isLogin) {
+      navigate("/dashboard");
+    } else {
+      navigate("/auth");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex w-full min-h-screen flex-col bg-white">
       {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b bg-white">
         <div className="container flex h-16 items-center justify-between">
@@ -40,37 +54,41 @@ export default function LandingPage() {
             </div>
           </div>
           <nav className="hidden md:flex gap-6">
-            <Link
-              href="#features"
-              className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]"
-            >
+            <Link to="#features" className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]">
               Features
             </Link>
             <Link
-              href="#how-it-works"
+              to="#how-it-works"
               className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]"
             >
               How It Works
             </Link>
-            <Link
-              href="#rewards"
-              className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]"
-            >
+            <Link to="#rewards" className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]">
               Rewards
             </Link>
-            <Link href="#faq" className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]">
+            <Link to="#faq" className="text-sm font-medium text-gray-700 hover:text-[#b91c1c]">
               FAQ
             </Link>
           </nav>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              className="hidden sm:flex border-[#b91c1c] text-[#b91c1c] hover:bg-[#b91c1c]/10"
-            >
-              Log in
-            </Button>
-            <Button className="bg-[#b91c1c] hover:bg-[#a11818] text-white">Sign up</Button>
-          </div>
+          {isLogin ? (
+            <div className="flex items-center gap-4">
+              <Button className="bg-[#b91c1c] hover:bg-[#a11818] text-white">User</Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to="/auth">
+                <Button
+                  variant="outline"
+                  className="hidden outline-1 sm:flex border-[#b91c1c] text-[#b91c1c] hover:bg-[#b91c1c]/10"
+                >
+                  Log in
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button className="bg-[#b91c1c] hover:bg-[#a11818] text-white">Sign up</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 
@@ -88,7 +106,10 @@ export default function LandingPage() {
               </p>
               {/* Replace the existing hero button section with this */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-[#b91c1c] hover:bg-[#a11818] text-white h-12 px-8">
+                <Button
+                  onClick={handleGetStarted}
+                  className="bg-[#b91c1c] hover:bg-[#a11818] text-white h-12 px-8"
+                >
                   Get Started
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>

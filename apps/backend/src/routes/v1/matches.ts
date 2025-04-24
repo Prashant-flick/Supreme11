@@ -87,6 +87,25 @@ matchesRouter.get('/league/:leagueName', userMiddleware, async (req, res) => {
   }
 })
 
+matchesRouter.get("/all", userMiddleware, async (req, res) => {
+  try {
+    const matchesRes = await client.matches.findMany();
+
+    console.log(matchesRes);
+
+    res.status(200)
+      .json({
+        message: "fetching all matches success",
+        matchesRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "fetching all matches failed"
+      })
+  }
+})
+
 matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
   const matchId = req.params.matchId;
   if (!matchId) {

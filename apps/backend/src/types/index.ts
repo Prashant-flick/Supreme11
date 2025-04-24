@@ -102,6 +102,7 @@ export const ballSchema = z.object({
 export const tournamentSchema = z.object({
   maxLimit: z.number(),
   entryFee: z.number(),
+  matchId: z.string(),
 });
 
 export const joinTournamentSchema = z.object({

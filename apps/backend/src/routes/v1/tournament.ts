@@ -13,7 +13,7 @@ tournamentRouter.post("/create", async (req, res) => {
     return;
   }
 
-  const { maxLimit, entryFee } = parsedData.data;
+  const { maxLimit, entryFee, matchId } = parsedData.data;
   try {
     const tournamentResponse = await client.tournament.create({
       data: {
@@ -23,6 +23,7 @@ tournamentRouter.post("/create", async (req, res) => {
         teamsJoined: 1,
         status: "upcoming",
         winner: "tobeDeclared",
+        matchId
       },
     });
     res.status(200).json({
@@ -85,11 +86,53 @@ tournamentRouter.patch("/join", async (req, res) => {
   }
 });
 
-//Light Text | Mist White | #FAF5F4 |
-// //Purpose | Color Name | Hex Code | Preview
-// Primary | Crimson Red | #E63946 |
-// Secondary | Coral Red | #FF6B6B |
-// Accent | Scarlet Punch | #FF3F3F |
-// Background | Soft Blush Pink | #FFF1F1 |
-// Dark Text | Charcoal Gray | #2B2B2B |
-// Light Text | Snow White | #FFFFFF |
+tournamentRouter.get("/myTournament", async (req, res) => {
+  try {
+    const tournamentRes = await client.tournament.findMany({
+      where: {
+        ownerId: req.userId
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "myTournament Fetching success",
+        tournamentRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "myTournament fetching failed"
+      })
+  }
+})
+
+tournamentRouter.get("/matchTournament/:matchId", async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!matchId) {
+    res.status(400)
+      .json({
+        message: "matchId is required"
+      })
+    return;
+  }
+
+  try {
+    const matchTournamentRes = await client.tournament.findMany({
+      where: {
+        matchId
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "matchTournament fetching success",
+        matchTournamentRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "matches tournament fetching failed"
+      })
+  }
+})

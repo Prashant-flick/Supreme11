@@ -105,6 +105,7 @@ model Matches {
   link        String
   innings     Inning[]
   playerScore PlayerScore[]
+  tournaments Tournament[]
 }
 
 model Inning {
@@ -146,11 +147,13 @@ model Tournament {
   entryFee              Int
   prizePool             Int?
   winner                String
+  matchId               String
   ownerId               String
   tournamentJoinedTeams TournamentJoinedTeams[]
   teamsJoined           Int
   status                TournamentStatus
   owner                 User                    @relation(fields: [ownerId], references: [id])
+  match                 Matches                 @relation(fields: [matchId], references: [id])
 }
 
 model TournamentJoinedTeams {
