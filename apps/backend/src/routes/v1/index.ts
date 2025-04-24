@@ -69,7 +69,7 @@ router.post("/signup", async (req, res) => {
       return
     }
 
-    const hashedPassword = bcrypt.hashSync(parsedData.data.password, parseInt(process.env.BCRYPT_SECRET || "HEHE"));
+    const hashedPassword = bcrypt.hashSync(parsedData.data.password, parseInt(process.env.BCRYPT_SECRET || "10"));
 
     const user = await client.user.create({
       data: {
@@ -84,7 +84,10 @@ router.post("/signup", async (req, res) => {
       userId: user.id
     })
   } catch (error) {
-    res.status(404).json({ message: "axios error" });
+    res.status(400).json({
+      message: "user signup failed failed",
+      error
+    });
   }
 })
 

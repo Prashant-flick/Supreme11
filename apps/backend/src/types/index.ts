@@ -28,8 +28,8 @@ export const squadSchema = z.object({
 export const playerSchema = z.object({
   name: z.string(),
   role: z.enum(["batsman", "bowler", "wk", "ar"]),
-  battingDexture: z.enum(["right", "left"]),
-  bowlingDexture: z.enum(["right", "left"]),
+  battingDexture: z.enum(["right", "left", "tobeDeclared"]),
+  bowlingDexture: z.enum(["right", "left", "tobeDeclared"]),
   age: z.string(),
   img: z.string(),
   squadId: z.string(),
@@ -63,7 +63,7 @@ export const matchesSchema = z.object({
   team1Id: z.string(),
   team2Id: z.string(),
   venue: z.string(),
-  date: z.date(),
+  date: z.string(),
   link: z.string(),
   result: z.string(),
   winner: z.enum(["team1", "team2", "tobeDeclared"]),
@@ -96,11 +96,13 @@ export const ballSchema = z.object({
   stump: z.string().optional(),
   lbw: z.boolean(),
   inningId: z.string(),
+  otherInningId: z.string(),
 });
 
 export const tournamentSchema = z.object({
   maxLimit: z.number(),
   entryFee: z.number(),
+  matchId: z.string(),
 });
 
 export const joinTournamentSchema = z.object({

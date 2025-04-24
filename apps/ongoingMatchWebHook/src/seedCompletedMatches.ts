@@ -1,4 +1,3 @@
-import { matchInterface } from "@repo/common/types";
 import axios from "axios";
 import dotenv from 'dotenv';
 import { Page } from "puppeteer";
@@ -15,7 +14,6 @@ const password = process.env.PASSWORD || "";
 let accessToken = "";
 let userId = "";
 const balls: { [over: string]: { ballRun: string, overNo: string, overBallNo: string, whatHappend: string, whatHappendWicket: string, send: boolean, inningId: string, otherInningId: string } } = {};
-const matchInteravl: { [matchId: string]: { interval: NodeJS.Timeout } } = {};
 
 const getAccessToken = async () => {
   if (!email || !password) {
@@ -58,7 +56,7 @@ async function autoScroll(page: Page) {
   });
 }
 
-const getMatches = async (matchId: string, matchUrl: string) => {
+const getCompletedMatches = async (matchId: string, matchUrl: string) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -93,7 +91,9 @@ const getMatches = async (matchId: string, matchUrl: string) => {
       }
     })
 
-    console.log("fetching inning");
+    await autoScroll(page);
+
+    console.log("fetching 2nd inning");
 
     const rawBallData2ndInning = await page.evaluate(() => {
       const ballCard = document.querySelectorAll(".ds-text-tight-m.ds-font-regular.ds-flex.ds-px-3.ds-py-2.lg\\:ds-px-4.ds-items-start.ds-select-none.lg\\:ds-select-auto");
@@ -146,25 +146,97 @@ const getMatches = async (matchId: string, matchUrl: string) => {
 
     console.log("parsing 2nd inning success");
 
+    await page.reload({
+      waitUntil: 'domcontentloaded'
+    });
+
+    await page.waitForSelector('div.ds-flex.ds-items-center.ds-border-ui-stroke.ds-h-6.ds-px-4.ds-border.ds-bg-ui-fill.ds-rounded-full.ds-w-full.ds-min-w-max.ds-cursor-pointer');
+    await page.click('div.ds-flex.ds-items-center.ds-border-ui-stroke.ds-h-6.ds-px-4.ds-border.ds-bg-ui-fill.ds-rounded-full.ds-w-full.ds-min-w-max.ds-cursor-pointer');
+
+    await page.waitForSelector(`li.ds-w-full.ds-flex[title="${teamsName[0]} "]`);
+    await page.click(`li.ds-w-full.ds-flex[title="${teamsName[0]} "]`);
+
+    await page.waitForFunction(
+      (teamName) => {
+        const span = [...document.querySelectorAll('span.ds-text-tight-s.ds-font-regular.ds-text-typo')];
+        return span.some((el) => el.textContent?.trim() === teamName);
+      },
+      {},
+      teamsName[0]
+    );
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    await autoScroll(page);
+
+    console.log("fetching 1st inning");
+
+    const rawBallData1stInning = await page.evaluate(() => {
+      const ballCard = document.querySelectorAll(".ds-text-tight-m.ds-font-regular.ds-flex.ds-px-3.ds-py-2.lg\\:ds-px-4.ds-items-start.ds-select-none.lg\\:ds-select-auto");
+
+      const balls: any[] = [];
+      ballCard.forEach((ball) => {
+        try {
+          const ballElem = ball.querySelector(".ds-text-tight-s.ds-font-regular.ds-mb-1.lg\\:ds-mb-0.lg\\:ds-mr-3.ds-block.ds-text-center.ds-text-typo-mid1");
+          const whatHappendElem = ball.querySelector(".ds-ml-4.lg\\:ds-ml-3.ds-text-typo-mid1");
+          const whatHappendWicketElem = ball.querySelector(".ds-rounded.ds-bg-fill-content-alternate.ds-ml-4.lg\\:ds-ml-3.ds-mt-1.ds-inline-block.ds-p-3");
+          const ballRunElem = ball.querySelector(".ds-flex.ds-items-center.ds-justify-center.ds-rounded.ds-overflow-hidden")
+
+          const ballRun = ballRunElem?.textContent?.trim() || "";
+          const overNo = ballElem?.textContent?.trim().split('.')[0] || "";
+          const overBallNo = ballElem?.textContent?.trim().split('.')[1] || "";
+          const whatHappend = whatHappendElem?.textContent?.trim();
+          const whatHappendWicket = whatHappendWicketElem?.textContent?.trim() || "";
+
+          balls.push({
+            overNo,
+            overBallNo,
+            ballRun,
+            whatHappend,
+            whatHappendWicket,
+          })
+        } catch (error) {
+          console.error("Error scraping squad", error)
+        }
+      })
+      return balls;
+    })
+    console.log("fetching 1st inning success");
+    rawBallData1stInning.map((ball, index) => {
+      const over = ball.overNo + '.' + ball.overBallNo + ' ' + index + ' 1st';
+      if (!balls[over]) {
+        balls[over] = {
+          ballRun: ball.ballRun,
+          overBallNo: ball.overBallNo,
+          overNo: ball.overNo,
+          whatHappend: ball.whatHappend,
+          whatHappendWicket: ball.whatHappendWicket,
+          send: false,
+          inningId: matchRes.data.matchRes.innings[0].id,
+          otherInningId: matchRes.data.matchRes.innings[1].id
+        };
+      }
+    })
+
     let cnt = 0;
     for (const ball in balls) {
       cnt++;
     }
-    console.log("total Balls--> ", cnt);
+    console.log("parsing 1st inning success, total balls--> ", cnt);
   } catch (error) {
     console.error
   }
 }
 
-async function createBalls(match: matchInterface) {
+async function createBalls() {
   try {
     const startTime = Date.now();
-    if (!accessToken || !match.id) {
+    await getAccessToken();
+    if (!accessToken) {
       console.error("access token required");
       return;
     }
 
-    await getMatches(match.id, match.link);
+    await getCompletedMatches('cm9uo0e8j0000l79o79q97283', '/series/ipl-2025-1449924/kolkata-knight-riders-vs-royal-challengers-bengaluru-1st-match-1473438/ball-by-ball-commentary');
 
     let cnt1 = 0;
     let cnt2 = 0;
@@ -220,51 +292,14 @@ async function createBalls(match: matchInterface) {
     console.log('total created ball', cnt1);
     console.log('total not created ball', cnt2);
     console.log('total time taken', (endTime - startTime) / (1000 * 60), 'min');
+
   } catch (error) {
     console.error
   }
 }
 
-async function searchForUpcomingMatches() {
-  await getAccessToken();
-  if (!accessToken) {
-    console.error('access Token required');
-    return;
-  }
-
-  try {
-    const matchesRes = await axios.get(`${BackendUrl}/matches/league/IPL`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-
-    const match: matchInterface = matchesRes.data.find((match: matchInterface) => {
-      const matchTime = new Date(match.date).getTime();
-      if ((matchTime - Date.now()) / (1000 * 60) < 10 * 60) {
-        return true;
-      }
-    })
-
-    if (match) {
-      if (!matchInteravl[match.id!].interval) {
-        let interval = setInterval(() => {
-          createBalls(match);
-        }, 60 * 1000);
-        matchInteravl[match.id!] = {
-          interval
-        }
-      }
-    }
-  } catch (error) {
-    console.error('matches fetching failed', error);
-  }
-}
+createBalls();
 
 setInterval(() => {
   getAccessToken();
 }, 25 * 60 * 1000);
-
-setInterval(() => {
-  searchForUpcomingMatches();
-}, 30 * 60 * 1000);

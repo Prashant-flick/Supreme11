@@ -1,4 +1,6 @@
 export interface matchInterface {
+  team1Id?: string,
+  team2Id?: string,
   team1Name: string,
   team2Name: string,
   venue: string,
@@ -8,7 +10,9 @@ export interface matchInterface {
   status: 'upcoming' | 'started' | 'ended',
   link: string,
   date: Date,
-  id?: string
+  id?: string,
+  league: string,
+  result: string
 }
 
 export interface squadInterface {
@@ -20,10 +24,22 @@ export interface squadInterface {
 export interface playerInterface {
   name: string,
   age: string,
-  battingDexture: "left" | "right",
-  bowlingDexture: "left" | "right",
+  battingDexture: "left" | "right" | "tobeDeclared",
+  bowlingDexture: "left" | "right" | "tobeDeclared",
   role: "batsman" | "bowler" | "ar" | "wk",
   countryStatus: "foreign" | "indian",
   squadId: string,
   img: string,
+}
+
+export interface tournamentInerface {
+  maxLimit: number;
+  entryFee: number;
+  matchId: string;
+  status: "ended" | "started" | "upcoming";
+  id: string;
+  prizePool: number | null;
+  winner: string;
+  ownerId: string;
+  teamsJoined: number;
 }

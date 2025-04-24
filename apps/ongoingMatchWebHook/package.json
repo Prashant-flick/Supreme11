@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build2": "npx esbuild src/*.ts --bundle --platform=node --outdir=dist --tsconfig=tsconfig.json",
     "build": "npx tsc -b",
     "start": "node dist/index.js",
-    "dev": "pnpm run build && pnpm start"
+    "start2": "node dist/seedCompletedMatches.js",
+    "dev": "pnpm run build && pnpm start",
+    "dev2": "pnpm run build && pnpm start2"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +19,8 @@
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
     "esbuild": "^0.25.2",
+    "is-plain-object": "^5.0.0",
+    "kind-of": "^6.0.3",
     "puppeteer": "^24.6.1",
     "puppeteer-core": "^24.6.1",
     "puppeteer-extra": "^3.3.6",

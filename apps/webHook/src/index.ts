@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosInstance } from 'axios';
+import { CookieJar } from 'tough-cookie';
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import dotenv from 'dotenv';
@@ -7,9 +8,53 @@ import { matchInterface } from "@repo/common/types";
 dotenv.config();
 puppeteer.use(StealthPlugin());
 
+const cookieJar = new CookieJar();
+
+const axiosInstance: AxiosInstance = axios.create({
+  withCredentials: true,
+  jar: cookieJar
+});
+
 const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000";
 const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
+const email = process.env.EMAIL;
+const password = process.env.PASSWORD;
+let userId: string = "";
+
+const getAccessToken = async () => {
+  if (!email || !password) {
+    console.error("email and passowrd required");
+    return;
+  }
+
+  // if (accessToken) {
+  //   try {
+  //     const accessTokenRes = await axiosInstance.post(`${BackendUrl}/refresh`, {}, {
+  //       withCredentials: true
+  //     })
+
+  //     accessToken = accessTokenRes.data.accessToken
+  //     userId = accessTokenRes.data.userId
+  //   } catch (error) {
+  //     console.error;
+  //   }
+  // } else {
+  try {
+    const signInRes = await axiosInstance.post(`${BackendUrl}/signin`, {
+      email,
+      password
+    }, {
+      withCredentials: true
+    })
+
+    accessToken = signInRes.data.accessToken
+    userId = signInRes.data.userId
+  } catch (error) {
+    console.error
+  }
+  // }
+}
 
 function convertTeamAbbreviation(teamName: string): string {
   switch (teamName.trim().toLowerCase()) {
@@ -79,7 +124,7 @@ async function getMatches() {
             matchVenue,
             matchResult,
             matchLink,
-
+            league: "IPL"
           });
         } catch (err) {
           console.error("Scraping error", err);
@@ -112,10 +157,11 @@ async function getMatches() {
         venue: match.matchVenue,
         link: newLink,
         date,
+        league: match.league,
+        result: match.matchResult,
       };
     });
 
-    console.log(matches);
     return matches;
   } catch (error) {
     console.error("Error scraping cricket scores:", error);
@@ -125,4 +171,59 @@ async function getMatches() {
   }
 }
 
-getMatches().catch(console.error);
+async function createMatches() {
+  await getAccessToken();
+
+  if (!accessToken) {
+    console.error("accessToken required");
+    return;
+  }
+
+  const matches = await getMatches();
+
+  for (const match of matches) {
+    try {
+      const team1Res = await axios.get(`${BackendUrl}/squad/${match.team1Name}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      const team2Res = await axios.get(`${BackendUrl}/squad/${match.team2Name}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      const team1Id = team1Res.data.squadRes.id;
+      const team2Id = team2Res.data.squadRes.id;
+
+      await axios.post(`${BackendUrl}/matches`, {
+        team1Id,
+        team2Id,
+        toss: match.toss,
+        elected: match.elected,
+        status: match.status,
+        league: match.league,
+        venue: match.venue,
+        link: match.link,
+        date: match.date.toISOString(),
+        winner: match.winner,
+        result: match.result
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+
+      console.log('match creation success');
+      return;
+    } catch (error) {
+      console.error
+    }
+  }
+}
+
+createMatches();
+
+setInterval(() => {
+  getAccessToken();
+}, 25 * 60 * 1000);

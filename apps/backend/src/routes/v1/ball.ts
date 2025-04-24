@@ -6,6 +6,28 @@ import { adminMiddleware } from "../../middleware/admin";
 export const ballRouter = Router();
 ballRouter.use(adminMiddleware)
 
+function nameMatches(shortName: string, fullName: string): boolean {
+  if (fullName.toLowerCase().includes(shortName.toLowerCase())) return true;
+  if (!shortName) return false;
+
+  let [shortFirstInitial, ...shortLastParts] = shortName.split(' ');
+  shortFirstInitial = shortFirstInitial.toLowerCase();
+  const shortLast = shortLastParts.join(' ').toLowerCase();
+
+  let [fullFirst, ...fullLastParts] = fullName.split(' ');
+  fullFirst = fullFirst.toLowerCase();
+  const fullLast = fullLastParts.join(' ').toLowerCase();
+
+  if (!shortLast) {
+    return (fullLast.includes(shortFirstInitial) || fullFirst.includes(shortFirstInitial))
+  }
+
+  return (
+    fullFirst[0].toLowerCase() === shortFirstInitial[0].toLowerCase() &&
+    fullLast.includes(shortLast)
+  );
+}
+
 ballRouter.post('/', async (req, res) => {
   const parsedData = ballSchema.safeParse(req.body);
   if (!parsedData.success) {
@@ -17,32 +39,398 @@ ballRouter.post('/', async (req, res) => {
   }
 
   try {
-    const ballRes = await client.balls.create({
-      data: {
-        inningId: parsedData.data.inningId,
-        runout: parsedData.data.runout,
-        bowler: parsedData.data.bowler,
-        batsman: parsedData.data.batsman,
-        overNo: Number(parsedData.data.overNo),
-        overBallNo: Number(parsedData.data.overBallNo),
-        catch: parsedData.data.catch,
-        whatHappendtext: parsedData.data.whatHappendText,
-        whatHappendWicketText: parsedData.data.whatHappendWicketText,
-        lbw: parsedData.data.lbw,
-        stump: parsedData.data.stump,
-        run: parsedData.data.run
+    await client.$transaction(async (tx) => {
+      const ballRes = await tx.balls.create({
+        data: {
+          inningId: parsedData.data.inningId,
+          runout: parsedData.data.runout,
+          bowler: parsedData.data.bowler,
+          batsman: parsedData.data.batsman,
+          overNo: Number(parsedData.data.overNo),
+          overBallNo: Number(parsedData.data.overBallNo),
+          catch: parsedData.data.catch,
+          whatHappendtext: parsedData.data.whatHappendText,
+          whatHappendWicketText: parsedData.data.whatHappendWicketText,
+          lbw: parsedData.data.lbw,
+          stump: parsedData.data.stump,
+          run: parsedData.data.run
+        }
+      })
+
+      let wicket: boolean = false;
+      if (ballRes.whatHappendWicketText) {
+        wicket = true
+      }
+
+      const inningRes = await tx.inning.findFirst({
+        where: {
+          id: ballRes.inningId
+        }
+      })
+
+      const otherInningRes = await tx.inning.findFirst({
+        where: {
+          id: parsedData.data.otherInningId
+        }
+      })
+
+      let batsman1 = inningRes?.batsman1;
+      let batsman2 = inningRes?.batsman2;
+
+      if (!batsman1) {
+        batsman1 = ballRes.batsman;
+      } else if (!batsman2 && ballRes.batsman !== batsman1) {
+        batsman2 = ballRes.batsman
+      }
+
+      let wicketBatsman = '';
+      if (wicket) {
+        if (ballRes.runout) {
+          wicketBatsman = ballRes.whatHappendWicketText?.split(' run out ')[0] || '';
+        } else if (ballRes.catch) {
+          wicketBatsman = ballRes.whatHappendWicketText?.split(' c ')[0] || '';
+        } else if (ballRes.lbw) {
+          wicketBatsman = ballRes.whatHappendWicketText?.split(' lbw ')[0] || '';
+        } else if (ballRes.stump) {
+          wicketBatsman = ballRes.whatHappendWicketText?.split(' st ')[0] || '';
+        } else {
+          wicketBatsman = ballRes.whatHappendWicketText?.split(' b ')[0] || '';
+        }
+      }
+
+      if (wicketBatsman) {
+        if (batsman1 === wicketBatsman) {
+          batsman1 = batsman2;
+          batsman2 = '';
+        } else if (batsman2 === wicketBatsman) {
+          batsman2 = '';
+        }
+      }
+
+      await tx.inning.update({
+        where: {
+          id: ballRes.inningId
+        },
+        data: {
+          score: {
+            increment: Number(ballRes.run)
+          },
+          wickets: {
+            increment: wicket ? 1 : 0
+          },
+          batsman1,
+          batsman2,
+          bowler: ballRes.bowler
+        }
+      })
+
+      const squadRes = await tx.squad.findFirst({
+        where: {
+          name: inningRes?.teamName!
+        }
+      })
+
+      const squad2Res = await tx.squad.findFirst({
+        where: {
+          name: otherInningRes?.teamName!
+        }
+      })
+
+      const squad1Players = await tx.players.findMany({
+        where: {
+          squadId: squadRes?.id
+        }
+      })
+
+      const squad2Players = await tx.players.findMany({
+        where: {
+          squadId: squad2Res?.id
+        }
+      })
+
+      const bowlerRes = squad2Players.find(player => nameMatches(ballRes.bowler, player.name));
+      const batsmanRes = squad1Players.find(player => nameMatches(ballRes.batsman, player.name));
+      const runoutPlayerRes = squad2Players.find(player => nameMatches(ballRes.runout!, player.name));
+      const stumpPlayerRes = squad2Players.find(player => nameMatches(ballRes.stump!, player.name));
+      const catchPlayerRes = squad2Players.find(player => nameMatches(ballRes.catch!, player.name));
+
+      // const batsmanRes = await tx.players.findFirst({
+      //   where: {
+      //     squadId: squadRes?.id,
+      //     OR: [
+      //       {
+      //         name: {
+      //           contains: ballRes.batsman,
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.batsman.split(' ')[1],
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.batsman.split(' ')[0],
+      //           mode: 'insensitive'
+      //         },
+      //       }
+      //     ]
+      //   }
+      // })
+
+      // const runoutPlayerRes = await tx.players.findFirst({
+      //   where: {
+      //     squadId: squad2Res?.id,
+      //     OR: [
+      //       {
+      //         name: {
+      //           contains: ballRes.runout!,
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.runout?.split(' ')[1],
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.runout?.split(' ')[0],
+      //           mode: 'insensitive'
+      //         },
+      //       }
+      //     ]
+      //   }
+      // })
+
+      // const stumpPlayerRes = await tx.players.findFirst({
+      //   where: {
+      //     squadId: squad2Res?.id,
+      //     OR: [
+      //       {
+      //         name: {
+      //           contains: ballRes.stump!,
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.stump?.split(' ')[1],
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.stump?.split(' ')[0],
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //     ]
+      //   }
+      // })
+
+      // const catchPlayerRes = await tx.players.findFirst({
+      //   where: {
+      //     squadId: squad2Res?.id,
+      //     OR: [
+      //       {
+      //         name: {
+      //           contains: ballRes.catch!,
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.catch?.split(' ')[1],
+      //           mode: 'insensitive'
+      //         },
+      //       },
+      //       {
+      //         name: {
+      //           contains: ballRes.catch?.split(' ')[0],
+      //           mode: 'insensitive'
+      //         },
+      //       }
+      //     ]
+      //   }
+      // })
+
+      console.log('bowler--> ', bowlerRes?.name, 'batsman--> ', batsmanRes?.name, 'runout--> ', runoutPlayerRes?.name, 'stump--> ', stumpPlayerRes?.name, 'catch--> ', catchPlayerRes?.name);
+
+      if (!ballRes.runout && wicket) {
+        await tx.playerScore.update({
+          where: {
+            matchId: inningRes?.matchId,
+            playerId: bowlerRes?.id
+          },
+          data: {
+            fantasyPoints: {
+              increment: ballRes.lbw ? 34 : 26
+            },
+            wickets: {
+              increment: 1
+            },
+            runsConceded: {
+              increment: Number(ballRes.run)
+            },
+            ballsBowled: {
+              increment: 1
+            },
+            dotBall: {
+              increment: ballRes.run === '0' ? 1 : 0
+            }
+          }
+        })
+
+        if (ballRes.catch) {
+          await tx.playerScore.update({
+            where: {
+              matchId: inningRes?.matchId,
+              playerId: catchPlayerRes?.id
+            },
+            data: {
+              fantasyPoints: {
+                increment: 8
+              },
+              catches: {
+                increment: 1
+              }
+            }
+          })
+        } else if (ballRes.stump) {
+          await tx.playerScore.update({
+            where: {
+              matchId: inningRes?.matchId,
+              playerId: stumpPlayerRes?.id
+            },
+            data: {
+              fantasyPoints: {
+                increment: 12
+              },
+              runout: {
+                increment: 1
+              }
+            }
+          })
+        }
+      } else if (ballRes.runout) {
+        await tx.playerScore.update({
+          where: {
+            matchId: inningRes?.matchId,
+            playerId: runoutPlayerRes?.id
+          },
+          data: {
+            fantasyPoints: {
+              increment: 12
+            },
+            runout: {
+              increment: 1
+            }
+          }
+        })
+
+        await tx.playerScore.update({
+          where: {
+            matchId: inningRes?.matchId,
+            playerId: bowlerRes?.id
+          },
+          data: {
+            fantasyPoints: {
+              increment: ballRes.run === '0' ? 1 : 0
+            },
+            dotBall: {
+              increment: ballRes.run === '0' ? 1 : 0
+            },
+            ballsBowled: {
+              increment: 1
+            },
+            runsConceded: {
+              increment: Number(ballRes.run)
+            }
+          }
+        })
+
+        if (ballRes.run !== '0') {
+          await tx.playerScore.update({
+            where: {
+              matchId: inningRes?.matchId,
+              playerId: batsmanRes?.id
+            },
+            data: {
+              fantasyPoints: {
+                increment: Number(ballRes.run) + (ballRes.run === '4' || ballRes.run === '6' ? Number(ballRes.run) : 0)
+              },
+              run: {
+                increment: Number(ballRes.run)
+              },
+              fours: {
+                increment: ballRes.run === '4' ? 1 : 0
+              },
+              sixes: {
+                increment: ballRes.run === '6' ? 1 : 0
+              }
+            }
+          })
+        }
+      } else {
+        await tx.playerScore.update({
+          where: {
+            matchId: inningRes?.matchId,
+            playerId: bowlerRes?.id
+          },
+          data: {
+            fantasyPoints: {
+              increment: ballRes.run === '0' ? 1 : 0
+            },
+            dotBall: {
+              increment: ballRes.run === '0' ? 1 : 0
+            },
+            ballsBowled: {
+              increment: 1
+            },
+            runsConceded: {
+              increment: Number(ballRes.run)
+            }
+          }
+        })
+
+        if (ballRes.run !== '0') {
+          await tx.playerScore.update({
+            where: {
+              matchId: inningRes?.matchId,
+              playerId: batsmanRes?.id
+            },
+            data: {
+              fantasyPoints: {
+                increment: Number(ballRes.run) + (ballRes.run === '6' || ballRes.run === '4' ? Number(ballRes.run) : 0)
+              },
+              run: {
+                increment: Number(ballRes.run)
+              },
+              fours: {
+                increment: ballRes.run === '4' ? 1 : 0
+              },
+              sixes: {
+                increment: ballRes.run === '6' ? 1 : 0
+              }
+            }
+          })
+        }
       }
     })
 
     res.status(200)
       .json({
         message: "ball creation success",
-        ballRes
       })
   } catch (error) {
     res.status(400)
       .json({
         message: "ball creation failed"
       })
+    console.log('creation failed', error);
   }
 })

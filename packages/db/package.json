@@ -12,9 +12,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "6.6.0",
-    "g": "^2.0.1",
-    "pnpm": "^10.8.1",
-    "typescript": "^5.8.3"
+    "@prisma/client": "^6.6.0"
   }
 }
