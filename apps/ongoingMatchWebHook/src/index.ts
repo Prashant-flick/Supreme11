@@ -61,18 +61,17 @@ async function autoScroll(page: Page) {
 const getMatches = async (matchId: string, matchUrl: string) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-
-  const url = `${BaseUrl}${matchUrl}`;
-
-  await page.goto(
-    url,
-    {
-      waitUntil: "domcontentloaded",
-      timeout: 100000,
-    }
-  );
-
   try {
+    const url = `${BaseUrl}${matchUrl}`;
+
+    await page.goto(
+      url,
+      {
+        waitUntil: "domcontentloaded",
+        timeout: 100000,
+      }
+    );
+
     const teamsName: string[] = [];
     const rawTeamNameData = await page.evaluate(() => {
       const teamsNameCard = document.querySelectorAll('.ds-text-tight-l.ds-font-bold.ds-text-typo.hover\\:ds-text-typo-primary.ds-block.ds-truncate');
@@ -126,10 +125,10 @@ const getMatches = async (matchId: string, matchUrl: string) => {
       return balls;
     })
 
-    console.log("fetching 2nd inning success");
+    console.log("fetching inning success");
 
     rawBallData2ndInning.map((ball, index) => {
-      const over = ball.overNo + '.' + ball.overBallNo + ' ' + index + ' 2nd';
+      const over = ball.overNo + '.' + ball.overBallNo;
       if (!balls[over]) {
         balls[over] = {
           ballRun: ball.ballRun,
@@ -144,7 +143,7 @@ const getMatches = async (matchId: string, matchUrl: string) => {
       }
     })
 
-    console.log("parsing 2nd inning success");
+    console.log("parsing inning success");
 
     let cnt = 0;
     for (const ball in balls) {
@@ -152,12 +151,16 @@ const getMatches = async (matchId: string, matchUrl: string) => {
     }
     console.log("total Balls--> ", cnt);
   } catch (error) {
-    console.error
+    console.log(error);
+  } finally {
+    await browser.close();
   }
 }
 
 async function createBalls(match: matchInterface) {
   try {
+    console.log('create ball started');
+
     const startTime = Date.now();
     if (!accessToken || !match.id) {
       console.error("access token required");
@@ -171,48 +174,50 @@ async function createBalls(match: matchInterface) {
     for (const over in balls) {
       const overData = balls[over];
       if (!overData.send) {
-        try {
-          const overNo = overData.overNo;
-          const overBallNo = overData.overBallNo
-          const bowler = overData.whatHappend.split(' to ')[0];
-          const batsman = overData.whatHappend.split(' to ')[1].split(',')[0];
-          const run = overData.ballRun.includes('w') ? overData.ballRun.split('w')[0] || "0" : overData.ballRun.includes('W') ? overData.ballRun.split('W')[0] || "0" : overData.ballRun.includes('nb') ? overData.ballRun.split('nb')[0] || "0" : overData.ballRun.includes('lb') ? overData.ballRun.split('lb')[0] || "0" : overData.ballRun === "•" ? "0" : overData.ballRun;
-          const whatHappendText = overData.whatHappend;
-          const whatHappendWicketText = overData.whatHappendWicket;
-          let catchingPlayer = overData.whatHappendWicket.includes(" c ") ? overData.whatHappendWicket.split(" c ")[1].split(' ')[0] : "";
-          const stumpPlayer = overData.whatHappendWicket.includes(" st ") ? overData.whatHappendWicket.split(" st ")[1].split(' ')[0] : "";
-          const runoutPlayers = overData.whatHappendWicket.includes(" run out ") ? overData.whatHappendWicket.split(" run out ")[1].split(')')[0] : "";
-          const wicket = overData.ballRun.includes('W');
-          const lbw = overData.whatHappendWicket.includes('lbw');
-          const inningId = overData.inningId;
-          const otherInningId = overData.otherInningId;
-          catchingPlayer = catchingPlayer.includes('†') ? catchingPlayer.split('†')[1] : catchingPlayer;
+        console.log(over, overData);
+        // try {
+        //   const overNo = overData.overNo;
+        //   const overBallNo = overData.overBallNo
+        //   const bowler = overData.whatHappend.split(' to ')[0];
+        //   const batsman = overData.whatHappend.split(' to ')[1].split(',')[0];
+        //   const run = overData.ballRun.includes('w') ? overData.ballRun.split('w')[0] || "0" : overData.ballRun.includes('W') ? overData.ballRun.split('W')[0] || "0" : overData.ballRun.includes('nb') ? overData.ballRun.split('nb')[0] || "0" : overData.ballRun.includes('lb') ? overData.ballRun.split('lb')[0] || "0" : overData.ballRun === "•" ? "0" : overData.ballRun;
+        //   const whatHappendText = overData.whatHappend;
+        //   const whatHappendWicketText = overData.whatHappendWicket;
+        //   let catchingPlayer = overData.whatHappendWicket.includes(" c ") ? overData.whatHappendWicket.split(" c ")[1].split(' ')[0] : "";
+        //   const stumpPlayer = overData.whatHappendWicket.includes(" st ") ? overData.whatHappendWicket.split(" st ")[1].split(' ')[0] : "";
+        //   const runoutPlayers = overData.whatHappendWicket.includes(" run out ") ? overData.whatHappendWicket.split(" run out ")[1].split(')')[0] : "";
+        //   const wicket = overData.ballRun.includes('W');
+        //   const lbw = overData.whatHappendWicket.includes('lbw');
+        //   const inningId = overData.inningId;
+        //   const otherInningId = overData.otherInningId;
+        //   catchingPlayer = catchingPlayer.includes('†') ? catchingPlayer.split('†')[1] : catchingPlayer;
 
-          await axios.post(`${BackendUrl}/ball`, {
-            overNo,
-            overBallNo,
-            bowler,
-            batsman,
-            runout: runoutPlayers,
-            catch: catchingPlayer,
-            stump: stumpPlayer,
-            whatHappendText,
-            whatHappendWicketText,
-            run,
-            lbw,
-            inningId,
-            otherInningId
-          }, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-          cnt1++;
-          balls[over].send = true;
-        } catch (error) {
-          console.error("failed to send overData in database");
-          cnt2++;
-        }
+        //   await axios.post(`${BackendUrl}/ball`, {
+        //     overNo,
+        //     overBallNo,
+        //     bowler,
+        //     batsman,
+        //     runout: runoutPlayers,
+        //     catch: catchingPlayer,
+        //     stump: stumpPlayer,
+        //     whatHappendText,
+        //     whatHappendWicketText,
+        //     run,
+        //     lbw,
+        //     inningId,
+        //     otherInningId
+        //   }, {
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`
+        //     }
+        //   })
+        //   cnt1++;
+        //   balls[over].send = true;
+        // } catch (error) {
+        //   console.error("failed to send overData in database");
+        //   cnt2++;
+        // }
+        balls[over].send = true;
       }
     }
 
@@ -221,7 +226,7 @@ async function createBalls(match: matchInterface) {
     console.log('total not created ball', cnt2);
     console.log('total time taken', (endTime - startTime) / (1000 * 60), 'min');
   } catch (error) {
-    console.error
+    console.log(error)
   }
 }
 
@@ -239,21 +244,27 @@ async function searchForUpcomingMatches() {
       }
     })
 
-    const match: matchInterface = matchesRes.data.find((match: matchInterface) => {
+    const match: matchInterface = matchesRes.data.matchesRes.find((match: matchInterface) => {
       const matchTime = new Date(match.date).getTime();
-      if ((matchTime - Date.now()) / (1000 * 60) < 10 * 60) {
+      const startedTime = (matchTime - Date.now()) / (1000 * 60);
+
+      if (startedTime < 10 && startedTime > -200) {
         return true;
       }
     })
 
     if (match) {
-      if (!matchInteravl[match.id!].interval) {
+      if (!matchInteravl[match.id!]) {
+        console.log('interval started');
+        createBalls(match)
         let interval = setInterval(() => {
           createBalls(match);
-        }, 60 * 1000);
+        }, 50 * 1000);
         matchInteravl[match.id!] = {
           interval
         }
+      } else {
+        console.log('interval exist');
       }
     }
   } catch (error) {
@@ -268,3 +279,4 @@ setInterval(() => {
 setInterval(() => {
   searchForUpcomingMatches();
 }, 30 * 60 * 1000);
+searchForUpcomingMatches();

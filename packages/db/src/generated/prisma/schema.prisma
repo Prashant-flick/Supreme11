@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -88,6 +88,7 @@ model PlayerScore {
   player        Players             @relation(fields: [playerId], references: [id])
   matchId       String
   match         Matches             @relation(fields: [matchId], references: [id])
+
   @@unique([playerId, matchId])
 }
 
@@ -122,24 +123,25 @@ model Inning {
   matchId     String
   match       Matches     @relation(fields: [matchId], references: [id])
   balls       Balls[]
+
   @@unique([matchId, whichInning])
 }
 
 model Balls {
-  id              String      @id @unique @default(cuid())
-  overNo          Int
-  whatHappendtext String
+  id                    String  @id @unique @default(cuid())
+  overNo                Int
+  whatHappendtext       String
   whatHappendWicketText String?
-  overBallNo      Int
-  bowler          String
-  batsman         String
-  catch           String?
-  runout          String?
-  stump           String?
-  lbw             Boolean
-  run             String
-  inningId        String
-  inning          Inning      @relation(fields: [inningId], references: [id])
+  overBallNo            Int
+  bowler                String
+  batsman               String
+  catch                 String?
+  runout                String?
+  stump                 String?
+  lbw                   Boolean
+  run                   String
+  inningId              String
+  inning                Inning  @relation(fields: [inningId], references: [id])
 }
 
 model Tournament {

@@ -269,7 +269,10 @@ async function getSquadPlayers() {
       console.error("access token required for creating squads and backend call");
       return;
     }
+    console.log(accessToken);
+
     const squads = await getSquads();
+    console.log(squads);
 
     for (const squad of squads) {
       const squadRes = await axios.post(`${BackendUrl}/squad`, {
@@ -286,7 +289,9 @@ async function getSquadPlayers() {
       const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
       if (players) {
         for (const player of players) {
-          await createPlayer(player);
+          // await createPlayer(player);
+          console.log(player);
+
         }
       }
     }
@@ -295,7 +300,7 @@ async function getSquadPlayers() {
   }
 }
 
-getSquadPlayers().catch(console.error);
+getSquadPlayers();
 
 setInterval(() => {
   getAccessToken();

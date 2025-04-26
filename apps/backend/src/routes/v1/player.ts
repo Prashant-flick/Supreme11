@@ -6,6 +6,38 @@ import { adminMiddleware } from "../../middleware/admin";
 export const playerRouter = Router();
 playerRouter.use(adminMiddleware)
 
+playerRouter.get('/squadPlayers', async (req, res) => {
+  const squadId = (req.query.squadId) as string
+  console.log(squadId);
+  console.log(req.query);
+  if (!squadId) {
+    res.status(400)
+      .json({
+        message: "squadId is required"
+      })
+    return
+  }
+
+  try {
+    const playersRes = await client.players.findMany({
+      where: {
+        squadId
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "fetching squad players success",
+        playersRes
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "fetching squad players failed"
+      })
+  }
+})
+
 playerRouter.get('/:playerId', async (req, res) => {
   const playerId = req.params.playerId;
   if (!playerId) {
@@ -32,36 +64,6 @@ playerRouter.get('/:playerId', async (req, res) => {
     res.status(400)
       .json({
         message: "fetching player failed"
-      })
-  }
-})
-
-playerRouter.get('/squadPlayers', async (req, res) => {
-  const squadId = (req.query.squadId) as string
-  if (!squadId) {
-    res.status(400)
-      .json({
-        message: "squadId is required"
-      })
-    return
-  }
-
-  try {
-    const playersRes = await client.players.findMany({
-      where: {
-        squadId
-      }
-    })
-
-    res.status(200)
-      .json({
-        message: "fetching squad players success",
-        playersRes
-      })
-  } catch (error) {
-    res.status(400)
-      .json({
-        message: "fetching squad players failed"
       })
   }
 })

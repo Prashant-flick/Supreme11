@@ -7,25 +7,24 @@ export const ballRouter = Router();
 ballRouter.use(adminMiddleware)
 
 function nameMatches(shortName: string, fullName: string): boolean {
-  if (fullName.toLowerCase().includes(shortName.toLowerCase())) return true;
   if (!shortName) return false;
+  shortName = shortName.toLowerCase();
+  fullName = fullName.toLowerCase();
+  if (fullName.includes(shortName)) return true;
 
-  let [shortFirstInitial, ...shortLastParts] = shortName.split(' ');
-  shortFirstInitial = shortFirstInitial.toLowerCase();
-  const shortLast = shortLastParts.join(' ').toLowerCase();
-
-  let [fullFirst, ...fullLastParts] = fullName.split(' ');
-  fullFirst = fullFirst.toLowerCase();
-  const fullLast = fullLastParts.join(' ').toLowerCase();
-
-  if (!shortLast) {
-    return (fullLast.includes(shortFirstInitial) || fullFirst.includes(shortFirstInitial))
+  let shortNameArr: string[] = shortName.split(' ');
+  if (shortNameArr.length === 1) return false;
+  if (shortNameArr.length === 2) {
+    return fullName.split(' ')[0].includes(shortNameArr[0][0]) && fullName.includes(shortNameArr[1]);
   }
-
-  return (
-    fullFirst[0].toLowerCase() === shortFirstInitial[0].toLowerCase() &&
-    fullLast.includes(shortLast)
-  );
+  if (shortNameArr.length === 3) {
+    if (fullName.split(' ').length === 3) {
+      return fullName.split(' ')[0].includes(shortNameArr[0][0]) && fullName.split(' ')[1].includes(shortNameArr[1][0]) && fullName.split(' ')[2].includes(shortNameArr[2]);
+    } else {
+      return false;
+    }
+  }
+  return false;
 }
 
 ballRouter.post('/', async (req, res) => {
@@ -258,13 +257,13 @@ ballRouter.post('/', async (req, res) => {
       //   }
       // })
 
-      console.log('bowler--> ', bowlerRes?.name, 'batsman--> ', batsmanRes?.name, 'runout--> ', runoutPlayerRes?.name, 'stump--> ', stumpPlayerRes?.name, 'catch--> ', catchPlayerRes?.name);
-
       if (!ballRes.runout && wicket) {
         await tx.playerScore.update({
           where: {
-            matchId: inningRes?.matchId,
-            playerId: bowlerRes?.id
+            playerId_matchId: {
+              playerId: bowlerRes?.id!,
+              matchId: inningRes?.matchId!
+            }
           },
           data: {
             fantasyPoints: {
@@ -288,8 +287,10 @@ ballRouter.post('/', async (req, res) => {
         if (ballRes.catch) {
           await tx.playerScore.update({
             where: {
-              matchId: inningRes?.matchId,
-              playerId: catchPlayerRes?.id
+              playerId_matchId: {
+                matchId: inningRes?.matchId!,
+                playerId: catchPlayerRes?.id!
+              }
             },
             data: {
               fantasyPoints: {
@@ -303,8 +304,10 @@ ballRouter.post('/', async (req, res) => {
         } else if (ballRes.stump) {
           await tx.playerScore.update({
             where: {
-              matchId: inningRes?.matchId,
-              playerId: stumpPlayerRes?.id
+              playerId_matchId: {
+                matchId: inningRes?.matchId!,
+                playerId: stumpPlayerRes?.id!
+              }
             },
             data: {
               fantasyPoints: {
@@ -319,8 +322,10 @@ ballRouter.post('/', async (req, res) => {
       } else if (ballRes.runout) {
         await tx.playerScore.update({
           where: {
-            matchId: inningRes?.matchId,
-            playerId: runoutPlayerRes?.id
+            playerId_matchId: {
+              matchId: inningRes?.matchId!,
+              playerId: runoutPlayerRes?.id!
+            }
           },
           data: {
             fantasyPoints: {
@@ -334,8 +339,10 @@ ballRouter.post('/', async (req, res) => {
 
         await tx.playerScore.update({
           where: {
-            matchId: inningRes?.matchId,
-            playerId: bowlerRes?.id
+            playerId_matchId: {
+              matchId: inningRes?.matchId!,
+              playerId: bowlerRes?.id!
+            }
           },
           data: {
             fantasyPoints: {
@@ -356,8 +363,10 @@ ballRouter.post('/', async (req, res) => {
         if (ballRes.run !== '0') {
           await tx.playerScore.update({
             where: {
-              matchId: inningRes?.matchId,
-              playerId: batsmanRes?.id
+              playerId_matchId: {
+                matchId: inningRes?.matchId!,
+                playerId: batsmanRes?.id!
+              }
             },
             data: {
               fantasyPoints: {
@@ -378,8 +387,10 @@ ballRouter.post('/', async (req, res) => {
       } else {
         await tx.playerScore.update({
           where: {
-            matchId: inningRes?.matchId,
-            playerId: bowlerRes?.id
+            playerId_matchId: {
+              matchId: inningRes?.matchId!,
+              playerId: bowlerRes?.id!
+            }
           },
           data: {
             fantasyPoints: {
@@ -400,8 +411,10 @@ ballRouter.post('/', async (req, res) => {
         if (ballRes.run !== '0') {
           await tx.playerScore.update({
             where: {
-              matchId: inningRes?.matchId,
-              playerId: batsmanRes?.id
+              playerId_matchId: {
+                matchId: inningRes?.matchId!,
+                playerId: batsmanRes?.id!
+              }
             },
             data: {
               fantasyPoints: {
@@ -431,6 +444,5 @@ ballRouter.post('/', async (req, res) => {
       .json({
         message: "ball creation failed"
       })
-    console.log('creation failed', error);
   }
 })

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { matchesSchema } from "../../types";
 import client from "@repo/db/client";
-import { Prisma } from "../../../../../packages/db/node_modules/@prisma/client"
+import { Prisma } from "../../../../../packages/db/src/generated/prisma/client"
 import { adminMiddleware } from "../../middleware/admin";
 import { userMiddleware } from "../../middleware/user";
 
@@ -17,8 +17,12 @@ matchesRouter.post('/', adminMiddleware, async (req, res) => {
     return
   }
 
+  console.log('parsed');
+
   try {
     const date = new Date(parsedData.data.date);
+    console.log(parsedData.data.date, ' created Date--> ', date);
+
     await client.$transaction(async (tx) => {
       const match = await tx.matches.create({
         data: {
@@ -62,6 +66,7 @@ matchesRouter.post('/', adminMiddleware, async (req, res) => {
       .json({
         message: "match creation failed"
       })
+    console.log('match creation failed')
   }
 })
 
@@ -142,6 +147,73 @@ matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
       .json({
         message: "match fetching error"
       })
+  }
+})
+
+matchesRouter.delete('/:matchId', async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!matchId) {
+    res.status(400)
+      .json({
+        message: "matchId is required"
+      })
+    return
+  }
+
+  try {
+    console.log(matchId);
+    await client.$transaction(async (tx) => {
+      await tx.playerScore.deleteMany({
+        where: {
+          matchId
+        }
+      })
+
+      const inningsRes = await tx.inning.findMany({
+        where: {
+          matchId
+        }
+      })
+
+      for (const inning of inningsRes) {
+        await tx.balls.deleteMany({
+          where: {
+            inningId: inning.id
+          }
+        })
+        await tx.inning.delete({
+          where: {
+            id: inning.id
+          }
+        })
+      }
+
+      await tx.inning.deleteMany({
+        where: {
+          matchId
+        }
+      })
+
+      await tx.matches.delete({
+        where: {
+          id: matchId
+        }
+      })
+    })
+
+    console.log('success');
+
+
+    res.status(200)
+      .json({
+        message: "successfully deleted match"
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "match deletion failed"
+      })
+    console.log(error);
   }
 })
 
