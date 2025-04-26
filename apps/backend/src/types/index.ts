@@ -66,7 +66,7 @@ export const matchesSchema = z.object({
   date: z.string(),
   link: z.string(),
   result: z.string(),
-  winner: z.enum(["team1", "team2", "tobeDeclared"]),
+  winner: z.enum(["team1", "team2", "tobeDeclared", "noResult"]),
   toss: z.enum(["team1", "team2", "tobeDeclared"]),
   elected: z.enum(["bat", "ball", "tobeDeclared"]),
   status: z.enum(["upcoming", "started", "ended"]),

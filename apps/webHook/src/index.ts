@@ -28,18 +28,6 @@ const getAccessToken = async () => {
     return;
   }
 
-  // if (accessToken) {
-  //   try {
-  //     const accessTokenRes = await axiosInstance.post(`${BackendUrl}/refresh`, {}, {
-  //       withCredentials: true
-  //     })
-
-  //     accessToken = accessTokenRes.data.accessToken
-  //     userId = accessTokenRes.data.userId
-  //   } catch (error) {
-  //     console.error;
-  //   }
-  // } else {
   try {
     const signInRes = await axiosInstance.post(`${BackendUrl}/signin`, {
       email,
@@ -51,9 +39,8 @@ const getAccessToken = async () => {
     accessToken = signInRes.data.accessToken
     userId = signInRes.data.userId
   } catch (error) {
-    console.error
+    console.log(error)
   }
-  // }
 }
 
 function convertTeamAbbreviation(teamName: string): string {
@@ -73,12 +60,25 @@ function convertTeamAbbreviation(teamName: string): string {
   }
 }
 
-function parseDateTime(dateStr: string, timeStr: string): Date {
-  const localTimeMatch = timeStr.match(/(\d{1,2}:\d{2} [ap]m) Local/);
-  if (!localTimeMatch) return new Date();
-  const localTime = localTimeMatch[1];
-  const fullDateStr = dateStr.replace(/'(\d{2})/, "20$1");
-  return new Date(`${fullDateStr} ${localTime}`);
+function parseToLocalDateTime(dateStr: string, timeStr?: string): Date {
+  let localTime = "7:30 pm";
+
+  if (timeStr) {
+    const localTimeMatch = timeStr.match(/(\d{1,2}:\d{2} [ap]m)\s*Local/i);
+    console.log(localTimeMatch);
+    if (localTimeMatch) {
+      localTime = localTimeMatch[1];
+    }
+  }
+
+  const normalizedDateStr = dateStr.replace(/'(\d{2})/, "20$1");
+
+  const fullStr = `${normalizedDateStr} ${localTime}`;
+  const localDate = new Date(fullStr);
+  console.log(fullStr);
+  console.log(localDate);
+
+  return localDate;
 }
 
 async function getMatches() {
@@ -134,18 +134,31 @@ async function getMatches() {
       return raw;
     });
 
+    let cnt = 0;
+    let prevDate: string;
     const matches: matchInterface[] = rawMatches.map((match) => {
       const team1 = convertTeamAbbreviation(match.team1Raw);
       const team2 = convertTeamAbbreviation(match.team2Raw);
-      const resultWords = match.matchResult.split(' ');
-      const winner = resultWords[1] === 'won'
-        ? resultWords[0] === match.team1Raw ? 'team1' : 'team2'
-        : 'tobeDeclared';
+      const resultWords = match.matchResult;
+      const winnerTeam = resultWords.includes(' won ') ? resultWords.split(' won ')[0].includes('(') ? resultWords.split(' won ')[0].split('(')[1] : resultWords.split(' won ')[0] : 'tobeDeclared';
       const status = match.matchResult === 'Match yet to begin' ? 'upcoming' : 'ended';
-      const date = parseDateTime(match.matchDate, match.matchTime);
+      let date: Date;
+      let winner = winnerTeam !== 'tobeDeclared' ? winnerTeam === team1 ? 'team1' : 'team2' : winnerTeam;
+      if (status === 'ended' && winner === 'tobeDeclared') {
+        winner = 'noResult'
+      }
+
+      if (!match.matchDate) {
+        date = parseToLocalDateTime(prevDate, match.matchTime)
+      } else {
+        date = parseToLocalDateTime(match.matchDate, match.matchTime);
+        prevDate = match.matchDate;
+      }
+
       const link: string[] = match.matchLink.split('/');
       link.pop();
       const newLink = link.join('/') + '/ball-by-ball-commentary';
+      cnt++;
 
       return {
         team1Name: team1,
@@ -153,7 +166,7 @@ async function getMatches() {
         toss: 'tobeDeclared',
         elected: 'tobeDeclared',
         status,
-        winner,
+        winner: winner,
         venue: match.matchVenue,
         link: newLink,
         date,
@@ -161,6 +174,8 @@ async function getMatches() {
         result: match.matchResult,
       };
     });
+
+    console.log('total matches--> ', cnt);
 
     return matches;
   } catch (error) {
@@ -181,8 +196,11 @@ async function createMatches() {
 
   const matches = await getMatches();
 
+  let i = 0;
+  let cnt = 0;
   for (const match of matches) {
     try {
+      console.log(match);
       const team1Res = await axios.get(`${BackendUrl}/squad/${match.team1Name}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -195,7 +213,10 @@ async function createMatches() {
       });
       const team1Id = team1Res.data.squadRes.id;
       const team2Id = team2Res.data.squadRes.id;
-
+      if (!team1Id || !team2Id) {
+        continue;
+      }
+      console.log(team1Id, team2Id);
       await axios.post(`${BackendUrl}/matches`, {
         team1Id,
         team2Id,
@@ -214,12 +235,15 @@ async function createMatches() {
         }
       })
 
-      console.log('match creation success');
-      return;
+      console.log('match creation success', i, ' -->', match.team1Name, ' ', match.team2Name);
+      i++;
+      cnt++;
     } catch (error) {
-      console.error
+      const err = error as { response?: { status: number, data: string } };
+      console.error("failed to send overData in database", err.response?.status, err.response?.data);
     }
   }
+  console.log('matches created--> ', cnt);
 }
 
 createMatches();

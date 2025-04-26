@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc -b",
-    "build2": "npx esbuild src/*.ts --bundle --platform=node --outdir=dist --tsconfig=tsconfig.json",
+    "build2": "npx esbuild src/*.ts --bundle --platform=node --format=cjs --outdir=dist --tsconfig=tsconfig.json --external:puppeteer-extra --external:puppeteer-extra-plugin-stealth",
     "start": "node dist/index.js",
     "dev": "pnpm run build && pnpm start",
     "dev2": "pnpm run build2 && pnpm start"
@@ -14,11 +14,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@repo/db": "workspace:*",
     "@types/axios": "^0.14.4",
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
-    "esbuild": "^0.25.2",
+    "esbuild": "^0.25.3",
+    "is-plain-object": "^5.0.0",
+    "kind-of": "^6.0.3",
+    "puppeteer": "^24.6.1",
+    "puppeteer-core": "^24.6.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "typescript": "^5.8.3"
   }
 }

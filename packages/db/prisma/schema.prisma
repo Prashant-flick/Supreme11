@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output = "../src/generated/prisma"
 }
 
 datasource db {
@@ -83,7 +84,7 @@ model PlayerScore {
   catches       Int
   runout        Int
   dotBall       Int
-  playerId      String              @unique
+  playerId      String
   player        Players             @relation(fields: [playerId], references: [id])
   matchId       String
   match         Matches             @relation(fields: [matchId], references: [id])
@@ -111,6 +112,7 @@ model Matches {
 model Inning {
   id          String      @id @unique @default(cuid())
   whichInning WhichInning
+  over        String?
   teamName    String?
   score       Int
   wickets     Int
@@ -186,6 +188,7 @@ enum MatchesWinner {
   team1
   team2
   tobeDeclared
+  noResult
 }
 
 enum PlayerRole {

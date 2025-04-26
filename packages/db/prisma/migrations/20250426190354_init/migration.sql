@@ -14,7 +14,7 @@ CREATE TYPE "MatchesWinner" AS ENUM ('team1', 'team2', 'tobeDeclared');
 CREATE TYPE "PlayerRole" AS ENUM ('batsman', 'bowler', 'wk', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PlayerDexture" AS ENUM ('right', 'left');
+CREATE TYPE "PlayerDexture" AS ENUM ('right', 'left', 'tobeDeclared');
 
 -- CreateEnum
 CREATE TYPE "PlayerPlayingStatus" AS ENUM ('playing', 'substitute', 'notPlaying');
@@ -128,6 +128,7 @@ CREATE TABLE "Matches" (
 CREATE TABLE "Inning" (
     "id" TEXT NOT NULL,
     "whichInning" "WhichInning" NOT NULL,
+    "over" TEXT,
     "teamName" TEXT,
     "score" INTEGER NOT NULL,
     "wickets" INTEGER NOT NULL,
@@ -166,6 +167,7 @@ CREATE TABLE "Tournament" (
     "entryFee" INTEGER NOT NULL,
     "prizePool" INTEGER,
     "winner" TEXT NOT NULL,
+    "matchId" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
     "teamsJoined" INTEGER NOT NULL,
     "status" "TournamentStatus" NOT NULL,
@@ -206,9 +208,6 @@ CREATE UNIQUE INDEX "Players_id_key" ON "Players"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PlayerScore_id_key" ON "PlayerScore"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "PlayerScore_playerId_key" ON "PlayerScore"("playerId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PlayerScore_playerId_matchId_key" ON "PlayerScore"("playerId", "matchId");
@@ -257,6 +256,9 @@ ALTER TABLE "Balls" ADD CONSTRAINT "Balls_inningId_fkey" FOREIGN KEY ("inningId"
 
 -- AddForeignKey
 ALTER TABLE "Tournament" ADD CONSTRAINT "Tournament_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Tournament" ADD CONSTRAINT "Tournament_matchId_fkey" FOREIGN KEY ("matchId") REFERENCES "Matches"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TournamentJoinedTeams" ADD CONSTRAINT "TournamentJoinedTeams_tournamentId_fkey" FOREIGN KEY ("tournamentId") REFERENCES "Tournament"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

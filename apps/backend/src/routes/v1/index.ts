@@ -135,6 +135,7 @@ router.post("/signin", async (req, res) => {
     res.status(400).json({
       message: "signin error"
     })
+    console.log(error);
   }
 })
 
