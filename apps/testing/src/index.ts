@@ -129,9 +129,6 @@ async function deleteMatches() {
 
     let i = 0;
     for (const match of matches) {
-      if (match.id === 'cm9uo0e8j0000l79o79q97283') {
-        continue;
-      }
       await axios.delete(`${backendUrl}/matches/${match.id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -143,7 +140,8 @@ async function deleteMatches() {
     console.log('matches deleted--> ', i);
 
   } catch (error) {
-    console.log('failed deleting matches', error);
+    const err = error as { response?: { status: number, data: string } };
+    console.error("failed to send overData in database", err.response?.status, err.response?.data);
   }
 }
 
@@ -454,6 +452,7 @@ const getCompletedMatches = async (matchId: string, matchUrl: string) => {
 }
 
 // getCompletedMatches('cm9vk9uhk00uil7905nw5u281', '/series/ipl-2025-1449924/lucknow-super-giants-vs-punjab-kings-13th-match-1473450/ball-by-ball-commentary')
+
 // deleteMatches();
 
 const clearMatchesPlayerScore = async (matchId: string) => {
@@ -543,4 +542,12 @@ const clearMatchesPlayerScore = async (matchId: string) => {
   }
 }
 
-clearMatchesPlayerScore('cm9xiesat0000l7hk0bb9klzb');
+clearMatchesPlayerScore('cm9yoa0pv00awl7nkidepyewy');
+
+async function main() {
+  // await getAccessToken();
+  const res = await client.matches.findMany({
+  })
+  console.log(res);
+}
+// main()

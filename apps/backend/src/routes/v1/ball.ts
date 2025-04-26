@@ -19,7 +19,9 @@ function nameMatches(shortName: string, fullName: string): boolean {
   }
   if (shortNameArr.length === 3) {
     if (fullName.split(' ').length === 3) {
-      return fullName.split(' ')[0].includes(shortNameArr[0][0]) && fullName.split(' ')[1].includes(shortNameArr[1][0]) && fullName.split(' ')[2].includes(shortNameArr[2]);
+      return (fullName.split(' ')[0].includes(shortNameArr[0][0]) && fullName.split(' ')[1].includes(shortNameArr[1][0]) && fullName.split(' ')[2].includes(shortNameArr[2]));
+    } else if (fullName.split(' ').length === 2) {
+      return (fullName.split(' ')[0].includes(shortNameArr[1][0]) && fullName.split(' ')[1].includes(shortNameArr[2]));
     } else {
       return false;
     }
@@ -119,7 +121,8 @@ ballRouter.post('/', async (req, res) => {
           },
           batsman1,
           batsman2,
-          bowler: ballRes.bowler
+          bowler: ballRes.bowler,
+          over: (ballRes.overNo + '.' + ballRes.overBallNo) || ''
         }
       })
 
@@ -153,109 +156,7 @@ ballRouter.post('/', async (req, res) => {
       const stumpPlayerRes = squad2Players.find(player => nameMatches(ballRes.stump!, player.name));
       const catchPlayerRes = squad2Players.find(player => nameMatches(ballRes.catch!, player.name));
 
-      // const batsmanRes = await tx.players.findFirst({
-      //   where: {
-      //     squadId: squadRes?.id,
-      //     OR: [
-      //       {
-      //         name: {
-      //           contains: ballRes.batsman,
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.batsman.split(' ')[1],
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.batsman.split(' ')[0],
-      //           mode: 'insensitive'
-      //         },
-      //       }
-      //     ]
-      //   }
-      // })
-
-      // const runoutPlayerRes = await tx.players.findFirst({
-      //   where: {
-      //     squadId: squad2Res?.id,
-      //     OR: [
-      //       {
-      //         name: {
-      //           contains: ballRes.runout!,
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.runout?.split(' ')[1],
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.runout?.split(' ')[0],
-      //           mode: 'insensitive'
-      //         },
-      //       }
-      //     ]
-      //   }
-      // })
-
-      // const stumpPlayerRes = await tx.players.findFirst({
-      //   where: {
-      //     squadId: squad2Res?.id,
-      //     OR: [
-      //       {
-      //         name: {
-      //           contains: ballRes.stump!,
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.stump?.split(' ')[1],
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.stump?.split(' ')[0],
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //     ]
-      //   }
-      // })
-
-      // const catchPlayerRes = await tx.players.findFirst({
-      //   where: {
-      //     squadId: squad2Res?.id,
-      //     OR: [
-      //       {
-      //         name: {
-      //           contains: ballRes.catch!,
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.catch?.split(' ')[1],
-      //           mode: 'insensitive'
-      //         },
-      //       },
-      //       {
-      //         name: {
-      //           contains: ballRes.catch?.split(' ')[0],
-      //           mode: 'insensitive'
-      //         },
-      //       }
-      //     ]
-      //   }
-      // })
+      console.log(ballRes.bowler || 'b', '--> ', bowlerRes?.name || 'b', ' ', ballRes.batsman || 'ba', '--> ', batsmanRes?.name || 'ba', ' ', ballRes.runout || 'rn', '--> ', runoutPlayerRes?.name || 'rn', ' ', ballRes.stump || 'st', '--> ', stumpPlayerRes?.name || 'st', ' ', ballRes.catch || 'c', '--> ', catchPlayerRes?.name || 'c');
 
       if (!ballRes.runout && wicket) {
         await tx.playerScore.update({
@@ -444,5 +345,6 @@ ballRouter.post('/', async (req, res) => {
       .json({
         message: "ball creation failed"
       })
+    console.log('ball creation failed');
   }
 })

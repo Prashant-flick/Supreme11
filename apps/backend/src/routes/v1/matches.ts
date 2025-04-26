@@ -131,7 +131,8 @@ matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
       include: {
         innings: {
           select: {
-            id: true
+            id: true,
+            teamName: true
           }
         }
       }
@@ -150,7 +151,7 @@ matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
   }
 })
 
-matchesRouter.delete('/:matchId', async (req, res) => {
+matchesRouter.delete('/:matchId', adminMiddleware, async (req, res) => {
   const matchId = req.params.matchId;
   if (!matchId) {
     res.status(400)
@@ -214,6 +215,38 @@ matchesRouter.delete('/:matchId', async (req, res) => {
         message: "match deletion failed"
       })
     console.log(error);
+  }
+})
+
+matchesRouter.patch('/status', adminMiddleware, async (req, res) => {
+  const { status, matchId }: { status: 'upcoming' | 'ended' | 'started', matchId: string } = req.body;
+  if (!status || !matchId) {
+    res.status(400)
+      .json({
+        message: "status and matchId is required"
+      })
+    return;
+  }
+
+  try {
+    const matchRes = await client.matches.update({
+      where: {
+        id: matchId
+      },
+      data: {
+        status
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "status updation success"
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "updating match status failed"
+      })
   }
 })
 

@@ -112,6 +112,7 @@ model Matches {
 model Inning {
   id          String      @id @unique @default(cuid())
   whichInning WhichInning
+  over        String?
   teamName    String?
   score       Int
   wickets     Int
@@ -187,6 +188,7 @@ enum MatchesWinner {
   team1
   team2
   tobeDeclared
+  noResult
 }
 
 enum PlayerRole {

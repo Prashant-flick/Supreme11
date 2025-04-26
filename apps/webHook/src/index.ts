@@ -139,12 +139,14 @@ async function getMatches() {
     const matches: matchInterface[] = rawMatches.map((match) => {
       const team1 = convertTeamAbbreviation(match.team1Raw);
       const team2 = convertTeamAbbreviation(match.team2Raw);
-      const resultWords = match.matchResult.split(' ');
-      const winner = resultWords[1] === 'won'
-        ? resultWords[0] === match.team1Raw ? 'team1' : 'team2'
-        : 'tobeDeclared';
+      const resultWords = match.matchResult;
+      const winnerTeam = resultWords.includes(' won ') ? resultWords.split(' won ')[0].includes('(') ? resultWords.split(' won ')[0].split('(')[1] : resultWords.split(' won ')[0] : 'tobeDeclared';
       const status = match.matchResult === 'Match yet to begin' ? 'upcoming' : 'ended';
       let date: Date;
+      let winner = winnerTeam !== 'tobeDeclared' ? winnerTeam === team1 ? 'team1' : 'team2' : winnerTeam;
+      if (status === 'ended' && winner === 'tobeDeclared') {
+        winner = 'noResult'
+      }
 
       if (!match.matchDate) {
         date = parseToLocalDateTime(prevDate, match.matchTime)
@@ -164,7 +166,7 @@ async function getMatches() {
         toss: 'tobeDeclared',
         elected: 'tobeDeclared',
         status,
-        winner,
+        winner: winner,
         venue: match.matchVenue,
         link: newLink,
         date,
@@ -197,10 +199,6 @@ async function createMatches() {
   let i = 0;
   let cnt = 0;
   for (const match of matches) {
-    if (i <= 0) {
-      i++;
-      continue;
-    }
     try {
       console.log(match);
       const team1Res = await axios.get(`${BackendUrl}/squad/${match.team1Name}`, {
@@ -215,6 +213,9 @@ async function createMatches() {
       });
       const team1Id = team1Res.data.squadRes.id;
       const team2Id = team2Res.data.squadRes.id;
+      if (!team1Id || !team2Id) {
+        continue;
+      }
       console.log(team1Id, team2Id);
       await axios.post(`${BackendUrl}/matches`, {
         team1Id,
@@ -238,12 +239,11 @@ async function createMatches() {
       i++;
       cnt++;
     } catch (error) {
-      console.log(error);
-      return;
+      const err = error as { response?: { status: number, data: string } };
+      console.error("failed to send overData in database", err.response?.status, err.response?.data);
     }
   }
   console.log('matches created--> ', cnt);
-
 }
 
 createMatches();

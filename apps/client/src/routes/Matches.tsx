@@ -5,7 +5,7 @@ import axios from "axios";
 import { conf } from "../config/index";
 import { matchInterface } from "@repo/common/types";
 import { useAuth } from "@/context/UseAuth";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface matchCompleteInterface extends matchInterface {
   innings: {
@@ -19,6 +19,7 @@ interface matchCompleteInterface extends matchInterface {
     batsman1: string | null;
     batsman2: string | null;
     bowler: string | null;
+    over: string | null;
   }[];
   team1ImgSrc: string;
   team2ImgSrc: string;
@@ -31,11 +32,9 @@ export default function Matches() {
   const [liveMatches, setLiveMatches] = useState<matchCompleteInterface[]>([]);
   const [upcomingMatches, setUpcomingMatches] = useState<matchCompleteInterface[]>([]);
   const [completedMatches, setCompletedMatches] = useState<matchCompleteInterface[]>([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   console.log(liveMatches);
-  console.log(upcomingMatches);
-  console.log(completedMatches);
 
   const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
@@ -70,12 +69,17 @@ export default function Matches() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      const sortedMatches: matchCompleteInterface[] = matchesRes.data.matchesRes.sort(
+        (a: matchInterface, b: matchInterface) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        }
+      );
 
       const live: matchCompleteInterface[] = [];
       const upcoming: matchCompleteInterface[] = [];
       const completed: matchCompleteInterface[] = [];
 
-      for (const match of matchesRes.data.matchesRes) {
+      for (const match of sortedMatches) {
         const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -112,10 +116,10 @@ export default function Matches() {
   useEffect(() => {
     if (accessToken) {
       getMatches();
+      setInterval(() => {
+        getMatches();
+      }, 30 * 1000);
     }
-    // else {
-    //   navigate("/auth");
-    // }
   }, [accessToken]);
 
   const navItems = [
@@ -123,162 +127,6 @@ export default function Matches() {
     { href: "/teams", label: "My Teams" },
     { href: "/matches", label: "Matches", isActive: true },
     { href: "/rewards", label: "Rewards" },
-  ];
-
-  const mockLiveMatches = [
-    {
-      id: "1",
-      homeTeam: {
-        name: "India",
-        shortName: "IND",
-        logoSrc: "/placeholder.svg?height=24&width=24",
-        score: "186/4",
-      },
-      awayTeam: {
-        name: "Australia",
-        shortName: "AUS",
-        logoSrc: "/placeholder.svg?height=24&width=24",
-        score: "244/7",
-      },
-      matchType: "T20 • IND vs AUS",
-      currentOver: "32nd over",
-      target: 245,
-      statusText: "India needs 59 runs from 18 overs",
-    },
-    {
-      id: "2",
-      homeTeam: {
-        name: "England",
-        shortName: "ENG",
-        logoSrc: "/placeholder.svg?height=24&width=24",
-        score: "156/2",
-      },
-      awayTeam: {
-        name: "Pakistan",
-        shortName: "PAK",
-        logoSrc: "/placeholder.svg?height=24&width=24",
-        score: "142/8",
-      },
-      matchType: "ODI • ENG vs PAK",
-      currentOver: "23rd over",
-      target: 143,
-      statusText: "England needs 13 runs to win",
-    },
-  ];
-
-  const mockUpcomingMatches = [
-    {
-      id: "1",
-      matchType: "T20",
-      dateTime: "Tomorrow, 7:30 PM",
-      homeTeam: {
-        shortName: "ENG",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      awayTeam: {
-        shortName: "SA",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      venue: "Wankhede Stadium, Mumbai",
-      playersCount: 28,
-    },
-    {
-      id: "2",
-      matchType: "ODI",
-      dateTime: "Apr 26, 2:00 PM",
-      homeTeam: {
-        shortName: "WI",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      awayTeam: {
-        shortName: "NZ",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      venue: "Kensington Oval, Barbados",
-      playersCount: 16,
-    },
-    {
-      id: "3",
-      matchType: "Test",
-      dateTime: "Apr 28, 10:00 AM",
-      homeTeam: {
-        shortName: "IND",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      awayTeam: {
-        shortName: "SL",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-      },
-      venue: "Eden Gardens, Kolkata",
-      playersCount: 22,
-    },
-  ];
-
-  const mockCompletedMatches = [
-    {
-      id: "1",
-      matchType: "T20",
-      date: "Apr 20, 2025",
-      homeTeam: {
-        shortName: "IND",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "189/4",
-      },
-      awayTeam: {
-        shortName: "PAK",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "186/7",
-      },
-      result: "India won by 3 runs",
-    },
-    {
-      id: "2",
-      matchType: "ODI",
-      date: "Apr 18, 2025",
-      homeTeam: {
-        shortName: "AUS",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "312/8",
-      },
-      awayTeam: {
-        shortName: "SA",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "256/10",
-      },
-      result: "Australia won by 56 runs",
-    },
-    {
-      id: "3",
-      matchType: "Test",
-      date: "Apr 14-18, 2025",
-      homeTeam: {
-        shortName: "ENG",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "423 & 312/6d",
-      },
-      awayTeam: {
-        shortName: "NZ",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "367 & 289/10",
-      },
-      result: "England won by 79 runs",
-    },
-    {
-      id: "4",
-      matchType: "T20",
-      date: "Apr 12, 2025",
-      homeTeam: {
-        shortName: "WI",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "201/5",
-      },
-      awayTeam: {
-        shortName: "BAN",
-        logoSrc: "/placeholder.svg?height=20&width=20",
-        score: "183/9",
-      },
-      result: "West Indies won by 18 runs",
-    },
   ];
 
   return (
@@ -304,16 +152,26 @@ export default function Matches() {
                 </button>
               </div>
               <div className="space-y-6">
-                {mockLiveMatches.length > 0 ? (
-                  mockLiveMatches.map((match) => (
+                {liveMatches.length > 0 ? (
+                  liveMatches.map((match) => (
                     <LiveMatchCard
                       key={match.id}
-                      homeTeam={match.homeTeam}
-                      awayTeam={match.awayTeam}
-                      matchType={match.matchType}
-                      currentOver={match.currentOver}
-                      target={match.target}
-                      statusText={match.statusText}
+                      homeTeam={{
+                        name: match.team1FullName,
+                        shortName: match.team1Name,
+                        logoSrc: match.team1ImgSrc,
+                        score: `${match.innings[1].teamName === match.team1Name ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
+                      }}
+                      awayTeam={{
+                        name: match.team2FullName,
+                        shortName: match.team2Name,
+                        logoSrc: match.team2ImgSrc,
+                        score: `${match.innings[1].teamName === match.team2Name ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
+                      }}
+                      matchType={match.league}
+                      currentOver={"0"}
+                      target={0}
+                      statusText={match.status}
                     />
                   ))
                 ) : (
@@ -331,42 +189,35 @@ export default function Matches() {
                 </button>
               </div>
               <div className="space-y-4">
-                {mockUpcomingMatches.map((match) => (
-                  <div
-                    key={match.id}
-                    className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-500">{match.matchType}</span>
-                      <span className="text-sm text-gray-500">{match.dateTime}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center space-x-2">
-                        <img
-                          src={match.homeTeam.logoSrc}
-                          alt={match.homeTeam.shortName}
-                          className="w-5 h-5"
-                        />
-                        <span className="font-medium">{match.homeTeam.shortName}</span>
+                {upcomingMatches.length > 0 &&
+                  upcomingMatches.map((match) => (
+                    <div
+                      key={match.id}
+                      className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-500">{match.league}</span>
+                        <span className="text-sm text-gray-500">
+                          {match.date.toLocaleDateString("en-US", options)}
+                        </span>
                       </div>
-                      <span className="text-sm font-medium">vs</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">{match.awayTeam.shortName}</span>
-                        <img
-                          src={match.awayTeam.logoSrc}
-                          alt={match.awayTeam.shortName}
-                          className="w-5 h-5"
-                        />
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center space-x-2">
+                          <img src={match.team1ImgSrc} alt={match.team1Name} className="w-5 h-5" />
+                          <span className="font-medium">{match.team1Name}</span>
+                        </div>
+                        <span className="text-sm font-medium">vs</span>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium">{match.team2Name}</span>
+                          <img src={match.team2ImgSrc} alt={match.team2Name} className="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600 mb-3">{match.venue}</div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-500">{22} players participating</span>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600 mb-3">{match.venue}</div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">
-                        {match.playersCount} players participating
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>
@@ -399,7 +250,9 @@ export default function Matches() {
                         <div>
                           <span className="font-medium">{match.team1Name}</span>
                           <p className="text-xs text-gray-600">
-                            {match?.innings[1].score}/{match.innings[1].wickets}
+                            {match.innings[1].teamName === match.team1Name
+                              ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)`
+                              : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}
                           </p>
                         </div>
                       </div>
@@ -408,7 +261,9 @@ export default function Matches() {
                         <div className="text-right">
                           <span className="font-medium">{match.team2Name}</span>
                           <p className="text-xs text-gray-600">
-                            {match?.innings[0].score}/{match.innings[0].wickets}
+                            {match.innings[1].teamName === match.team2Name
+                              ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)`
+                              : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}
                           </p>
                         </div>
                         <img src={match.team2ImgSrc} alt={match.team2Name} className="w-5 h-5" />

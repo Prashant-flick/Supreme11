@@ -16,8 +16,8 @@ const axiosInstance: AxiosInstance = axios.create({
   jar: cookieJar
 });
 
-const BackendUrl: string = process.env.BACKEND_URL || "http://localhost:3000/api/v1";
-const BaseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
+const backendUrl: string = process.env.BACKEND_URL || "http://localhost:3000/api/v1";
+const baseUrl: string = process.env.BASE_URL || "https://www.espncricinfo.com";
 let accessToken: string = "";
 const email = process.env.EMAIL;
 const password = process.env.PASSWORD;
@@ -29,20 +29,8 @@ const getAccessToken = async () => {
     return;
   }
 
-  // if (accessToken) {
-  //   try {
-  //     const accessTokenRes = await axiosInstance.post(`${BackendUrl}/refresh`, {}, {
-  //       withCredentials: true
-  //     })
-
-  //     accessToken = accessTokenRes.data.accessToken
-  //     userId = accessTokenRes.data.userId
-  //   } catch (error) {
-  //     console.error;
-  //   }
-  // } else {
   try {
-    const signInRes = await axiosInstance.post(`${BackendUrl}/signin`, {
+    const signInRes = await axiosInstance.post(`${backendUrl}/signin`, {
       email,
       password
     }, {
@@ -54,7 +42,6 @@ const getAccessToken = async () => {
   } catch (error) {
     console.error
   }
-  // }
 }
 
 async function autoScroll(page: Page) {
@@ -111,7 +98,7 @@ async function getSquads() {
 
   try {
     await page.goto(
-      `${BaseUrl}/series/ipl-2025-1449924/squads`,
+      `${baseUrl}/series/ipl-2025-1449924/squads`,
       {
         waitUntil: "domcontentloaded",
         timeout: 100000,
@@ -121,6 +108,8 @@ async function getSquads() {
     await page.evaluate(() => {
       window.scrollBy(0, 600);
     })
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     const rawSquads = await page.evaluate(() => {
       const squadCards = document.querySelectorAll('.ds-flex.lg\\:ds-flex-row.sm\\:ds-flex-col.lg\\:ds-items-center.lg\\:ds-justify-between.ds-py-2.ds-px-4.ds-flex-wrap.odd\\:ds-bg-fill-content-alternate');
@@ -169,16 +158,31 @@ async function getSquads() {
 }
 
 async function getPlayers(url: string, squadId: string) {
+  console.log(url, squadId);
+
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
-    await page.goto(`${BaseUrl}/${url}`, {
+    const Url = `${baseUrl}${url}`;
+    console.log(Url);
+    await page.goto(Url, {
       waitUntil: "domcontentloaded",
       timeout: 100000,
     })
 
     await autoScroll(page);
+    // await page.waitForFunction(() => {
+    //   const parImgElems = document.querySelectorAll('.ds-border.ds-border-line-default-translucent.ds-text-typo.ds-bg-ui-fill.ds-overflow-hidden.ds-flex.ds-items-center.ds-justify-center.ds-w-12.ds-h-12.ds-rounded-full');
+
+    //   return Array.from(parImgElems).every(el => {
+    //     const imgElem = el.querySelector('img');
+    //     const src = imgElem?.src || '';
+    //     return src.includes('img1.hscicdn.com');
+    //   });
+    // });
+    await page.screenshot({ path: 'hehe.png', fullPage: true })
+    console.log('screenshot taken');
 
     const rawPlayers = await page.evaluate(() => {
       try {
@@ -243,7 +247,7 @@ async function getPlayers(url: string, squadId: string) {
 
     return players;
   } catch (error) {
-    console.error
+    console.log(error)
   } finally {
     await browser.close();
   }
@@ -251,13 +255,13 @@ async function getPlayers(url: string, squadId: string) {
 
 async function createPlayer(player: playerInterface) {
   try {
-    const playerRes = await axios.post(`${BackendUrl}/player`, player, {
+    const playerRes = await axios.post(`${backendUrl}/player`, player, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     })
   } catch (error) {
-    console.error
+    console.log(error);
   }
 }
 
@@ -275,7 +279,7 @@ async function getSquadPlayers() {
     console.log(squads);
 
     for (const squad of squads) {
-      const squadRes = await axios.post(`${BackendUrl}/squad`, {
+      const squadRes = await axios.post(`${backendUrl}/squad`, {
         name: squad.squadName,
         logo: squad.img,
         captain: "tobeDeclared",
@@ -287,11 +291,11 @@ async function getSquadPlayers() {
       });
 
       const players = await getPlayers(squad.playerLink, squadRes.data.squadId);
+      console.log(players);
       if (players) {
         for (const player of players) {
-          // await createPlayer(player);
+          await createPlayer(player);
           console.log(player);
-
         }
       }
     }
