@@ -95,8 +95,11 @@ export const ballSchema = z.object({
   catch: z.string().optional(),
   stump: z.string().optional(),
   lbw: z.boolean(),
-  inningId: z.string(),
-  otherInningId: z.string(),
+  inningNo: z.enum(['first', 'second']),
+  otherInningNo: z.enum(['first', 'second']),
+  team1Id: z.string(),
+  team2Id: z.string(),
+  matchId: z.string()
 });
 
 export const tournamentSchema = z.object({

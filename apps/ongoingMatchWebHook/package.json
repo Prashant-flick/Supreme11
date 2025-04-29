@@ -7,7 +7,7 @@
     "build": "npx tsc -b",
     "start": "node dist/index.js",
     "start2": "node dist/seedCompletedMatches.js",
-    "dev": "pnpm run build && pnpm start",
+    "dev": "pnpm run build2 && pnpm start",
     "dev2": "pnpm run build2 && pnpm start2"
   },
   "author": "",

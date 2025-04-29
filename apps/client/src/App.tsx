@@ -8,6 +8,9 @@ import { useAuth } from "./context/UseAuth";
 import axios from "axios";
 import { conf } from "./config";
 import Auth from "./routes/Auth";
+import LiveMatches from "./routes/LiveMatches";
+import UpcomingMatches from "./routes/UpcomingMatches";
+import CompletedMatches from "./routes/CompletedMatches";
 
 function App() {
   const { isLogin, login } = useAuth();
@@ -44,6 +47,9 @@ function App() {
           <Route path="/tournament" element={<Tournament />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/matches/live" element={<LiveMatches />} />
+          <Route path="/matches/upcoming" element={<UpcomingMatches />} />
+          <Route path="/matches/completed" element={<CompletedMatches />} />
         </Routes>
       </div>
     </BrowserRouter>

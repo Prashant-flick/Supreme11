@@ -14,7 +14,7 @@ const email = process.env.EMAIL || "";
 const password = process.env.PASSWORD || "";
 let accessToken = "";
 let userId = "";
-const balls: { [over: string]: { ballRun: string, overNo: string, overBallNo: string, whatHappend: string, whatHappendWicket: string, send: boolean, inningId: string, otherInningId: string } } = {};
+const balls: { [over: string]: { ballRun: string, overNo: string, overBallNo: string, whatHappend: string, whatHappendWicket: string, send: boolean, inningId: string, otherInningId: string, team1Id: string, team2Id: string, whichInning: string } } = {};
 const matchInteravl: { [matchId: string]: { isOnGoing: boolean } } = {};
 
 const getAccessToken = async () => {
@@ -66,7 +66,7 @@ async function autoScroll(page: Page) {
   });
 }
 
-const getMatches = async (matchId: string, page: Page) => {
+const getMatches = async (match: matchInterface, page: Page) => {
   try {
     const teamsName: { name: string, score: string }[] = [];
     const rawTeamNameData = await page.evaluate(() => {
@@ -92,7 +92,7 @@ const getMatches = async (matchId: string, page: Page) => {
       teamsName.push(data);
     })
 
-    const matchRes = await axios.get(`${backendUrl}/matches/${matchId}`, {
+    const matchRes = await axios.get(`${backendUrl}/matches/${match.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -100,6 +100,18 @@ const getMatches = async (matchId: string, page: Page) => {
 
     const whichInning = teamsName[1].score !== '' ? '2nd' : '1st';
     console.log("fetching inning");
+
+    const team1Res = await axios.get(`${backendUrl}/squad/squadId/${match.team1Id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+
+    const team2Res = await axios.get(`${backendUrl}/squad/squadId/${match.team2Id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
 
     const rawBallData2ndInning = await page.evaluate(() => {
       const ballCard = document.querySelectorAll(".ds-text-tight-m.ds-font-regular.ds-flex.ds-px-3.ds-py-2.lg\\:ds-px-4.ds-items-start.ds-select-none.lg\\:ds-select-auto");
@@ -149,6 +161,9 @@ const getMatches = async (matchId: string, page: Page) => {
           send: false,
           inningId: matchRes.data.matchRes.innings[0]?.teamName?.includes(teamsName[inningIdx].name) ? matchRes.data.matchRes.innings[0].id : matchRes.data.matchRes.innings[1].id,
           otherInningId: matchRes.data.matchRes.innings[0]?.teamName?.includes(teamsName[otherInningIdx].name) ? matchRes.data.matchRes.innings[0].id : matchRes.data.matchRes.innings[1].id,
+          team1Id: team1Res.data.squadRes.name?.includes(teamsName[inningIdx].name) ? team1Res.data.squadRes.id : team2Res.data.squadRes.id,
+          team2Id: team1Res.data.squadRes.name?.includes(teamsName[otherInningIdx].name) ? team1Res.data.squadRes.id : team2Res.data.squadRes.id,
+          whichInning
         };
       }
     })
@@ -188,13 +203,81 @@ async function createBalls(match: matchInterface) {
       }
     );
 
-    setInterval(async () => {
+    let i = 0;
+    let waitingBetweenInnings = false;
+    let firstInningAlreadyCompleted = false;
+    let interval = setInterval(async () => {
       const startTime = Date.now();
-      await getMatches(match.id!, page);
+
+      let matchCompleted = false;
+      let firstInningCompleted = false;
+      for (const over in balls) {
+        if (balls[over].whichInning === '2nd' && balls[over].overNo === '19' && balls[over].overBallNo === '6' && balls[over].send === true) {
+          matchCompleted = true;
+        }
+        if (balls[over].whichInning === '1st' && balls[over].overNo === '19' && balls[over].overBallNo === '6' && balls[over].send === true) {
+          firstInningCompleted = true;
+        }
+      }
+      console.log(matchCompleted);
+      console.log(firstInningCompleted);
+
+      if (matchCompleted) {
+        clearInterval(interval);
+        await browser.close();
+        return;
+      }
+
+      if (firstInningCompleted && !firstInningAlreadyCompleted && !waitingBetweenInnings) {
+        console.log('First inning completed. Waiting for 15 minutes before processing second inning...');
+        waitingBetweenInnings = true;
+        firstInningAlreadyCompleted = true;
+
+        // Set a timeout to resume after 15 minutes
+        setTimeout(async () => {
+          console.log('15-minute wait completed. Resuming second inning processing...');
+          waitingBetweenInnings = false;
+          await page.reload({
+            waitUntil: 'domcontentloaded'
+          });
+        }, 15 * 60 * 1000); // 15 minutes in milliseconds
+
+        return; // Exit current interval execution
+      }
+
+      if (waitingBetweenInnings) {
+        console.log('Waiting between innings... Time elapsed: ' + (Date.now() - startTime) / 1000 + ' seconds');
+        return;
+      }
+
+      await getMatches(match, page);
+
       let cnt1 = 0;
       let cnt2 = 0;
 
-      //sorting balls by overNo
+      if (i === 0) {
+        for (const over in balls) {
+          const overData = balls[over];
+          if (!overData.send) {
+            try {
+              await axios.patch(`${backendUrl}/inning/teams`, {
+                matchId: match.id,
+                team1Id: overData.team1Id,
+                team2Id: overData.team2Id
+              }, {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`
+                }
+              })
+              i++;
+            } catch (error) {
+              console.log('inning updation failed')
+            }
+            break;
+          }
+        }
+      }
+
       const sortedBalls = Object.entries(balls)
         .sort(([, a], [, b]) => {
           const overA = parseInt(a.overNo, 10);
@@ -230,8 +313,10 @@ async function createBalls(match: matchInterface) {
             let runoutPlayers = overData.whatHappendWicket.includes(" run out ") ? overData.whatHappendWicket.split(" run out ")[1].split(')')[0] : "";
             const wicket = overData.ballRun.includes('W');
             const lbw = overData.whatHappendWicket.includes('lbw');
-            const inningId = overData.inningId;
-            const otherInningId = overData.otherInningId;
+            const inningNo = overData.whichInning === '1st' ? 'first' : 'second';
+            const otherInningNo = overData.whichInning === '1st' ? 'second' : 'first';
+            const team1Id = overData.team1Id;
+            const team2Id = overData.team2Id;
             catchingPlayer = catchingPlayer.includes('†') ? catchingPlayer.split('†')[1] : catchingPlayer;
             stumpPlayer = stumpPlayer.includes('†') ? stumpPlayer.split('†')[1] : stumpPlayer;
             runoutPlayers = runoutPlayers.includes('(') ? runoutPlayers.split('(')[1] : runoutPlayers;
@@ -252,8 +337,11 @@ async function createBalls(match: matchInterface) {
               whatHappendWicketText,
               run,
               lbw,
-              inningId,
-              otherInningId
+              inningNo,
+              otherInningNo,
+              team1Id,
+              team2Id,
+              matchId: match.id
             }, {
               headers: {
                 Authorization: `Bearer ${accessToken}`
@@ -298,7 +386,7 @@ async function searchForUpcomingMatches() {
       const matchTime = new Date(match.date).getTime();
       const startedTime = (matchTime - Date.now()) / (1000 * 60);
 
-      if (startedTime < 10 && startedTime > -250) {
+      if (startedTime < 10 && startedTime > -200) {
         return true;
       }
     })

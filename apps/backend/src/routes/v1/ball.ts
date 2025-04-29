@@ -41,9 +41,23 @@ ballRouter.post('/', async (req, res) => {
 
   try {
     await client.$transaction(async (tx) => {
+      const inningRes = await tx.inning.findFirst({
+        where: {
+          matchId: parsedData.data.matchId,
+          whichInning: parsedData.data.inningNo
+        }
+      })
+
+      const otherInningRes = await tx.inning.findFirst({
+        where: {
+          matchId: parsedData.data.matchId,
+          whichInning: parsedData.data.inningNo
+        }
+      })
+
       const ballRes = await tx.balls.create({
         data: {
-          inningId: parsedData.data.inningId,
+          inningId: inningRes?.id!,
           runout: parsedData.data.runout,
           bowler: parsedData.data.bowler,
           batsman: parsedData.data.batsman,
@@ -63,15 +77,15 @@ ballRouter.post('/', async (req, res) => {
         wicket = true
       }
 
-      const inningRes = await tx.inning.findFirst({
+      const squadRes = await tx.squad.findFirst({
         where: {
-          id: ballRes.inningId
+          id: parsedData.data.team1Id
         }
       })
 
-      const otherInningRes = await tx.inning.findFirst({
+      const squad2Res = await tx.squad.findFirst({
         where: {
-          id: parsedData.data.otherInningId
+          id: parsedData.data.team2Id
         }
       })
 
@@ -123,18 +137,6 @@ ballRouter.post('/', async (req, res) => {
           batsman2,
           bowler: ballRes.bowler,
           over: (ballRes.overNo + '.' + ballRes.overBallNo) || ''
-        }
-      })
-
-      const squadRes = await tx.squad.findFirst({
-        where: {
-          name: inningRes?.teamName!
-        }
-      })
-
-      const squad2Res = await tx.squad.findFirst({
-        where: {
-          name: otherInningRes?.teamName!
         }
       })
 

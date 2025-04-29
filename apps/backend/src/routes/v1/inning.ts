@@ -46,6 +46,63 @@ inningRouter.patch('/', adminMiddleware, async (req, res) => {
   }
 })
 
+inningRouter.patch('/teams', adminMiddleware, async (req, res) => {
+  const { team1Id, team2Id, matchId }: { team1Id: string, team2Id: string, matchId: string } = req.body;
+  if (!team2Id || !team1Id) {
+    res.status(400)
+      .json({
+        message: 'both ids required'
+      })
+    return;
+  }
+
+  try {
+    const team1Res = await client.squad.findFirst({
+      where: {
+        id: team1Id
+      }
+    })
+    const team2Res = await client.squad.findFirst({
+      where: {
+        id: team2Id
+      }
+    })
+    await client.inning.update({
+      where: {
+        matchId_whichInning: {
+          matchId: matchId,
+          whichInning: 'first',
+        }
+      },
+      data: {
+        teamName: team1Res?.name
+      }
+    })
+
+    await client.inning.update({
+      where: {
+        matchId_whichInning: {
+          matchId: matchId,
+          whichInning: 'second',
+        }
+      },
+      data: {
+        teamName: team2Res?.name
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: 'inning updation success'
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: 'updating innings failed'
+      })
+  }
+})
+
 inningRouter.get('/:inningId', userMiddleware, async (req, res) => {
   const inningId = req.params.inningId;
   if (!inningId) {

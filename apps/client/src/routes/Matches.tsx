@@ -5,7 +5,7 @@ import axios from "axios";
 import { conf } from "../config/index";
 import { matchInterface } from "@repo/common/types";
 import { useAuth } from "@/context/UseAuth";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface matchCompleteInterface extends matchInterface {
   innings: {
@@ -32,9 +32,7 @@ export default function Matches() {
   const [liveMatches, setLiveMatches] = useState<matchCompleteInterface[]>([]);
   const [upcomingMatches, setUpcomingMatches] = useState<matchCompleteInterface[]>([]);
   const [completedMatches, setCompletedMatches] = useState<matchCompleteInterface[]>([]);
-  // const navigate = useNavigate();
-
-  console.log(liveMatches);
+  const navigate = useNavigate();
 
   const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
@@ -69,17 +67,12 @@ export default function Matches() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const sortedMatches: matchCompleteInterface[] = matchesRes.data.matchesRes.sort(
-        (a: matchInterface, b: matchInterface) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-      );
 
       const live: matchCompleteInterface[] = [];
       const upcoming: matchCompleteInterface[] = [];
       const completed: matchCompleteInterface[] = [];
 
-      for (const match of sortedMatches) {
+      for (const match of matchesRes.data.matchesRes) {
         const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -105,6 +98,16 @@ export default function Matches() {
         }
       }
 
+      live.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+      completed.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+      upcoming.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+
       setLiveMatches(live);
       setUpcomingMatches(upcoming);
       setCompletedMatches(completed);
@@ -116,9 +119,12 @@ export default function Matches() {
   useEffect(() => {
     if (accessToken) {
       getMatches();
-      setInterval(() => {
+      const interval = setInterval(() => {
         getMatches();
       }, 30 * 1000);
+      return () => {
+        clearInterval(interval);
+      };
     }
   }, [accessToken]);
 
@@ -128,6 +134,18 @@ export default function Matches() {
     { href: "/matches", label: "Matches", isActive: true },
     { href: "/rewards", label: "Rewards" },
   ];
+
+  const handleShowAllLiveMatches = () => {
+    navigate("/matches/live");
+  };
+
+  const handleShowAllUpcomingMatches = () => {
+    navigate("/matches/upcoming");
+  };
+
+  const handleShowAllCompletedMatches = () => {
+    navigate("/matches/completed");
+  };
 
   return (
     <PageLayout
@@ -147,7 +165,10 @@ export default function Matches() {
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-900">Live Matches</h2>
-                <button className="text-sm text-blue-600 hover:text-blue-800">
+                <button
+                  className="text-sm text-blue-600 cursor-pointer hover:text-blue-800"
+                  onClick={handleShowAllLiveMatches}
+                >
                   Show all live matches
                 </button>
               </div>
@@ -160,17 +181,17 @@ export default function Matches() {
                         name: match.team1FullName,
                         shortName: match.team1Name,
                         logoSrc: match.team1ImgSrc,
-                        score: `${match.innings[1].teamName === match.team1Name ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
+                        score: `${match.innings[1].teamName === match.team1Name ? `${match?.innings[1]?.score}/${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
                       }}
                       awayTeam={{
                         name: match.team2FullName,
                         shortName: match.team2Name,
                         logoSrc: match.team2ImgSrc,
-                        score: `${match.innings[1].teamName === match.team2Name ? `${match?.innings[1]?.score} / ${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
+                        score: `${match.innings[1].teamName === match.team2Name ? `${match?.innings[1]?.score}/${match?.innings[1]?.wickets}(${match.innings[1]?.over || ""} ov)` : `${match?.innings[0]?.score}/${match?.innings[0]?.wickets}(${match.innings[0]?.over || ""} ov)`}`,
                       }}
                       matchType={match.league}
-                      currentOver={"0"}
-                      target={0}
+                      currentOver={""}
+                      target={"vs"}
                       statusText={match.status}
                     />
                   ))
@@ -184,13 +205,16 @@ export default function Matches() {
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-900">Upcoming Matches</h2>
-                <button className="text-sm text-blue-600 hover:text-blue-800">
+                <button
+                  className="text-sm cursor-pointer text-blue-600 hover:text-blue-800"
+                  onClick={handleShowAllUpcomingMatches}
+                >
                   Show all upcoming matches
                 </button>
               </div>
               <div className="space-y-4">
-                {upcomingMatches.length > 0 &&
-                  upcomingMatches.map((match) => (
+                {upcomingMatches.length > 0 ? (
+                  upcomingMatches.slice(0, 3).map((match) => (
                     <div
                       key={match.id}
                       className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
@@ -217,7 +241,20 @@ export default function Matches() {
                         <span className="text-xs text-gray-500">{22} players participating</span>
                       </div>
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">No upcoming matches</div>
+                )}
+                {upcomingMatches.length > 3 && (
+                  <div className="text-center pt-2">
+                    <button
+                      onClick={handleShowAllUpcomingMatches}
+                      className="text-sm cursor-pointer text-blue-600 hover:text-blue-800"
+                    >
+                      View {upcomingMatches.length - 3} more upcoming matches
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -226,14 +263,16 @@ export default function Matches() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold text-gray-900">Completed Matches</h2>
-              <button className="text-sm text-blue-600 hover:text-blue-800">
+              <button
+                className="text-sm cursor-pointer text-blue-600 hover:text-blue-800"
+                onClick={handleShowAllCompletedMatches}
+              >
                 Show all completed matches
               </button>
             </div>
             <div className="space-y-4">
-              {completedMatches &&
-                completedMatches.length > 0 &&
-                completedMatches.map((match) => (
+              {completedMatches.length > 0 ? (
+                completedMatches.slice(0, 5).map((match) => (
                   <div
                     key={match.id}
                     className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
@@ -276,7 +315,20 @@ export default function Matches() {
                       </button>
                     </div>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">No completed matches</div>
+              )}
+              {completedMatches.length > 5 && (
+                <div className="text-center pt-2">
+                  <button
+                    onClick={handleShowAllCompletedMatches}
+                    className="text-sm cursor-pointer text-blue-600 hover:text-blue-800"
+                  >
+                    View {completedMatches.length - 5} more completed matches
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

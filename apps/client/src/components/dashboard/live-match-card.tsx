@@ -16,7 +16,7 @@ interface LiveMatchCardProps {
   awayTeam: TeamInfo;
   matchType: string;
   currentOver: string;
-  target?: number;
+  target?: string;
   statusText: string;
   className?: string;
 }
@@ -51,7 +51,6 @@ export function LiveMatchCard({
 
           {target && (
             <div className="text-center">
-              <div className="text-xs text-gray-500 mb-1">Target</div>
               <div className="text-lg font-bold text-[#b91c1c]">{target}</div>
             </div>
           )}

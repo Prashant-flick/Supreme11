@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface TeamLogoProps {
@@ -25,7 +24,7 @@ export function TeamLogo({ src, alt, size = "md", className }: TeamLogoProps) {
         className
       )}
     >
-      <image
+      <img
         src={src || `/placeholder.svg?height=${image}&width=${image}`}
         width={image}
         height={image}
