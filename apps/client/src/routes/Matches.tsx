@@ -1,37 +1,10 @@
 import { PageLayout } from "@/components/layout/page-layout";
 import { LiveMatchCard } from "@/components/dashboard/live-match-card";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { conf } from "../config/index";
-import { matchInterface } from "@repo/common/types";
-import { useAuth } from "@/context/UseAuth";
 import { useNavigate } from "react-router-dom";
-
-interface matchCompleteInterface extends matchInterface {
-  innings: {
-    id: string;
-    matchId: string;
-    whichInning: "1st" | "2nd";
-    teamName: string | null;
-    score: number;
-    wickets: number;
-    extras: number;
-    batsman1: string | null;
-    batsman2: string | null;
-    bowler: string | null;
-    over: string | null;
-  }[];
-  team1ImgSrc: string;
-  team2ImgSrc: string;
-  team1FullName: string;
-  team2FullName: string;
-}
+import { useMatches } from "@/hooks/UseMatches";
 
 export default function Matches() {
-  const { accessToken } = useAuth();
-  const [liveMatches, setLiveMatches] = useState<matchCompleteInterface[]>([]);
-  const [upcomingMatches, setUpcomingMatches] = useState<matchCompleteInterface[]>([]);
-  const [completedMatches, setCompletedMatches] = useState<matchCompleteInterface[]>([]);
+  const { liveMatches, upcomingMatches, completedMatches } = useMatches();
   const navigate = useNavigate();
 
   const options: Intl.DateTimeFormatOptions = {
@@ -40,93 +13,6 @@ export default function Matches() {
     month: "long",
     day: "numeric",
   };
-
-  function getTeamFullName(abbreviation: string): string {
-    const abbr = abbreviation.toUpperCase();
-
-    const teamMap: Record<string, string> = {
-      CSK: "Chennai Super Kings",
-      DC: "Delhi Capitals",
-      GT: "Gujarat Titans",
-      KKR: "Kolkata Knight Riders",
-      LSG: "Lucknow Super Giants",
-      MI: "Mumbai Indians",
-      PBKS: "Punjab Kings",
-      RCB: "Royal Challengers Bangalore",
-      RR: "Rajasthan Royals",
-      SRH: "Sunrisers Hyderabad",
-    };
-
-    return teamMap[abbr] || "Unknown Team";
-  }
-
-  const getMatches = async () => {
-    try {
-      const matchesRes = await axios.get(`${conf.backendUrl}/matches/all`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const live: matchCompleteInterface[] = [];
-      const upcoming: matchCompleteInterface[] = [];
-      const completed: matchCompleteInterface[] = [];
-
-      for (const match of matchesRes.data.matchesRes) {
-        const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-
-        const team2Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team2Id}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-
-        match.team1ImgSrc = team1Res.data.squadRes.logo;
-        match.team2ImgSrc = team2Res.data.squadRes.logo;
-        match.team1FullName = getTeamFullName(team1Res.data.squadRes.name);
-        match.team2FullName = getTeamFullName(team2Res.data.squadRes.name);
-        match.team1Name = team1Res.data.squadRes.name;
-        match.team2Name = team2Res.data.squadRes.name;
-        match.date = new Date(match.date);
-
-        if (match.status === "started") {
-          live.push(match);
-        } else if (match.status === "upcoming") {
-          upcoming.push(match);
-        } else if (match.status === "ended") {
-          completed.push(match);
-        }
-      }
-
-      live.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      });
-      completed.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      });
-      upcoming.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      });
-
-      setLiveMatches(live);
-      setUpcomingMatches(upcoming);
-      setCompletedMatches(completed);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (accessToken) {
-      getMatches();
-      const interval = setInterval(() => {
-        getMatches();
-      }, 30 * 1000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [accessToken]);
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard" },
@@ -176,6 +62,7 @@ export default function Matches() {
                 {liveMatches.length > 0 ? (
                   liveMatches.map((match) => (
                     <LiveMatchCard
+                      matchId={match.id}
                       key={match.id}
                       homeTeam={{
                         name: match.team1FullName,
@@ -213,7 +100,7 @@ export default function Matches() {
                 </button>
               </div>
               <div className="space-y-4">
-                {upcomingMatches.length > 0 ? (
+                {upcomingMatches && upcomingMatches.length > 0 ? (
                   upcomingMatches.slice(0, 3).map((match) => (
                     <div
                       key={match.id}
@@ -271,11 +158,12 @@ export default function Matches() {
               </button>
             </div>
             <div className="space-y-4">
-              {completedMatches.length > 0 ? (
+              {completedMatches && completedMatches.length > 0 ? (
                 completedMatches.slice(0, 5).map((match) => (
                   <div
+                    onClick={() => navigate(`/matches/details/${match.id}`)}
                     key={match.id}
-                    className="border border-gray-200 rounded-md p-4 hover:bg-gray-50"
+                    className="border border-gray-200 rounded-md p-4 hover:bg-gray-50 cursor-pointer"
                   >
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium text-gray-500">{match.league}</span>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/UseAuth";
+import { useAuth } from "@/hooks/UseAuth";
 import { ChevronRight, Trophy, Zap, Shield, Coins, CircleDollarSign } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 

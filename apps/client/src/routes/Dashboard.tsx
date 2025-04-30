@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { conf } from "../config/index";
 import { tournamentInerface } from "@repo/common/types";
-import { useAuth } from "@/context/UseAuth";
+import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {

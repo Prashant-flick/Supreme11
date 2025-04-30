@@ -1,7 +1,7 @@
 import React, { useState, ReactNode, useMemo, useCallback } from "react";
 import axios from "axios";
 import { conf } from "@/config";
-import { AuthContext } from "./UseAuth";
+import { AuthContext } from "../hooks/UseAuth";
 
 export interface AuthContextType {
   userId: string;

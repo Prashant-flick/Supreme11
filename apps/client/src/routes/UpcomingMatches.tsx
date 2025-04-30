@@ -1,34 +1,10 @@
 import { PageLayout } from "@/components/layout/page-layout";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { conf } from "../config/index";
-import { matchInterface } from "@repo/common/types";
-import { useAuth } from "@/context/UseAuth";
 import { Link } from "react-router-dom";
-
-interface matchCompleteInterface extends matchInterface {
-  innings: {
-    id: string;
-    matchId: string;
-    whichInning: "1st" | "2nd";
-    teamName: string | null;
-    score: number;
-    wickets: number;
-    extras: number;
-    batsman1: string | null;
-    batsman2: string | null;
-    bowler: string | null;
-    over: string | null;
-  }[];
-  team1ImgSrc: string;
-  team2ImgSrc: string;
-  team1FullName: string;
-  team2FullName: string;
-}
+import { useMatches } from "@/hooks/UseMatches";
 
 export default function UpcomingMatches() {
-  const { accessToken } = useAuth();
-  const [upcomingMatches, setUpcomingMatches] = useState<matchCompleteInterface[]>([]);
+  const { upcomingMatches } = useMatches();
   const [isLoading, setIsLoading] = useState(true);
 
   const options: Intl.DateTimeFormatOptions = {
@@ -38,75 +14,11 @@ export default function UpcomingMatches() {
     day: "numeric",
   };
 
-  function getTeamFullName(abbreviation: string): string {
-    const abbr = abbreviation.toUpperCase();
-
-    const teamMap: Record<string, string> = {
-      CSK: "Chennai Super Kings",
-      DC: "Delhi Capitals",
-      GT: "Gujarat Titans",
-      KKR: "Kolkata Knight Riders",
-      LSG: "Lucknow Super Giants",
-      MI: "Mumbai Indians",
-      PBKS: "Punjab Kings",
-      RCB: "Royal Challengers Bangalore",
-      RR: "Rajasthan Royals",
-      SRH: "Sunrisers Hyderabad",
-    };
-
-    return teamMap[abbr] || "Unknown Team";
-  }
-
-  const getUpcomingMatches = async () => {
-    setIsLoading(true);
-    try {
-      const matchesRes = await axios.get(`${conf.backendUrl}/matches/all`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const upcoming: matchCompleteInterface[] = [];
-
-      for (const match of matchesRes.data.matchesRes) {
-        if (match.status === "upcoming") {
-          const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-
-          const team2Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team2Id}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-
-          match.team1ImgSrc = team1Res.data.squadRes.logo;
-          match.team2ImgSrc = team2Res.data.squadRes.logo;
-          match.team1FullName = getTeamFullName(team1Res.data.squadRes.name);
-          match.team2FullName = getTeamFullName(team2Res.data.squadRes.name);
-          match.team1Name = team1Res.data.squadRes.name;
-          match.team2Name = team2Res.data.squadRes.name;
-          match.date = new Date(match.date);
-
-          upcoming.push(match);
-        }
-      }
-
-      upcoming.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      });
-
-      setUpcomingMatches(upcoming);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  useEffect(() => {
+    if (upcomingMatches) {
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if (accessToken) {
-      getUpcomingMatches();
-    }
-  }, [accessToken]);
+  }, [upcomingMatches]);
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard" },

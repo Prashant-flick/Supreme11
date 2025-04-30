@@ -113,6 +113,78 @@ matchesRouter.get("/all", userMiddleware, async (req, res) => {
   }
 })
 
+matchesRouter.get("/live", userMiddleware, async (req, res) => {
+  try {
+    const liveMatches = await client.matches.findMany({
+      where: {
+        status: "started"
+      },
+      include: {
+        innings: true
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "live matches fetching success",
+        liveMatches
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "getting live matches failed",
+      })
+  }
+})
+
+matchesRouter.get("/upcoming", userMiddleware, async (req, res) => {
+  try {
+    const upcomingMatches = await client.matches.findMany({
+      where: {
+        status: "upcoming"
+      },
+      include: {
+        innings: true
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "upcoming matches fetching success",
+        upcomingMatches
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "fetching upcoming matches failed",
+      })
+  }
+})
+
+matchesRouter.get("/completed", userMiddleware, async (req, res) => {
+  try {
+    const completedMatches = await client.matches.findMany({
+      where: {
+        status: "ended"
+      },
+      include: {
+        innings: true
+      }
+    })
+
+    res.status(200)
+      .json({
+        message: "completed matches fetching success",
+        completedMatches
+      })
+  } catch (error) {
+    res.status(400)
+      .json({
+        message: "fetching completed matches failed",
+      })
+  }
+})
+
 matchesRouter.get('/:matchId', userMiddleware, async (req, res) => {
   const matchId = req.params.matchId;
   if (!matchId) {

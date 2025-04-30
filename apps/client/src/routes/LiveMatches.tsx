@@ -1,112 +1,18 @@
 import { PageLayout } from "@/components/layout/page-layout";
 import { LiveMatchCard } from "@/components/dashboard/live-match-card";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { conf } from "../config/index";
-import { matchInterface } from "@repo/common/types";
-import { useAuth } from "@/context/UseAuth";
 import { Link } from "react-router-dom";
-
-interface matchCompleteInterface extends matchInterface {
-  innings: {
-    id: string;
-    matchId: string;
-    whichInning: "1st" | "2nd";
-    teamName: string | null;
-    score: number;
-    wickets: number;
-    extras: number;
-    batsman1: string | null;
-    batsman2: string | null;
-    bowler: string | null;
-    over: string | null;
-  }[];
-  team1ImgSrc: string;
-  team2ImgSrc: string;
-  team1FullName: string;
-  team2FullName: string;
-}
+import { useMatches } from "@/hooks/UseMatches";
 
 export default function LiveMatches() {
-  const { accessToken } = useAuth();
-  const [liveMatches, setLiveMatches] = useState<matchCompleteInterface[]>([]);
+  const { liveMatches } = useMatches();
   const [isLoading, setIsLoading] = useState(true);
 
-  function getTeamFullName(abbreviation: string): string {
-    const abbr = abbreviation.toUpperCase();
-
-    const teamMap: Record<string, string> = {
-      CSK: "Chennai Super Kings",
-      DC: "Delhi Capitals",
-      GT: "Gujarat Titans",
-      KKR: "Kolkata Knight Riders",
-      LSG: "Lucknow Super Giants",
-      MI: "Mumbai Indians",
-      PBKS: "Punjab Kings",
-      RCB: "Royal Challengers Bangalore",
-      RR: "Rajasthan Royals",
-      SRH: "Sunrisers Hyderabad",
-    };
-
-    return teamMap[abbr] || "Unknown Team";
-  }
-
-  const getLiveMatches = async () => {
-    setIsLoading(true);
-    try {
-      const matchesRes = await axios.get(`${conf.backendUrl}/matches/all`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const live: matchCompleteInterface[] = [];
-
-      for (const match of matchesRes.data.matchesRes) {
-        if (match.status === "started") {
-          const team1Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team1Id}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-
-          const team2Res = await axios.get(`${conf.backendUrl}/squad/squadId/${match.team2Id}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-
-          match.team1ImgSrc = team1Res.data.squadRes.logo;
-          match.team2ImgSrc = team2Res.data.squadRes.logo;
-          match.team1FullName = getTeamFullName(team1Res.data.squadRes.name);
-          match.team2FullName = getTeamFullName(team2Res.data.squadRes.name);
-          match.team1Name = team1Res.data.squadRes.name;
-          match.team2Name = team2Res.data.squadRes.name;
-          match.date = new Date(match.date);
-
-          live.push(match);
-        }
-      }
-
-      live.sort((a: matchCompleteInterface, b: matchCompleteInterface) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      });
-
-      setLiveMatches(live);
-    } catch (error) {
-      console.error(error);
-    } finally {
+  useEffect(() => {
+    if (liveMatches) {
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if (accessToken) {
-      getLiveMatches();
-      const interval = setInterval(() => {
-        getLiveMatches();
-      }, 30 * 1000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [accessToken]);
+  }, [liveMatches]);
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard" },
@@ -155,6 +61,7 @@ export default function LiveMatches() {
               {liveMatches.length > 0 ? (
                 liveMatches.map((match) => (
                   <LiveMatchCard
+                    matchId={match.id}
                     key={match.id}
                     homeTeam={{
                       name: match.team1FullName,

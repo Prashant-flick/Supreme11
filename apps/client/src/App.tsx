@@ -4,13 +4,14 @@ import Dashboard from "./routes/Dashboard";
 import Tournament from "./routes/Tournament";
 import Matches from "./routes/Matches";
 import { useEffect } from "react";
-import { useAuth } from "./context/UseAuth";
+import { useAuth } from "./hooks/UseAuth";
 import axios from "axios";
 import { conf } from "./config";
 import Auth from "./routes/Auth";
 import LiveMatches from "./routes/LiveMatches";
 import UpcomingMatches from "./routes/UpcomingMatches";
 import CompletedMatches from "./routes/CompletedMatches";
+import MatchDetails from "./routes/MatchDetails";
 
 function App() {
   const { isLogin, login } = useAuth();
@@ -50,6 +51,7 @@ function App() {
           <Route path="/matches/live" element={<LiveMatches />} />
           <Route path="/matches/upcoming" element={<UpcomingMatches />} />
           <Route path="/matches/completed" element={<CompletedMatches />} />
+          <Route path="/matches/details/:matchId" element={<MatchDetails />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trophy, Users, X, ArrowUp, ArrowDown, Minus } from "lucide-react";
-import { useAuth } from "@/context/UseAuth";
+import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
 
 const Link = ({

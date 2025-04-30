@@ -3,6 +3,7 @@ import { LiveIndicator } from "@/components/ui/live-indicator";
 import { TeamLogo } from "@/components/ui/team-logo";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface TeamInfo {
   name: string;
@@ -19,6 +20,7 @@ interface LiveMatchCardProps {
   target?: string;
   statusText: string;
   className?: string;
+  matchId?: string;
 }
 
 export function LiveMatchCard({
@@ -29,9 +31,17 @@ export function LiveMatchCard({
   target,
   statusText,
   className,
+  matchId,
 }: LiveMatchCardProps) {
+  const navigate = useNavigate();
   return (
-    <div className={cn("bg-white rounded-xl border border-gray-100 shadow-sm p-6", className)}>
+    <div
+      onClick={() => navigate(`/matches/details/${matchId}`)}
+      className={cn(
+        "bg-white rounded-xl border border-gray-100 shadow-sm p-6 cursor-pointer",
+        className
+      )}
+    >
       <SectionHeader title="Live Score" rightContent={<LiveIndicator />} />
 
       <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4">
